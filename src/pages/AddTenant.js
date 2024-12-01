@@ -1,16 +1,28 @@
 import React from "react";
-import { Layout, Typography, Input, Button, Row, Col, Form } from "antd";
+import { Layout, Menu, Table, Typography, Input, Button, Avatar, Row, Col, Form } from "antd";
 import {
+  UserOutlined,
   LogoutOutlined,
+  HomeOutlined,
+  TeamOutlined,
+  PlusOutlined,
+  ApartmentOutlined,
+  FileTextOutlined,
+  EditOutlined,
+  DeleteOutlined,
 } from "@ant-design/icons";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 import "./AddTenant.css";
 import "../App.css";
 import Logo from "../assets/logo.png";
 
 const { Header, Sider, Content } = Layout;
 const { Title } = Typography;
+const { Search } = Input;
+const { SubMenu } = Menu;
 
 const AddTenant = () => {
+  const navigate = useNavigate(); // Initialize navigate
   const onFinish = (values) => {
     console.log("Form values:", values);
   };
@@ -19,25 +31,27 @@ const AddTenant = () => {
     console.error("Form failed:", errorInfo);
   };
 
+  const handleMenuClick = ({ key }) => {
+    if (key === "addTenant") {
+      navigate("/add-tenant"); // Navigate to Add Tenant page
+    }
+  };
+
   return (
     <Layout style={{ minHeight: "100vh" }}>
       {/* Sidebar */}
       <Sider
         theme="dark"
-        style={{ backgroundColor: "#420B31", color: "white" }}
+        style={{
+          backgroundColor: "#420B31",
+          color: "white",
+        }}
       >
         <div className="logo-container">
           <img src={Logo} alt="Logo" className="logo" />
         </div>
         <div className="avatar-container">
-          <div
-            style={{
-              width: "64px",
-              height: "64px",
-              backgroundColor: "white",
-              borderRadius: "50%",
-            }}
-          ></div>
+          <Avatar size={64} style={{ backgroundColor: "#fff" }} />
           <div style={{ color: "white", margin: "10px" }}>
             <span>Username</span>
             <br />
@@ -45,16 +59,30 @@ const AddTenant = () => {
           </div>
         </div>
         <div className="menu-container">
-          <ul style={{ listStyleType: "none", padding: 0, color: "white" }}>
-            <li>Visitor</li>
-            <li>Tenant</li>
-            <ul>
-              <li>Add Tenant</li>
-              <li>List Tenants</li>
-            </ul>
-            <li>Building</li>
-            <li>Apartment</li>
-          </ul>
+          <Menu
+            theme="dark"
+            mode="inline"
+            style={{ backgroundColor: "#420B31", flexGrow: 1 }}
+            onClick={handleMenuClick} // Attach click handler
+          >
+            <Menu.Item key="visitor" icon={<UserOutlined />}>
+              Visitor
+            </Menu.Item>
+            <SubMenu key="tenant" icon={<TeamOutlined />} title="Tenant">
+              <Menu.Item key="addTenant" icon={<PlusOutlined />}>
+                Add Tenant
+              </Menu.Item>
+              <Menu.Item key="listTenants" icon={<FileTextOutlined />}>
+                List Tenants
+              </Menu.Item>
+            </SubMenu>
+            <Menu.Item key="building" icon={<HomeOutlined />}>
+              Building
+            </Menu.Item>
+            <Menu.Item key="apartment" icon={<ApartmentOutlined />}>
+              Apartment
+            </Menu.Item>
+          </Menu>
         </div>
       </Sider>
 

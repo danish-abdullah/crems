@@ -12,7 +12,6 @@ import {
   DeleteOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
-import "./SuperAdminDashboard.css";
 import "../App.css";
 import Logo from "../assets/logo.png";
 

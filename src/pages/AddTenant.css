@@ -20,12 +20,12 @@
     margin-top: 80px;
   } */
   
-  .menu-container {
+  /* .menu-container {
     margin-top: 20px;
     padding-left: 20px;
     color: white;
     font-size: 16px;
-  }
+  } */
   
   /* .menu-container ul {
     list-style-type: none;
@@ -37,20 +37,20 @@
     font-size: 14px;
   } */
   
-  .ant-layout-sider {
+  /* .ant-layout-sider {
     background-color: #420B31 !important;
-  }
+  } */
   
-  /* Header styles */
+  Header styles
   .ant-layout-header {
     background-color: white !important;
     border-bottom: 1px solid #f0f0f0;
   }
   
-  .ant-layout-header .ant-typography {
+  /* .ant-layout-header .ant-typography {
     color: #4b244a;
     font-weight: bold;
-  }
+  } */
   
   /* Form and input styling */
   .ant-form-item-label > label {

@@ -11,7 +11,6 @@ import {
   EditOutlined,
   DeleteOutlined,
 } from "@ant-design/icons";
-import "./SuperAdminDashboard.css";
 import "../App.css";
 import Logo from "../assets/logo.png";
 

@@ -3,9 +3,58 @@
     top: 20px; /* Distance from the top of the page */
     left: 20px; /* Distance from the left of the page */
     z-index: 1000; /* Ensure it appears above other elements */
-  }
+}
+
+.logo {
+  width: 150px; /* Set the width of the logo */
+  height: auto; /* Maintain aspect ratio */
+}
+
+.avatar-container {
+  display: flex;
+  /* flex-direction: column; */
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid #ffffff33;
+  margin-top: 80px;
+}
+
+.ant-layout-sider {
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Center align menu vertically */
+}
   
-  .logo {
-    width: 150px; /* Set the width of the logo */
-    height: auto; /* Maintain aspect ratio */
-  }
+ /* Ensure menu items have white font color */
+.ant-menu-dark .ant-menu-item, 
+.ant-menu-dark .ant-menu-submenu-title {
+  color: white !important;
+}
+
+/* Set background color of submenu */
+.ant-menu-dark .ant-menu-submenu {
+  background-color: #420B31; /* Same as sidebar purple */
+}
+
+/* Highlight the submenu items on hover */
+.ant-menu-dark .ant-menu-item:hover, 
+.ant-menu-dark .ant-menu-submenu-title:hover {
+  background-color: #5a0f47 !important; /* Slightly lighter purple for hover effect */
+}
+
+/* Style active menu items */
+.ant-menu-dark .ant-menu-item-selected {
+  background-color: #5a0f47; /* Highlight selected menu item */
+  color: white !important; /* Ensure text remains white */
+}
+
+/* Style for submenu items */
+.ant-menu-dark .ant-menu-sub {
+  background-color: #420B31 !important; /* Purple background for submenu */
+  border: none; /* Remove default border */
+}
+
+/* Submenu item hover effect */
+.ant-menu-dark .ant-menu-submenu-popup .ant-menu-item:hover {
+  background-color: #5a0f47 !important;
+}
