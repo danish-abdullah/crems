@@ -1,28 +1,14 @@
 import React from "react";
-import { Layout, Menu, Table, Typography, Input, Button, Avatar } from "antd";
-import {
-  UserOutlined,
-  LogoutOutlined,
-  HomeOutlined,
-  TeamOutlined,
-  PlusOutlined,
-  ApartmentOutlined,
-  FileTextOutlined,
-  EditOutlined,
-  DeleteOutlined,
-} from "@ant-design/icons";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { Layout, Table, Typography, Input, Button } from "antd";
+import { LogoutOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import "../App.css";
-import Logo from "../assets/logo.png";
+import Sidebar from "../components/AdminSidebar.js";
 
-const { Header, Sider, Content } = Layout;
+const { Header, Content } = Layout;
 const { Title } = Typography;
 const { Search } = Input;
-const { SubMenu } = Menu;
 
 const AdminDashboard = () => {
-  const navigate = useNavigate(); // Initialize navigate
-
   // Sample data for visitors table
   const dataSource = [
     {
@@ -85,60 +71,13 @@ const AdminDashboard = () => {
     },
   ];
 
-  const handleMenuClick = ({ key }) => {
-    if (key === "addTenant") {
-      navigate("/add-tenant"); // Navigate to Add Tenant page
-    }
-  };
-
   return (
     <Layout style={{ minHeight: "100vh" }}>
       {/* Sidebar */}
-      <Sider
-        theme="dark"
-        style={{
-          backgroundColor: "#420B31",
-          color: "white",
-        }}
-      >
-        <div className="logo-container">
-          <img src={Logo} alt="Logo" className="logo" />
-        </div>
-        <div className="avatar-container">
-          <Avatar size={64} style={{ backgroundColor: "#fff" }} />
-          <div style={{ color: "white", margin: "10px" }}>
-            <span>Username</span>
-            <br />
-            <small>Admin</small>
-          </div>
-        </div>
-        <div className="menu-container">
-          <Menu
-            theme="dark"
-            mode="inline"
-            style={{ backgroundColor: "#420B31", flexGrow: 1 }}
-            onClick={handleMenuClick} // Attach click handler
-          >
-            <Menu.Item key="visitor" icon={<UserOutlined />}>
-              Visitor
-            </Menu.Item>
-            <SubMenu key="tenant" icon={<TeamOutlined />} title="Tenant">
-              <Menu.Item key="addTenant" icon={<PlusOutlined />}>
-                Add Tenant
-              </Menu.Item>
-              <Menu.Item key="listTenants" icon={<FileTextOutlined />}>
-                List Tenants
-              </Menu.Item>
-            </SubMenu>
-            <Menu.Item key="building" icon={<HomeOutlined />}>
-              Building
-            </Menu.Item>
-            <Menu.Item key="apartment" icon={<ApartmentOutlined />}>
-              Apartment
-            </Menu.Item>
-          </Menu>
-        </div>
-      </Sider>
+      <Sidebar
+        username="Admin"
+        role="Admin"
+      />
 
       {/* Main Content */}
       <Layout>

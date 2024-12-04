@@ -1,56 +1,8 @@
-/* General layout styling */
-/* .logo-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-  } */
-  
-  /* .logo {
-    width: 100px;
-    height: auto;
-  } */
-  
-  /* .avatar-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-    border-bottom: 1px solid #ffffff33;
-    margin-top: 80px;
-  } */
-  
-  /* .menu-container {
-    margin-top: 20px;
-    padding-left: 20px;
-    color: white;
-    font-size: 16px;
-  } */
-  
-  /* .menu-container ul {
-    list-style-type: none;
-    padding: 0;
-  } */
-  
-  /* .menu-container ul ul {
-    margin-left: 20px;
-    font-size: 14px;
-  } */
-  
-  /* .ant-layout-sider {
-    background-color: #420B31 !important;
-  } */
-  
   Header styles
   .ant-layout-header {
     background-color: white !important;
     border-bottom: 1px solid #f0f0f0;
   }
-  
-  /* .ant-layout-header .ant-typography {
-    color: #4b244a;
-    font-weight: bold;
-  } */
   
   /* Form and input styling */
   .ant-form-item-label > label {
@@ -104,9 +56,5 @@
     .ant-form {
       padding: 10px;
     }
-  
-    /* .avatar-container {
-      margin-top: 40px;
-    } */
   }
   

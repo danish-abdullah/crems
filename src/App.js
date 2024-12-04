@@ -4,7 +4,7 @@ import Login from "./pages/Login";
 import ForgotPassword from "./pages/ForgotPassword";
 import SuperAdminDashboard from "./pages/SuperAdminDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
-import AddTenant from "./pages/AddTenant"; // Import AddTenant component
+import AddTenant from "./pages/forms/AddTenant"; // Import AddTenant component
 
 function App() {
   return (
