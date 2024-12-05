@@ -20,8 +20,32 @@ const Sidebar = ({ username, role }) => {
     const navigate = useNavigate(); // Initialize navigate
 
     const handleMenuClick = ({ key }) => {
-        if (key === "addTenant") {
-          navigate("/add-tenant"); // Navigate to Add Tenant page
+        if (key === "adminDashboard") {
+          navigate("/admin-dashboard");
+        }  
+        else if (key === "addTenant") {
+          navigate("/add-tenant");
+        }
+        else if (key === "addVisitor") {
+          navigate("/add-visitor");
+        }
+        else if (key === "addBuilding") {
+          navigate("/add-building");
+        }
+        else if (key === "addApartment") {
+          navigate("/add-apartment");
+        }
+        else if (key === "viewApartments") {
+          navigate("/view-apartments");
+        }
+        else if (key === "viewTenants") {
+          navigate("/view-tenants");
+        }
+        else if (key === "viewBuildings") {
+          navigate("/view-buildings");
+        }
+        else if (key === "viewVisitors") {
+          navigate("/view-visitors");
         }
       };
   return (
@@ -50,11 +74,14 @@ const Sidebar = ({ username, role }) => {
           style={{ backgroundColor: "#420B31", flexGrow: 1 }}
           onClick={handleMenuClick}
         >
+          <Menu.Item key="adminDashboard" icon={<UserOutlined />}>
+            Dashboard
+          </Menu.Item>
           <SubMenu key="visitor" icon={<UserOutlined />} title="Visitor">
           <Menu.Item key="addVisitor" icon={<PlusOutlined />}>
               Add Visitor
             </Menu.Item>
-            <Menu.Item key="viewVisitor" icon={<FileTextOutlined />}>
+            <Menu.Item key="viewVisitors" icon={<FileTextOutlined />}>
               View Visitors
             </Menu.Item>
           </SubMenu>

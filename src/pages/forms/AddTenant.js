@@ -4,6 +4,7 @@ import { LogoutOutlined } from "@ant-design/icons";
 import "./AddTenant.css";
 import "../../App.css";
 import Sidebar from "../../components/AdminSidebar.js";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 
 const { Header, Content } = Layout;
 const { Title } = Typography;
@@ -16,7 +17,12 @@ const AddTenant = () => {
   const onFinishFailed = (errorInfo) => {
     console.error("Form failed:", errorInfo);
   };
-
+  const navigate = useNavigate();
+  const handleLogoutClick = ({ key }) => {
+    {
+      navigate("/");
+    }  
+  }
   return (
     <Layout style={{ minHeight: "100vh" }}>
       {/* Sidebar */}
@@ -43,6 +49,7 @@ const AddTenant = () => {
             type="link"
             icon={<LogoutOutlined />}
             style={{ color: "#4b244a" }}
+            onClick={handleLogoutClick}
           >
             Logout
           </Button>
