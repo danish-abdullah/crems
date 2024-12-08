@@ -1,6 +1,5 @@
 import React from "react";
 import { Layout, Typography, Input, Button, Row, Col, Form } from "antd";
-import "./AddBuilding.css";
 import "../../App.css";
 import Sidebar from "../../components/AdminSidebar.js";
 import TitleHeader from "../../components/TitleHeader.js";

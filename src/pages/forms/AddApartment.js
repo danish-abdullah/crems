@@ -1,6 +1,5 @@
 import React from "react";
 import { Layout, Typography, Input, Button, Row, Col, Form } from "antd";
-import "./AddApartment.css";
 import "../../App.css";
 import Sidebar from "../../components/AdminSidebar.js";
 import TitleHeader from "../../components/TitleHeader.js";
@@ -16,7 +15,7 @@ const AddApartment = () => {
   const onFinishFailed = (errorInfo) => {
     console.error("Form failed:", errorInfo);
   };
-  
+
   return (
     <Layout style={{ minHeight: "100vh" }}>
       {/* Sidebar */}

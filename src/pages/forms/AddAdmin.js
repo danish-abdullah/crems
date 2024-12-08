@@ -1,6 +1,5 @@
 import React from "react";
 import { Layout, Typography, Input, Button, Row, Col, Form } from "antd";
-import "./AddApartment.css";
 import "../../App.css";
 import Sidebar from "../../components/SuperAdminSidebar.js";
 import TitleHeader from "../../components/TitleHeader.js";
@@ -21,8 +20,8 @@ const AddAdmin = () => {
     <Layout style={{ minHeight: "100vh" }}>
       {/* Sidebar */}
       <Sidebar
-        username="Admin"
-        role="Admin"
+        username="VLookin"
+        role="SuperAdmin"
       />
 
       {/* Main Content */}
