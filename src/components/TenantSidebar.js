@@ -20,8 +20,8 @@ const Sidebar = ({ username, role }) => {
     const navigate = useNavigate(); // Initialize navigate
 
     const handleMenuClick = ({ key }) => {
-        if (key === "adminDashboard") {
-          navigate("/admin-dashboard");
+        if (key === "dashboard") {
+          navigate("/tenant-dashboard");
         }  
         else if (key === "addTenant") {
           navigate("/add-tenant");
@@ -74,7 +74,7 @@ const Sidebar = ({ username, role }) => {
           style={{ backgroundColor: "#420B31", flexGrow: 1 }}
           onClick={handleMenuClick}
         >
-          <Menu.Item key="adminDashboard" icon={<UserOutlined />}>
+          <Menu.Item className="main-item" key="dashboard" icon={<UserOutlined />}>
             Dashboard
           </Menu.Item>
           <SubMenu key="visitor" icon={<UserOutlined />} title="Visitor">

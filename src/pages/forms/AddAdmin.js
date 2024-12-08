@@ -2,7 +2,7 @@ import React from "react";
 import { Layout, Typography, Input, Button, Row, Col, Form } from "antd";
 import "./AddApartment.css";
 import "../../App.css";
-import Sidebar from "../../components/AdminSidebar.js";
+import Sidebar from "../../components/SuperAdminSidebar.js";
 import TitleHeader from "../../components/TitleHeader.js";
 
 const { Content } = Layout;

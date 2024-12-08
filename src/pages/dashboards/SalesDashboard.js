@@ -1,7 +1,7 @@
 import React from "react";
 import { Layout } from "antd";
 import "../../App.css";
-import Sidebar from "../../components/AdminSidebar.js";
+import Sidebar from "../../components/SalesSidebar.js";
 import TitleHeader from "../../components/TitleHeader.js";
 
 const SalesDashboard = () => {
