@@ -1,22 +1,14 @@
 import React from "react";
 import { Layout, Typography, Input, Button, Row, Col, Form } from "antd";
-import { LogoutOutlined } from "@ant-design/icons";
 import "./AddBuilding.css";
 import "../../App.css";
 import Sidebar from "../../components/AdminSidebar.js";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import TitleHeader from "../../components/TitleHeader.js";
 
-const { Header, Content } = Layout;
+const { Content } = Layout;
 const { Title } = Typography;
 
 const AddBuilding = () => {
-  const navigate = useNavigate();
-  const handleLogoutClick = ({ key }) => {
-    {
-      navigate("/");
-    }  
-  }
-
   const onFinish = (values) => {
     console.log("Form values:", values);
   };
@@ -35,27 +27,7 @@ const AddBuilding = () => {
 
       {/* Main Content */}
       <Layout>
-        <Header
-          style={{
-            backgroundColor: "white",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            padding: "0 20px",
-          }}
-        >
-          <Title level={4} style={{ color: "#4b244a", margin: 0 }}>
-            Add Building
-          </Title>
-          <Button
-            type="link"
-            icon={<LogoutOutlined />}
-            style={{ color: "#4b244a" }}
-            onClick={handleLogoutClick}
-          >
-            Logout
-          </Button>
-        </Header>
+        <TitleHeader title="Add Building" />
         <Content style={{ margin: "20px", padding: "20px", background: "white" }}>
           <Title level={5} style={{ color: "#4b244a" }}>
             Add Building Details

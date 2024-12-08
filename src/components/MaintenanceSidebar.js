@@ -16,7 +16,7 @@ import { useNavigate } from "react-router-dom"; // Import useNavigate
 const { Sider } = Layout;
 const { SubMenu } = Menu;
 
-const AdminSidebar = ({ username, role }) => {
+const Sidebar = ({ username, role }) => {
     const navigate = useNavigate(); // Initialize navigate
 
     const handleMenuClick = ({ key }) => {
@@ -74,7 +74,7 @@ const AdminSidebar = ({ username, role }) => {
           style={{ backgroundColor: "#420B31", flexGrow: 1 }}
           onClick={handleMenuClick}
         >
-          <Menu.Item className="main-item" key="adminDashboard" icon={<UserOutlined />}>
+          <Menu.Item key="adminDashboard" icon={<UserOutlined />}>
             Dashboard
           </Menu.Item>
           <SubMenu key="visitor" icon={<UserOutlined />} title="Visitor">
@@ -109,18 +109,15 @@ const AdminSidebar = ({ username, role }) => {
               View Apartments
             </Menu.Item>
           </SubMenu>
-          <Menu.Item className="main-item" key="complaints" icon={<UserOutlined />}>
-            Complaints
-          </Menu.Item>
         </Menu>
       </div>
     </Sider>
   );
 };
 
-AdminSidebar.propTypes = {
+Sidebar.propTypes = {
   username: PropTypes.string.isRequired,
   role: PropTypes.string.isRequired,
 };
 
-export default AdminSidebar;
+export default Sidebar;

@@ -1,25 +1,21 @@
 import React from "react";
-import { Layout, Table, Typography, Input, Button } from "antd";
-import { LogoutOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import PropTypes from "prop-types";
 import "../App.css";
-import Sidebar from "../components/AdminSidebar.js";
+import { useNavigate } from "react-router-dom";
+import { Layout, Typography, Button } from "antd";
+import { LogoutOutlined } from "@ant-design/icons";
 
-const { Header, Content } = Layout;
+const { Header } = Layout;
 const { Title } = Typography;
-const { Search } = Input;
 
-const AdminDashboard = () => {
+const TitleHeader = ({ title }) => {
+    const navigate = useNavigate(); // Initialize navigate
+    const handleLogoutClick = () => {
+        navigate("/");  
+    }
+    
   return (
-    <Layout style={{ minHeight: "100vh" }}>
-      {/* Sidebar */}
-      <Sidebar
-        username="Admin"
-        role="Admin"
-      />
-
-      {/* Main Content */}
-      <Layout>
-        <Header
+    <Header
           style={{
             backgroundColor: "white",
             display: "flex",
@@ -29,19 +25,22 @@ const AdminDashboard = () => {
           }}
         >
           <Title level={4} style={{ color: "#4b244a", margin: 0 }}>
-            Admin Dashboard
+           {title}
           </Title>
           <Button
             type="link"
             icon={<LogoutOutlined />}
             style={{ color: "#4b244a" }}
+            onClick={handleLogoutClick}
           >
             Logout
           </Button>
         </Header>
-      </Layout>
-    </Layout>
   );
 };
 
-export default AdminDashboard;
+TitleHeader.propTypes = {
+  title: PropTypes.string.isRequired,
+};
+
+export default TitleHeader;

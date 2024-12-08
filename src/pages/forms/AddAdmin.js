@@ -8,7 +8,7 @@ import TitleHeader from "../../components/TitleHeader.js";
 const { Content } = Layout;
 const { Title } = Typography;
 
-const AddApartment = () => {
+const AddAdmin = () => {
   const onFinish = (values) => {
     console.log("Form values:", values);
   };
@@ -16,7 +16,7 @@ const AddApartment = () => {
   const onFinishFailed = (errorInfo) => {
     console.error("Form failed:", errorInfo);
   };
-  
+
   return (
     <Layout style={{ minHeight: "100vh" }}>
       {/* Sidebar */}
@@ -27,10 +27,10 @@ const AddApartment = () => {
 
       {/* Main Content */}
       <Layout>
-        <TitleHeader title="Add Apartment" />
+        <TitleHeader title="Add Admin" />
         <Content style={{ margin: "20px", padding: "20px", background: "white" }}>
           <Title level={5} style={{ color: "#4b244a" }}>
-            Add Apartment Details
+            Add Admin Details
           </Title>
           <Form
             layout="vertical"
@@ -123,4 +123,4 @@ const AddApartment = () => {
   );
 };
 
-export default AddApartment;
+export default AddAdmin;

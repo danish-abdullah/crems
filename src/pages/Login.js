@@ -17,13 +17,28 @@ const Login = () => {
     if (username === "sa" && password === "a")
     {
         message.success("Login Successful!");
-        navigate("/super-admin-dashboard"); // Redirect to Super Admin Dashboard
+        navigate("/super-admin-dashboard");
     }
     else if (username === "admin" && password === "a")
     {
         message.success("Login Successful!");
-        navigate("/admin-dashboard"); // Redirect to Admin Dashboard
-    } 
+        navigate("/admin-dashboard");
+    }
+    else if (username === "main" && password === "a")
+    {
+        message.success("Login Successful!");
+        navigate("/maintenance-dashboard");
+    }
+    else if (username === "tenant" && password === "a")
+    {
+        message.success("Login Successful!");
+        navigate("/tenant-dashboard");
+    }
+    else if (username === "sales" && password === "a")
+    {
+        message.success("Login Successful!");
+        navigate("/sales-dashboard");
+    }
     else
     {
         message.error("Invalid credentials. Please try again.");

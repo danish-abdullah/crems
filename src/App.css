@@ -24,7 +24,7 @@
   flex-direction: column;
   justify-content: center; /* Center align menu vertically */
 }
-  
+
  /* Ensure menu items have white font color */
 .ant-menu-dark .ant-menu-item, 
 .ant-menu-dark .ant-menu-submenu-title {
@@ -34,6 +34,19 @@
 /* Set background color of submenu */
 .ant-menu-dark .ant-menu-submenu {
   background-color: #420B31; /* Same as sidebar purple */
+
+}
+
+.ant-menu-item {
+  padding-left: 30px !important;
+}
+
+.ant-menu-submenu-title {
+  padding-left: 15px !important;
+}
+
+.main-item {
+  padding-left: 15px !important;
 }
 
 /* Highlight the submenu items on hover */

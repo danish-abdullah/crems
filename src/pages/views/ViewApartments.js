@@ -1,11 +1,11 @@
 import React from "react";
-import { Layout, Table, Typography, Input, Button } from "antd";
-import { LogoutOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import { Layout, Table, Input, Button } from "antd";
+import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import "../../App.css";
 import Sidebar from "../../components/AdminSidebar.js";
+import TitleHeader from "../../components/TitleHeader.js";
 
-const { Header, Content } = Layout;
-const { Title } = Typography;
+const { Content } = Layout;
 const { Search } = Input;
 
 const ViewApartments = () => {
@@ -81,26 +81,7 @@ const ViewApartments = () => {
 
       {/* Main Content */}
       <Layout>
-        <Header
-          style={{
-            backgroundColor: "white",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            padding: "0 20px",
-          }}
-        >
-          <Title level={4} style={{ color: "#4b244a", margin: 0 }}>
-            View Apartments
-          </Title>
-          <Button
-            type="link"
-            icon={<LogoutOutlined />}
-            style={{ color: "#4b244a" }}
-          >
-            Logout
-          </Button>
-        </Header>
+        <TitleHeader title="View Apartments" />
         <Content
           style={{ margin: "20px", padding: "20px", background: "white" }}
         >
