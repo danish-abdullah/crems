@@ -83,14 +83,18 @@
     font-weight: bold;
   }
   
-  .ant-input {
+  .ant-input, .ant-input-number {
     border: 1px solid #4b244a;
     border-radius: 4px;
   }
-  
-  .ant-input:focus {
+
+  .ant-radio, .ant-checkbox {
+    border: 1px solid #4b244a;
+  }
+
+  .ant-input:focus, .ant-input-number-focused {
     border-color: #5a0f47 !important;
-    box-shadow: 0 0 5px rgba(90, 15, 71, 0.5);
+    box-shadow: 0 0 5px rgba(90, 15, 71, 0.5) !important;
   }
   
   .ant-btn-primary {

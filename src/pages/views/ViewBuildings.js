@@ -13,47 +13,34 @@ const ViewBuildings = () => {
   const dataSource = [
     {
       key: "1",
-      building: "Al jeddah",
-      person: "Visitor",
-      date: "2023-03-12",
-      name: "Umer",
-      mobile: "55 765 7028",
-      email: "umer30@gmail.com",
+      name: "Danish",
+      building: "Al Jeddah",
+      city: "Karachi",
+      area: "Clifton",
     },
     // Add more rows as needed
   ];
 
   const columns = [
     {
-      title: "Building",
-      dataIndex: "building",
-      key: "building",
-    },
-    {
-      title: "Person",
-      dataIndex: "person",
-      key: "person",
-    },
-    {
-      title: "Date",
-      dataIndex: "date",
-      key: "date",
-    },
-    {
       title: "Name",
       dataIndex: "name",
       key: "name",
     },
     {
-      title: "Mobile No",
-      dataIndex: "mobile",
-      key: "mobile",
+      title: "Building",
+      dataIndex: "building",
+      key: "building",
     },
     {
-      title: "Email",
-      dataIndex: "email",
-      key: "email",
-      render: (text) => <a href={`mailto:${text}`}>{text}</a>,
+      title: "City",
+      dataIndex: "city",
+      key: "city",
+    },
+    {
+      title: "Area",
+      dataIndex: "area",
+      key: "area",
     },
     {
       title: "Update",

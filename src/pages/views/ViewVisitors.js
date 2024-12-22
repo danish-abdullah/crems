@@ -19,30 +19,26 @@ const ViewVisitors = () => {
       name: "Umer",
       mobile: "55 765 7028",
       email: "umer30@gmail.com",
+      flat: "102"
     },
     // Add more rows as needed
   ];
 
   const columns = [
     {
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
+    },
+    {
       title: "Building",
       dataIndex: "building",
       key: "building",
     },
     {
-      title: "Person",
-      dataIndex: "person",
-      key: "person",
-    },
-    {
-      title: "Date",
-      dataIndex: "date",
-      key: "date",
-    },
-    {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
+      title: "Flat No.",
+      dataIndex: "flat",
+      key: "flat",
     },
     {
       title: "Mobile No",
@@ -54,6 +50,11 @@ const ViewVisitors = () => {
       dataIndex: "email",
       key: "email",
       render: (text) => <a href={`mailto:${text}`}>{text}</a>,
+    },
+    {
+      title: "Date",
+      dataIndex: "date",
+      key: "date",
     },
     {
       title: "Update",

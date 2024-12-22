@@ -59,6 +59,26 @@ const AddTenant = () => {
             <Row gutter={16}>
               <Col span={12}>
                 <Form.Item
+                  label="Flat No"
+                  name="flatNo"
+                  rules={[{ required: true, message: "Please enter the flat number" }]}
+                >
+                  <Input placeholder="Flat No" />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  label="Nationality"
+                  name="nationality"
+                  rules={[{ required: true, message: "Please enter the tenant's nationality" }]}
+                >
+                  <Input placeholder="Nationality" />
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row gutter={16}>
+              <Col span={12}>
+                <Form.Item
                   label="Email"
                   name="email"
                   rules={[{ type: "email", required: true, message: "Please enter a valid email" }]}
@@ -77,33 +97,12 @@ const AddTenant = () => {
               </Col>
             </Row>
             <Row gutter={16}>
-              <Col span={12}>
-                <Form.Item
-                  label="Flat No"
-                  name="flatNo"
-                  rules={[{ required: true, message: "Please enter the flat number" }]}
-                >
-                  <Input placeholder="Flat No" />
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item
-                  label="Office no"
-                  name="officeNo"
-                  rules={[{ required: true, message: "Please enter the office number" }]}
-                >
-                  <Input placeholder="Office no" />
-                </Form.Item>
-              </Col>
-            </Row>
-            <Row gutter={16}>
               <Col span={24}>
                 <Form.Item
-                  label="Nationality"
-                  name="nationality"
-                  rules={[{ required: true, message: "Please enter the nationality" }]}
+                  label="Comments"
+                  name="comments"
                 >
-                  <Input placeholder="Nationality" />
+                  <Input.TextArea placeholder="Comments" />
                 </Form.Item>
               </Col>
             </Row>

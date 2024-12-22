@@ -14,7 +14,7 @@ const ViewTenants = () => {
     {
       key: "1",
       building: "Al jeddah",
-      person: "Visitor",
+      flat: "203",
       date: "2023-03-12",
       name: "Umer",
       mobile: "55 765 7028",
@@ -25,24 +25,19 @@ const ViewTenants = () => {
 
   const columns = [
     {
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
+    },
+    {
       title: "Building",
       dataIndex: "building",
       key: "building",
     },
     {
-      title: "Person",
-      dataIndex: "person",
-      key: "person",
-    },
-    {
-      title: "Date",
-      dataIndex: "date",
-      key: "date",
-    },
-    {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
+      title: "Flat no.",
+      dataIndex: "flat",
+      key: "flat",
     },
     {
       title: "Mobile No",
@@ -54,6 +49,11 @@ const ViewTenants = () => {
       dataIndex: "email",
       key: "email",
       render: (text) => <a href={`mailto:${text}`}>{text}</a>,
+    },
+    {
+      title: "Date",
+      dataIndex: "date",
+      key: "date",
     },
     {
       title: "Update",

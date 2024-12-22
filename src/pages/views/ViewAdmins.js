@@ -21,7 +21,7 @@ const ViewAdmins = () => {
       properties: "3",
       mobile: "0300-5626791",
       email: "masood@gmail.com",
-      date: "2023-03-12",
+      category: "Staff",
     },
     // Add more rows as needed
   ];
@@ -54,9 +54,9 @@ const ViewAdmins = () => {
       render: (text) => <a href={`mailto:${text}`}>{text}</a>,
     },
     {
-      title: "Date",
-      dataIndex: "date",
-      key: "date",
+      title: "Category",
+      dataIndex: "category",
+      key: "category",
     },
     {
       title: "Update",

@@ -1,5 +1,5 @@
-import React from "react";
-import { Layout, Typography, Input, Button, Row, Col, Form } from "antd";
+import React, { useState } from "react";
+import { Layout, Typography, InputNumber, Button, Row, Col, Form, Radio, Input } from "antd";
 import "../../App.css";
 import Sidebar from "../../components/AdminSidebar.js";
 import TitleHeader from "../../components/TitleHeader.js";
@@ -8,6 +8,11 @@ const { Content } = Layout;
 const { Title } = Typography;
 
 const AddBuilding = () => {
+  const [floorCount, setFloorCount] = useState(0);
+  const [parkingFloorCount, setParkingFloorCount] = useState(0);
+  const [floorOption, setFloorOption] = useState("");
+  const [parkingOption, setParkingOption] = useState("");
+
   const onFinish = (values) => {
     console.log("Form values:", values);
   };
@@ -19,10 +24,7 @@ const AddBuilding = () => {
   return (
     <Layout style={{ minHeight: "100vh" }}>
       {/* Sidebar */}
-      <Sidebar
-        username="Admin"
-        role="Admin"
-      />
+      <Sidebar username="Admin" role="Admin" />
 
       {/* Main Content */}
       <Layout>
@@ -31,11 +33,9 @@ const AddBuilding = () => {
           <Title level={5} style={{ color: "#4b244a" }}>
             Add Building Details
           </Title>
-          <Form
-            layout="vertical"
-            onFinish={onFinish}
-            onFinishFailed={onFinishFailed}
-          >
+          {/* Add Building Form */}
+          <Form layout="vertical" onFinish={onFinish} onFinishFailed={onFinishFailed}>
+            {/* Building Details */}
             <Row gutter={16}>
               <Col span={12}>
                 <Form.Item
@@ -56,62 +56,184 @@ const AddBuilding = () => {
                 </Form.Item>
               </Col>
             </Row>
+
+            {/* Number of Floors */}
             <Row gutter={16}>
               <Col span={12}>
                 <Form.Item
-                  label="Email"
-                  name="email"
-                  rules={[{ type: "email", required: true, message: "Please enter a valid email" }]}
+                  label="No. of Floors"
+                  name="noOfFloors"
+                  rules={[
+                    { required: true, message: "Please enter the number of floors" },
+                    {
+                      type: "number",
+                      min: 1,
+                      message: "Floors must be at least 1",
+                    },
+                  ]}
                 >
-                  <Input placeholder="Email" />
+                  <InputNumber
+                    min={1}
+                    placeholder="No. of Floors"
+                    style={{ width: "100%" }}
+                    onChange={(value) => setFloorCount(value || 0)}
+                    onKeyPress={(e) => {
+                      if (!/[0-9]/.test(e.key)) {
+                        e.preventDefault();
+                      }
+                    }}
+                  />
                 </Form.Item>
               </Col>
               <Col span={12}>
-                <Form.Item
-                  label="Mobile no"
-                  name="mobileNo"
-                  rules={[{ required: true, message: "Please enter the mobile number" }]}
+               <Form.Item
+                  label="No. of Parking Floors"
+                  name="parkingFloors"
+                  rules={[
+                    { required: true, message: "Please enter the number of parking floors" },
+                    {
+                      type: "number",
+                      min: 0,
+                      message: "Parking floors cannot be negative",
+                    },
+                  ]}
                 >
-                  <Input placeholder="Mobile no" />
+                  <InputNumber
+                    min={0}
+                    placeholder="No. of Parking Floors"
+                    style={{ width: "100%" }}
+                    onChange={(value) => setParkingFloorCount(value || 0)}
+                    onKeyPress={(e) => {
+                      if (!/[0-9]/.test(e.key)) {
+                        e.preventDefault();
+                      }
+                    }}
+                  />
                 </Form.Item>
               </Col>
             </Row>
+
+            {/* Floor Options and Parking Options in the same row */}
             <Row gutter={16}>
+              {/* Count of Flats */}
               <Col span={12}>
-                <Form.Item
-                  label="Flat No"
-                  name="flatNo"
-                  rules={[{ required: true, message: "Please enter the flat number" }]}
-                >
-                  <Input placeholder="Flat No" />
-                </Form.Item>
+                {floorCount > 0 && (
+                  <>
+                    <Form.Item label="Count of Flats" name="countOfFlats">
+                      <Radio.Group onChange={(e) => setFloorOption(e.target.value)}>
+                        <Radio value="Same">Same</Radio>
+                        <Radio value="Distinct">Distinct</Radio>
+                      </Radio.Group>
+                    </Form.Item>
+
+                    {floorOption === "Same" && (
+                      <Form.Item
+                        label="Flats on Each Floor"
+                        name="flatsPerFloor"
+                        rules={[{ required: true, message: "Please enter the number of flats per floor" }]}
+                      >
+                        <InputNumber
+                          min={1}
+                          placeholder="Flats per Floor"
+                          style={{ width: "100%" }}
+                          onKeyPress={(e) => {
+                            if (!/[0-9]/.test(e.key)) {
+                              e.preventDefault();
+                            }
+                          }}
+                        />
+                      </Form.Item>
+                    )}
+
+                    {floorOption === "Distinct" &&
+                      Array.from({ length: floorCount }, (_, index) => (
+                        <Form.Item
+                          key={index}
+                          label={`Flats on Floor ${index + 1}`}
+                          name={`flatsFloor${index + 1}`}
+                          rules={[{ required: true, message: "Please enter the number of flats" }]}
+                        >
+                          <InputNumber
+                            min={1}
+                            placeholder={`Flats on Floor ${index + 1}`}
+                            style={{ width: "100%" }}
+                            onKeyPress={(e) => {
+                              if (!/[0-9]/.test(e.key)) {
+                                e.preventDefault();
+                              }
+                            }}
+                          />
+                        </Form.Item>
+                      ))}
+                  </>
+                )}
               </Col>
+
+              {/* Count of Parking Slots */}
               <Col span={12}>
-                <Form.Item
-                  label="Office no"
-                  name="officeNo"
-                  rules={[{ required: true, message: "Please enter the office number" }]}
-                >
-                  <Input placeholder="Office no" />
-                </Form.Item>
+                {parkingFloorCount > 0 && (
+                  <>
+                    <Form.Item label="Count of Parking Slots" name="countOfParkingSlots">
+                      <Radio.Group onChange={(e) => setParkingOption(e.target.value)}>
+                        <Radio value="Same">Same</Radio>
+                        <Radio value="Distinct">Distinct</Radio>
+                      </Radio.Group>
+                    </Form.Item>
+
+                    {parkingOption === "Same" && (
+                      <Form.Item
+                        label="Parking Slots on Each Floor"
+                        name="parkingSlotsPerFloor"
+                        rules={[{ required: true, message: "Please enter parking slots per floor" }]}
+                      >
+                        <InputNumber
+                          min={1}
+                          placeholder="Parking Slots per Floor"
+                          style={{ width: "100%" }}
+                          onKeyPress={(e) => {
+                            if (!/[0-9]/.test(e.key)) {
+                              e.preventDefault();
+                            }
+                          }}
+                        />
+                      </Form.Item>
+                    )}
+
+                    {parkingOption === "Distinct" &&
+                      Array.from({ length: parkingFloorCount }, (_, index) => (
+                        <Form.Item
+                          key={index}
+                          label={`Parking Slots on Floor ${index + 1}`}
+                          name={`parkingSlotsFloor${index + 1}`}
+                          rules={[{ required: true, message: "Please enter parking slots" }]}
+                        >
+                          <InputNumber
+                            min={1}
+                            placeholder={`Parking Slots on Floor ${index + 1}`}
+                            style={{ width: "100%" }}
+                            onKeyPress={(e) => {
+                              if (!/[0-9]/.test(e.key)) {
+                                e.preventDefault();
+                              }
+                            }}
+                          />
+                        </Form.Item>
+                      ))}
+                  </>
+                )}
               </Col>
             </Row>
-            <Row gutter={16}>
-              <Col span={24}>
-                <Form.Item
-                  label="Nationality"
-                  name="nationality"
-                  rules={[{ required: true, message: "Please enter the nationality" }]}
-                >
-                  <Input placeholder="Nationality" />
-                </Form.Item>
-              </Col>
-            </Row>
-            <div style={{ display: "flex", justifyContent: "flex-end" }}>
+
+            {/* Action Buttons */}
+            <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "20px" }}>
               <Button type="default" style={{ marginRight: "10px" }}>
                 Cancel
               </Button>
-              <Button type="primary" htmlType="submit" style={{ backgroundColor: "#4b244a", borderColor: "#4b244a" }}>
+              <Button
+                type="primary"
+                htmlType="submit"
+                style={{ backgroundColor: "#4b244a", borderColor: "#4b244a" }}
+              >
                 Save
               </Button>
             </div>
