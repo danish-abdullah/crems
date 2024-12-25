@@ -35,6 +35,12 @@ const AdminSidebar = ({ username, role }) => {
         else if (key === "addApartment") {
           navigate("/add-apartment");
         }
+        else if (key === "addSales") {
+          navigate("/add-sales");
+        }
+        else if (key === "addMaintenance") {
+          navigate("/add-maintenance");
+        }
         else if (key === "viewApartments") {
           navigate("/view-apartments");
         }
@@ -46,6 +52,12 @@ const AdminSidebar = ({ username, role }) => {
         }
         else if (key === "viewVisitors") {
           navigate("/view-visitors");
+        }
+        else if (key === "viewSales") {
+          navigate("/view-sales");
+        }
+        else if (key === "viewMaintenance") {
+          navigate("/view-maintenance");
         }
       };
   return (
@@ -107,6 +119,22 @@ const AdminSidebar = ({ username, role }) => {
             </Menu.Item>
             <Menu.Item key="viewApartments" icon={<FileTextOutlined />}>
               View Apartments
+            </Menu.Item>
+          </SubMenu>
+          <SubMenu key="sales" icon={<UserOutlined />} title="Sales">
+          <Menu.Item key="addSales" icon={<PlusOutlined />}>
+              Add Salesperson
+            </Menu.Item>
+            <Menu.Item key="viewSales" icon={<FileTextOutlined />}>
+              View Salespersons
+            </Menu.Item>
+          </SubMenu>
+          <SubMenu key="maintenance" icon={<UserOutlined />} title="Maintenance">
+          <Menu.Item key="addMaintenance" icon={<PlusOutlined />}>
+              Add Maintenance
+            </Menu.Item>
+            <Menu.Item key="viewMaintenance" icon={<FileTextOutlined />}>
+              View Maintenance
             </Menu.Item>
           </SubMenu>
           <Menu.Item className="main-item" key="complaints" icon={<UserOutlined />}>
