@@ -59,6 +59,12 @@ const AdminSidebar = ({ username, role }) => {
         else if (key === "viewMaintenance") {
           navigate("/view-maintenance");
         }
+        else if (key === "viewMaintenanceRequests") {
+          navigate("/view-maintenance-requests");
+        }
+        else if (key === "viewComplaintsAdmin") {
+          navigate("/view-complaints-admin");
+        }
       };
   return (
     <Sider
@@ -136,8 +142,11 @@ const AdminSidebar = ({ username, role }) => {
             <Menu.Item key="viewMaintenance" icon={<FileTextOutlined />}>
               View Maintenance
             </Menu.Item>
+            <Menu.Item key="viewMaintenanceRequests" icon={<FileTextOutlined />}>
+              View Requests
+            </Menu.Item>
           </SubMenu>
-          <Menu.Item className="main-item" key="complaints" icon={<UserOutlined />}>
+          <Menu.Item className="main-item" key="viewComplaintsAdmin" icon={<FileTextOutlined />}>
             Complaints
           </Menu.Item>
         </Menu>

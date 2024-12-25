@@ -20,6 +20,8 @@ import ViewTenants from "./pages/views/ViewTenants";
 import ViewVisitors from "./pages/views/ViewVisitors";
 import ViewSales from "./pages/views/ViewSales";
 import ViewMaintenance from "./pages/views/ViewMaintenance";
+import ViewMaintenanceRequests from "./pages/views/ViewMaintenanceRequests";
+import ViewComplaintsAdmin from "./pages/views/ViewComplaintsAdmin";
 import ViewAdmins from "./pages/views/ViewAdmins";
 
 function App() {
@@ -45,6 +47,8 @@ function App() {
         <Route path="/view-visitors" element={<ViewVisitors />} />
         <Route path="/view-sales" element={<ViewSales />} />
         <Route path="/view-maintenance" element={<ViewMaintenance />} />
+        <Route path="/view-maintenance-requests" element={<ViewMaintenanceRequests />} />
+        <Route path="/view-complaints-admin" element={<ViewComplaintsAdmin />} />
         <Route path="/view-admins" element={<ViewAdmins />} />
       </Routes>
   );
