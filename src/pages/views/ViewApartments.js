@@ -1,64 +1,82 @@
 import React from "react";
-import { Layout, Table, Input, Button } from "antd";
-import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
-import "../../App.css";
+import { Layout, Table, Button, Typography, Popover } from "antd";
+import { EditOutlined, DeleteOutlined, InfoCircleOutlined } from "@ant-design/icons";
 import Sidebar from "../../components/AdminSidebar.js";
 import TitleHeader from "../../components/TitleHeader.js";
 
 const { Content } = Layout;
-const { Search } = Input;
+const { Title } = Typography;
 
 const ViewApartments = () => {
-  // Sample data for visitors table
-  const dataSource = [
+  // Mock data for apartments
+  const data = [
     {
       key: "1",
-      building: "Al jeddah",
-      person: "Visitor",
-      date: "2023-03-12",
-      name: "Umer",
-      mobile: "55 765 7028",
-      email: "umer30@gmail.com",
+      apartmentType: "Residential",
+      area: "1200 sqft",
+      rent: "$1500",
+      rooms: "2 Bed, 1 Bath, 1 Living",
+      furnished: "Semi-Furnished",
+      balcony: "Yes",
+      comments: "Close to the park",
     },
-    // Add more rows as needed
+    {
+      key: "2",
+      apartmentType: "Commercial",
+      area: "1800 sqft",
+      rent: "$2500",
+      rooms: "1 Studio, 1 Pantry",
+      furnished: "Not Furnished",
+      balcony: "No",
+      comments: "Good location for an office",
+    },
   ];
 
+  // Table columns configuration
   const columns = [
     {
-      title: "Building",
-      dataIndex: "building",
-      key: "building",
+      title: "Apartment Type",
+      dataIndex: "apartmentType",
+      key: "apartmentType",
     },
     {
-      title: "Person",
-      dataIndex: "person",
-      key: "person",
+      title: "Area",
+      dataIndex: "area",
+      key: "area",
     },
     {
-      title: "Date",
-      dataIndex: "date",
-      key: "date",
+      title: "Rent",
+      dataIndex: "rent",
+      key: "rent",
     },
     {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
+      title: "Rooms",
+      dataIndex: "rooms",
+      key: "rooms",
     },
     {
-      title: "Mobile No",
-      dataIndex: "mobile",
-      key: "mobile",
+      title: "Furnished",
+      dataIndex: "furnished",
+      key: "furnished",
     },
     {
-      title: "Email",
-      dataIndex: "email",
-      key: "email",
-      render: (text) => <a href={`mailto:${text}`}>{text}</a>,
+      title: "Balcony",
+      dataIndex: "balcony",
+      key: "balcony",
+    },
+    {
+      title: "Comments",
+      key: "comments",
+      render: (_, record) => (
+        <Popover content={record.comments}>
+          <InfoCircleOutlined style={{ color: "#4b244a", cursor: "pointer" }} />
+        </Popover>
+      ),
     },
     {
       title: "Update",
       key: "update",
-      render: () => (
+      render: (_, record) => (
         <div>
           <Button
             icon={<EditOutlined />}
@@ -74,31 +92,16 @@ const ViewApartments = () => {
   return (
     <Layout style={{ minHeight: "100vh" }}>
       {/* Sidebar */}
-      <Sidebar
-        username="Admin"
-        role="Admin"
-      />
+      <Sidebar username="Admin" role="Admin" />
 
       {/* Main Content */}
       <Layout>
         <TitleHeader title="View Apartments" />
-        <Content
-          style={{ margin: "20px", padding: "20px", background: "white" }}
-        >
-          <Search
-            placeholder="Search"
-            allowClear
-            style={{
-              width: 300,
-              marginBottom: "20px",
-              borderColor: "#4b244a",
-            }}
-          />
-          <Table
-            dataSource={dataSource}
-            columns={columns}
-            pagination={{ pageSize: 5 }}
-          />
+        <Content style={{ margin: "20px", padding: "20px", background: "white" }}>
+          <Title level={5} style={{ color: "#4b244a" }}>
+            Apartment List
+          </Title>
+          <Table columns={columns} dataSource={data} pagination={{ pageSize: 5 }} />
         </Content>
       </Layout>
     </Layout>

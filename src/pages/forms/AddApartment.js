@@ -1,5 +1,6 @@
-import React from "react";
-import { Layout, Typography, Input, Button, Row, Col, Form } from "antd";
+import React, { useState } from "react";
+import { Layout, Typography, Input, Button, Form, Row, Col, Radio, Upload } from "antd";
+import { PlusOutlined, MinusOutlined, UploadOutlined } from "@ant-design/icons";
 import "../../App.css";
 import Sidebar from "../../components/AdminSidebar.js";
 import TitleHeader from "../../components/TitleHeader.js";
@@ -8,21 +9,31 @@ const { Content } = Layout;
 const { Title } = Typography;
 
 const AddApartment = () => {
-  const onFinish = (values) => {
-    console.log("Form values:", values);
+  const [roomCounts, setRoomCounts] = useState({
+    bed: 0,
+    living: 0,
+    pantry: 0,
+    laundry: 0,
+    bath: 0,
+    dining: 0,
+  });
+
+  const handleRoomCountChange = (room, increment) => {
+    setRoomCounts((prevCounts) => ({
+      ...prevCounts,
+      [room]: Math.max(0, prevCounts[room] + (increment ? 1 : -1)),
+    }));
   };
 
-  const onFinishFailed = (errorInfo) => {
-    console.error("Form failed:", errorInfo);
+  const onFinish = (values) => {
+    const apartmentDetails = { ...values, roomCounts };
+    console.log("Apartment details:", apartmentDetails);
   };
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
       {/* Sidebar */}
-      <Sidebar
-        username="Admin"
-        role="Admin"
-      />
+      <Sidebar username="Admin" role="Admin" />
 
       {/* Main Content */}
       <Layout>
@@ -31,79 +42,100 @@ const AddApartment = () => {
           <Title level={5} style={{ color: "#4b244a" }}>
             Add Apartment Details
           </Title>
-          <Form
-            layout="vertical"
-            onFinish={onFinish}
-            onFinishFailed={onFinishFailed}
-          >
+          <Form layout="vertical" onFinish={onFinish}>
             <Row gutter={16}>
               <Col span={12}>
                 <Form.Item
-                  label="Full Name"
-                  name="fullName"
-                  rules={[{ required: true, message: "Please enter the full name" }]}
+                  label="Apartment Type"
+                  name="apartmentType"
+                  rules={[{ required: true, message: "Please select an apartment type" }]}
                 >
-                  <Input placeholder="Full Name" />
+                  <Radio.Group>
+                    <Radio.Button value="Residential">Residential</Radio.Button>
+                    <Radio.Button value="Commercial">Commercial</Radio.Button>
+                  </Radio.Group>
+                </Form.Item>
+                <Form.Item label="Rooms">
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "10px" }}>
+                    {Object.keys(roomCounts).map((room) => (
+                      <div
+                        key={room}
+                        style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "5px" }}
+                      >
+                        <span>{room.charAt(0).toUpperCase() + room.slice(1)}</span>
+                        <Button
+                          size="small"
+                          icon={<MinusOutlined />}
+                          onClick={() => handleRoomCountChange(room, false)}
+                        />
+                        <span>{roomCounts[room]}</span>
+                        <Button
+                          size="small"
+                          icon={<PlusOutlined />}
+                          onClick={() => handleRoomCountChange(room, true)}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </Form.Item>
+                <Form.Item
+                  label="Rent (per month)"
+                  name="rent"
+                  rules={[{ required: true, message: "Please enter the rent" }]}
+                >
+                  <Input placeholder="Rent" />
                 </Form.Item>
               </Col>
               <Col span={12}>
                 <Form.Item
-                  label="Building Name"
-                  name="buildingName"
-                  rules={[{ required: true, message: "Please enter the building name" }]}
+                  label="Area (in sqft)"
+                  name="area"
+                  rules={[{ required: true, message: "Please enter the area" }]}
                 >
-                  <Input placeholder="Building Name" />
+                  <Input placeholder="Area" />
+                </Form.Item>
+                <Form.Item
+                  label="Furnished"
+                  name="furnished"
+                  rules={[{ required: true, message: "Please select furnishing status" }]}
+                >
+                  <Radio.Group>
+                    <Radio.Button value="Semi-Furnished">Semi-Furnished</Radio.Button>
+                    <Radio.Button value="Fully-Furnished">Fully-Furnished</Radio.Button>
+                    <Radio.Button value="Not Furnished">Not Furnished</Radio.Button>
+                  </Radio.Group>
+                </Form.Item>
+                <Form.Item
+                  label="Balcony"
+                  name="balcony"
+                  rules={[{ required: true, message: "Please select if a balcony is present" }]}
+                  style={{ marginTop: "50px" }}
+                >
+                  <Radio.Group>
+                    <Radio.Button value="Yes">Yes</Radio.Button>
+                    <Radio.Button value="No">No</Radio.Button>
+                  </Radio.Group>
                 </Form.Item>
               </Col>
             </Row>
-            <Row gutter={16}>
-              <Col span={12}>
-                <Form.Item
-                  label="Email"
-                  name="email"
-                  rules={[{ type: "email", required: true, message: "Please enter a valid email" }]}
-                >
-                  <Input placeholder="Email" />
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item
-                  label="Mobile no"
-                  name="mobileNo"
-                  rules={[{ required: true, message: "Please enter the mobile number" }]}
-                >
-                  <Input placeholder="Mobile no" />
+            <Row>
+              <Col span={24}>
+                <Form.Item label="Comments" name="comments">
+                  <Input.TextArea placeholder="Additional Comments" rows={3} />
                 </Form.Item>
               </Col>
             </Row>
-            <Row gutter={16}>
-              <Col span={12}>
-                <Form.Item
-                  label="Flat No"
-                  name="flatNo"
-                  rules={[{ required: true, message: "Please enter the flat number" }]}
-                >
-                  <Input placeholder="Flat No" />
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item
-                  label="Office no"
-                  name="officeNo"
-                  rules={[{ required: true, message: "Please enter the office number" }]}
-                >
-                  <Input placeholder="Office no" />
-                </Form.Item>
-              </Col>
-            </Row>
-            <Row gutter={16}>
+            <Row>
               <Col span={24}>
                 <Form.Item
-                  label="Nationality"
-                  name="nationality"
-                  rules={[{ required: true, message: "Please enter the nationality" }]}
+                  label="File Upload"
+                  name="fileUpload"
+                  valuePropName="fileList"
+                  getValueFromEvent={(e) => (Array.isArray(e) ? e : e && e.fileList)}
                 >
-                  <Input placeholder="Nationality" />
+                  <Upload name="file" action="/upload.do" listType="text">
+                    <Button icon={<UploadOutlined />}>Upload</Button>
+                  </Upload>
                 </Form.Item>
               </Col>
             </Row>
@@ -111,7 +143,11 @@ const AddApartment = () => {
               <Button type="default" style={{ marginRight: "10px" }}>
                 Cancel
               </Button>
-              <Button type="primary" htmlType="submit" style={{ backgroundColor: "#4b244a", borderColor: "#4b244a" }}>
+              <Button
+                type="primary"
+                htmlType="submit"
+                style={{ backgroundColor: "#4b244a", borderColor: "#4b244a" }}
+              >
                 Save
               </Button>
             </div>
