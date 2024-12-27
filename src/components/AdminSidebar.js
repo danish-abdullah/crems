@@ -16,7 +16,7 @@ import { useNavigate } from "react-router-dom"; // Import useNavigate
 const { Sider } = Layout;
 const { SubMenu } = Menu;
 
-const AdminSidebar = ({ username, role }) => {
+const AdminSidebar = ({ username }) => {
     const navigate = useNavigate(); // Initialize navigate
 
     const handleMenuClick = ({ key }) => {
@@ -82,7 +82,7 @@ const AdminSidebar = ({ username, role }) => {
         <div style={{ color: "white", margin: "10px" }}>
           <span>{username}</span>
           <br />
-          <small>{role}</small>
+          <small>Admin</small>
         </div>
       </div>
       <div className="menu-container">
@@ -157,7 +157,6 @@ const AdminSidebar = ({ username, role }) => {
 
 AdminSidebar.propTypes = {
   username: PropTypes.string.isRequired,
-  role: PropTypes.string.isRequired,
 };
 
 export default AdminSidebar;

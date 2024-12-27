@@ -19,10 +19,7 @@ const AddVisitor = () => {
   return (
     <Layout style={{ minHeight: "100vh" }}>
       {/* Sidebar */}
-      <Sidebar
-        username="Admin"
-        role="Admin"
-      />
+      <Sidebar username="Admin" />
 
       {/* Main Content */}
       <Layout>

@@ -132,7 +132,7 @@ const ViewComplaints = () => {
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
-      <Sidebar username="Admin" role="Admin" />
+      <Sidebar username="Admin" />
 
       <Layout>
         <TitleHeader title="View Complaints" />
