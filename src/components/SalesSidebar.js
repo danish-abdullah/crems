@@ -5,8 +5,6 @@ import {
   TeamOutlined,
   PlusOutlined,
   FileTextOutlined,
-  HomeOutlined,
-  ApartmentOutlined,
 } from "@ant-design/icons";
 import PropTypes from "prop-types";
 import Logo from "../assets/logo.png";
@@ -27,25 +25,13 @@ const Sidebar = ({ username }) => {
           navigate("/add-tenant");
         }
         else if (key === "addVisitor") {
-          navigate("/add-visitor");
-        }
-        else if (key === "addBuilding") {
-          navigate("/add-building");
-        }
-        else if (key === "addApartment") {
-          navigate("/add-apartment");
-        }
-        else if (key === "viewApartments") {
-          navigate("/view-apartments");
+          navigate("/add-visitor-sales");
         }
         else if (key === "viewTenants") {
           navigate("/view-tenants");
         }
-        else if (key === "viewBuildings") {
-          navigate("/view-buildings");
-        }
         else if (key === "viewVisitors") {
-          navigate("/view-visitors");
+          navigate("/view-visitors-sales");
         }
       };
   return (
@@ -85,28 +71,12 @@ const Sidebar = ({ username }) => {
               View Visitors
             </Menu.Item>
           </SubMenu>
-          <SubMenu key="tenant" icon={<TeamOutlined />} title="Tenant">
+          <SubMenu key="tenant" icon={<TeamOutlined />} title="Tenant" style={{visibility: "hidden"}} >
             <Menu.Item key="addTenant" icon={<PlusOutlined />}>
               Add Tenant
             </Menu.Item>
             <Menu.Item key="viewTenants" icon={<FileTextOutlined />}>
               View Tenants
-            </Menu.Item>
-          </SubMenu>
-          <SubMenu key="building" icon={<HomeOutlined />} title="Building">
-          <Menu.Item key="addBuilding" icon={<PlusOutlined />}>
-              Add Building
-            </Menu.Item>
-            <Menu.Item key="viewBuildings" icon={<FileTextOutlined />}>
-              VIew Buildings
-            </Menu.Item>
-          </SubMenu>
-          <SubMenu key="apartment" icon={<ApartmentOutlined />} title="Apartment">
-          <Menu.Item key="addApartment" icon={<PlusOutlined />}>
-              Add Apartment
-            </Menu.Item>
-            <Menu.Item key="viewApartments" icon={<FileTextOutlined />}>
-              View Apartments
             </Menu.Item>
           </SubMenu>
         </Menu>

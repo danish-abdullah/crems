@@ -1,72 +1,122 @@
-import React from "react";
-import { Layout, Table, Input, Button } from "antd";
-import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import React, { useState } from "react";
+import { Layout, Typography, Input, Table, Tooltip, Tag, message } from "antd";
+import { CheckCircleOutlined, ToolOutlined } from "@ant-design/icons";
 import "../../App.css";
 import Sidebar from "../../components/AdminSidebar.js";
 import TitleHeader from "../../components/TitleHeader.js";
 
 const { Content } = Layout;
+const { Title } = Typography;
 const { Search } = Input;
 
-const ViewVisitors = () => {
-  // Sample data for visitors table
-  const dataSource = [
+const ViewMaintenanceRequests = () => {
+  const [data, setData] = useState([
     {
       key: "1",
-      building: "Al jeddah",
-      person: "Visitor",
-      date: "2023-03-12",
-      name: "Umer",
-      mobile: "55 765 7028",
-      email: "umer30@gmail.com",
-      flat: "102"
+      Id: "C001",
+      buildingName: "Sunset Apartments",
+      flatNo: "A-101",
+      description: "Water leakage in the bathroom.",
+      status: "Pending",
     },
-    // Add more rows as needed
-  ];
+    {
+      key: "2",
+      Id: "C002",
+      buildingName: "Emerald Heights",
+      flatNo: "B-202",
+      description: "Elevator not working.",
+      status: "Sent to Maintenance",
+    },
+  ]);
+
+  const [searchText, setSearchText] = useState("");
+
+  const filteredData = data.filter(
+    (item) =>
+      item.Id.toLowerCase().includes(searchText.toLowerCase()) ||
+      item.buildingName.toLowerCase().includes(searchText.toLowerCase()) ||
+      item.flatNo.toLowerCase().includes(searchText.toLowerCase()) ||
+      item.description.toLowerCase().includes(searchText.toLowerCase()) ||
+      item.status.toLowerCase().includes(searchText.toLowerCase())
+  );
+
+  const handleMarkResolved = (key) => {
+    const updatedData = data.map((item) =>
+      item.key === key ? { ...item, status: "Resolved" } : item
+    );
+    setData(updatedData);
+    message.success("Request marked as resolved.");
+  };
+
+  const handleSendToMaintenance = (key) => {
+    const updatedData = data.map((item) =>
+      item.key === key ? { ...item, status: "Sent to Maintenance" } : item
+    );
+    setData(updatedData);
+    message.info("Request sent to maintenance.");
+  };
 
   const columns = [
     {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
+      title: "ID",
+      dataIndex: "Id",
+      key: "Id",
     },
     {
-      title: "Building",
-      dataIndex: "building",
-      key: "building",
+      title: "Building Name",
+      dataIndex: "buildingName",
+      key: "buildingName",
     },
     {
-      title: "Flat No.",
-      dataIndex: "flat",
-      key: "flat",
+      title: "Flat No",
+      dataIndex: "flatNo",
+      key: "flatNo",
     },
     {
-      title: "Mobile No",
-      dataIndex: "mobile",
-      key: "mobile",
+      title: "Description",
+      dataIndex: "description",
+      key: "description",
     },
     {
-      title: "Email",
-      dataIndex: "email",
-      key: "email",
-      render: (text) => <a href={`mailto:${text}`}>{text}</a>,
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      render: (status) => {
+        let color = "volcano";
+        if (status === "Resolved") color = "green";
+        if (status === "Sent to Maintenance") color = "blue";
+        return <Tag color={color}>{status}</Tag>;
+      },
     },
     {
-      title: "Date",
-      dataIndex: "date",
-      key: "date",
-    },
-    {
-      title: "Update",
-      key: "update",
-      render: () => (
-        <div>
-          <Button
-            icon={<EditOutlined />}
-            type="link"
-            style={{ color: "#7b3e82" }}
-          />
-          <Button icon={<DeleteOutlined />} type="link" danger />
+      title: "Actions",
+      key: "actions",
+      render: (_, record) => (
+        <div style={{ display: "flex", gap: "10px" }}>
+          <Tooltip title="Mark as Resolved">
+            <CheckCircleOutlined
+              style={{
+                fontSize: "20px",
+                color: record.status === "Resolved" || record.status === "Sent to Maintenance" ? "gray" : "green",
+                cursor: record.status === "Resolved" || record.status === "Sent to Maintenance" ? "not-allowed" : "pointer",
+              }}
+              onClick={() =>
+                record.status === "Pending" && handleMarkResolved(record.key)
+              }
+            />
+          </Tooltip>
+          <Tooltip title="Send to Maintenance">
+            <ToolOutlined
+              style={{
+                fontSize: "20px",
+                color: record.status === "Resolved" || record.status === "Sent to Maintenance" ? "gray" : "#4b244a",
+                cursor: record.status === "Resolved" || record.status === "Sent to Maintenance" ? "not-allowed" : "pointer",
+              }}
+              onClick={() =>
+                record.status === "Pending" && handleSendToMaintenance(record.key)
+              }
+            />
+          </Tooltip>
         </div>
       ),
     },
@@ -74,28 +124,25 @@ const ViewVisitors = () => {
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
-      {/* Sidebar */}
       <Sidebar username="Admin" />
 
-      {/* Main Content */}
       <Layout>
-        <TitleHeader title="View Visitors" />
-        <Content
-          style={{ margin: "20px", padding: "20px", background: "white" }}
-        >
+        <TitleHeader title="View Maintenance Requests" />
+        <Content style={{ margin: "20px", padding: "20px", background: "white" }}>
+          <Title level={5} style={{ color: "#4b244a" }}>
+            Requests List
+          </Title>
           <Search
-            placeholder="Search"
+            placeholder="Search by ID, building, flat, or status"
             allowClear
-            style={{
-              width: 300,
-              marginBottom: "20px",
-              borderColor: "#4b244a",
-            }}
+            onChange={(e) => setSearchText(e.target.value)}
+            style={{ margin: "10px 0", width: "100%" }}
           />
           <Table
-            dataSource={dataSource}
             columns={columns}
+            dataSource={filteredData}
             pagination={{ pageSize: 5 }}
+            style={{ marginTop: "20px" }}
           />
         </Content>
       </Layout>
@@ -103,4 +150,4 @@ const ViewVisitors = () => {
   );
 };
 
-export default ViewVisitors;
+export default ViewMaintenanceRequests;

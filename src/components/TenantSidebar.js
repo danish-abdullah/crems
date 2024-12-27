@@ -2,11 +2,8 @@ import React from "react";
 import { Layout, Menu, Avatar } from "antd";
 import {
   UserOutlined,
-  TeamOutlined,
   PlusOutlined,
   FileTextOutlined,
-  HomeOutlined,
-  ApartmentOutlined,
 } from "@ant-design/icons";
 import PropTypes from "prop-types";
 import Logo from "../assets/logo.png";
@@ -22,30 +19,18 @@ const Sidebar = ({ username }) => {
     const handleMenuClick = ({ key }) => {
         if (key === "dashboard") {
           navigate("/tenant-dashboard");
-        }  
-        else if (key === "addTenant") {
-          navigate("/add-tenant");
         }
-        else if (key === "addVisitor") {
-          navigate("/add-visitor");
+        else if (key === "addMaintenanceRequest") {
+          navigate("/add-maintenance-request");
         }
-        else if (key === "addBuilding") {
-          navigate("/add-building");
+        else if (key === "viewMaintenanceRequests") {
+          navigate("/view-maintenance-requests-tenant");
         }
-        else if (key === "addApartment") {
-          navigate("/add-apartment");
+        else if (key === "addComplaint") {
+          navigate("/add-complaint");
         }
-        else if (key === "viewApartments") {
-          navigate("/view-apartments");
-        }
-        else if (key === "viewTenants") {
-          navigate("/view-tenants");
-        }
-        else if (key === "viewBuildings") {
-          navigate("/view-buildings");
-        }
-        else if (key === "viewVisitors") {
-          navigate("/view-visitors");
+        else if (key === "viewComplaints") {
+          navigate("/view-complaints-tenant");
         }
       };
   return (
@@ -77,36 +62,20 @@ const Sidebar = ({ username }) => {
           <Menu.Item className="main-item" key="dashboard" icon={<UserOutlined />}>
             Dashboard
           </Menu.Item>
-          <SubMenu key="visitor" icon={<UserOutlined />} title="Visitor">
-          <Menu.Item key="addVisitor" icon={<PlusOutlined />}>
-              Add Visitor
+          <SubMenu key="maintenance" icon={<UserOutlined />} title="Maintenance">
+            <Menu.Item key="addMaintenanceRequest" icon={<PlusOutlined />}>
+              Add Request
             </Menu.Item>
-            <Menu.Item key="viewVisitors" icon={<FileTextOutlined />}>
-              View Visitors
-            </Menu.Item>
-          </SubMenu>
-          <SubMenu key="tenant" icon={<TeamOutlined />} title="Tenant">
-            <Menu.Item key="addTenant" icon={<PlusOutlined />}>
-              Add Tenant
-            </Menu.Item>
-            <Menu.Item key="viewTenants" icon={<FileTextOutlined />}>
-              View Tenants
+            <Menu.Item key="viewMaintenanceRequests" icon={<FileTextOutlined />}>
+              View Requests
             </Menu.Item>
           </SubMenu>
-          <SubMenu key="building" icon={<HomeOutlined />} title="Building">
-          <Menu.Item key="addBuilding" icon={<PlusOutlined />}>
-              Add Building
+          <SubMenu key="complaints" icon={<UserOutlined />} title="Complaints">
+            <Menu.Item key="addComplaint" icon={<PlusOutlined />}>
+              Add Complaint
             </Menu.Item>
-            <Menu.Item key="viewBuildings" icon={<FileTextOutlined />}>
-              VIew Buildings
-            </Menu.Item>
-          </SubMenu>
-          <SubMenu key="apartment" icon={<ApartmentOutlined />} title="Apartment">
-          <Menu.Item key="addApartment" icon={<PlusOutlined />}>
-              Add Apartment
-            </Menu.Item>
-            <Menu.Item key="viewApartments" icon={<FileTextOutlined />}>
-              View Apartments
+            <Menu.Item key="viewComplaints" icon={<FileTextOutlined />}>
+              View Complaints
             </Menu.Item>
           </SubMenu>
         </Menu>

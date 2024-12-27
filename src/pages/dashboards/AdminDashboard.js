@@ -71,21 +71,21 @@ const AdminDashboard = () => {
   };
 
   const complaintsData = {
-    labels: ["Building A", "Building B", "Building C"], // Example labels for buildings
+    labels: ["Complaints", "Requests"],
     datasets: [
       {
         label: "Pending",
-        data: [12, 8, 15], // Mock data for pending complaints
+        data: [12, 8],
         backgroundColor: "rgba(255, 99, 132, 0.8)", // Red
       },
       {
         label: "Resolved",
-        data: [20, 18, 25], // Mock data for resolved complaints
+        data: [20, 18],
         backgroundColor: "rgba(75, 192, 192, 0.8)", // Green
       },
       {
         label: "Sent to Maintenance",
-        data: [10, 5, 8], // Mock data for sent-to-maintenance complaints
+        data: [0, 5],
         backgroundColor: "rgba(54, 162, 235, 0.8)", // Blue
       },
     ],
@@ -96,10 +96,6 @@ const AdminDashboard = () => {
     plugins: {
       legend: {
         position: "top",
-      },
-      title: {
-        display: true,
-        text: "Complaints Overview by Building",
       },
     },
   };
@@ -147,10 +143,10 @@ const AdminDashboard = () => {
               </Card>
             </Col>
 
-            {/* Card 4: Complaints with Bar Chart */}
+            {/* Card 4: Complaints and Maintenance Requests with Bar Chart */}
             <Col span={12}>
               <Card 
-                title="Complaints Overview"
+                title="Complaints and Maintenance Requests Overview"
                 bordered={false}
                 style={{ backgroundColor: "#f6f0f7" }}
                 >

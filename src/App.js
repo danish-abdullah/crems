@@ -13,7 +13,10 @@ import AddBuilding from "./pages/forms/AddBuilding";
 import AddSales from "./pages/forms/AddSales";
 import AddMaintenace from "./pages/forms/AddMaintenance";
 import AddAdmin from "./pages/forms/AddAdmin";
+import AddVisitorSales from "./pages/forms/AddVisitorSales";
 import AddApartment from "./pages/forms/AddApartment";
+import AddComplaint from "./pages/forms/AddComplaint";
+import AddMaintenanceRequest from "./pages/forms/AddMaintenanceRequest";
 import ViewApartments from "./pages/views/ViewApartments";
 import ViewBuildings from "./pages/views/ViewBuildings";
 import ViewTenants from "./pages/views/ViewTenants";
@@ -23,6 +26,9 @@ import ViewMaintenance from "./pages/views/ViewMaintenance";
 import ViewMaintenanceRequests from "./pages/views/ViewMaintenanceRequests";
 import ViewComplaintsAdmin from "./pages/views/ViewComplaintsAdmin";
 import ViewAdmins from "./pages/views/ViewAdmins";
+import ViewVisitorsSales from "./pages/views/ViewVisitorsSales";
+import ViewMaintenanceRequestsTenant from "./pages/views/ViewMaintenanceRequestsTenant";
+import ViewComplaintsTenant from "./pages/views/ViewComplaintsTenant";
 
 function App() {
   return (
@@ -39,6 +45,7 @@ function App() {
         <Route path="/add-building" element={<AddBuilding />} />
         <Route path="/add-apartment" element={<AddApartment />} />
         <Route path="/add-sales" element={<AddSales />} />
+        <Route path="/add-visitor-sales" element={<AddVisitorSales />} />
         <Route path="/add-maintenance" element={<AddMaintenace />} />
         <Route path="/add-admin" element={<AddAdmin />} />
         <Route path="/view-apartments" element={<ViewApartments />} />
@@ -50,6 +57,11 @@ function App() {
         <Route path="/view-maintenance-requests" element={<ViewMaintenanceRequests />} />
         <Route path="/view-complaints-admin" element={<ViewComplaintsAdmin />} />
         <Route path="/view-admins" element={<ViewAdmins />} />
+        <Route path="/view-visitors-sales" element={<ViewVisitorsSales />} />
+        <Route path="/view-maintenance-requests-tenant" element={<ViewMaintenanceRequestsTenant />} />
+        <Route path="/view-complaints-tenant" element={<ViewComplaintsTenant />} />
+        <Route path="/add-complaint" element={<AddComplaint />} />
+        <Route path="/add-maintenance-request" element={<AddMaintenanceRequest />} />
       </Routes>
   );
 }

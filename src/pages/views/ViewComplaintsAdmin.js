@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Layout, Typography, Input, Table, Tooltip, Tag, message } from "antd";
-import { CheckCircleOutlined, ToolOutlined } from "@ant-design/icons";
+import { CheckCircleOutlined } from "@ant-design/icons";
 import "../../App.css";
 import Sidebar from "../../components/AdminSidebar.js";
 import TitleHeader from "../../components/TitleHeader.js";
@@ -27,7 +27,7 @@ const ViewComplaints = () => {
       buildingName: "Emerald Heights",
       flatNo: "B-202",
       description: "Elevator not working.",
-      status: "Sent to Maintenance",
+      status: "Resolved",
     },
   ]);
 
@@ -49,14 +49,6 @@ const ViewComplaints = () => {
     );
     setData(updatedData);
     message.success("Complaint marked as resolved.");
-  };
-
-  const handleSendToMaintenance = (key) => {
-    const updatedData = data.map((item) =>
-      item.key === key ? { ...item, status: "Sent to Maintenance" } : item
-    );
-    setData(updatedData);
-    message.info("Complaint sent to maintenance.");
   };
 
   const columns = [
@@ -92,7 +84,6 @@ const ViewComplaints = () => {
       render: (status) => {
         let color = "volcano";
         if (status === "Resolved") color = "green";
-        if (status === "Sent to Maintenance") color = "blue";
         return <Tag color={color}>{status}</Tag>;
       },
     },
@@ -105,23 +96,11 @@ const ViewComplaints = () => {
             <CheckCircleOutlined
               style={{
                 fontSize: "20px",
-                color: record.status === "Resolved" || record.status === "Sent to Maintenance" ? "gray" : "green",
-                cursor: record.status === "Resolved" || record.status === "Sent to Maintenance" ? "not-allowed" : "pointer",
+                color: record.status === "Resolved" ? "gray" : "green",
+                cursor: record.status === "Resolved" ? "not-allowed" : "pointer",
               }}
               onClick={() =>
                 record.status === "Pending" && handleMarkResolved(record.key)
-              }
-            />
-          </Tooltip>
-          <Tooltip title="Send to Maintenance">
-            <ToolOutlined
-              style={{
-                fontSize: "20px",
-                color: record.status === "Resolved" || record.status === "Sent to Maintenance" ? "gray" : "#4b244a",
-                cursor: record.status === "Resolved" || record.status === "Sent to Maintenance" ? "not-allowed" : "pointer",
-              }}
-              onClick={() =>
-                record.status === "Pending" && handleSendToMaintenance(record.key)
               }
             />
           </Tooltip>
