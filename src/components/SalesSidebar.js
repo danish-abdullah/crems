@@ -16,7 +16,7 @@ import { useNavigate } from "react-router-dom"; // Import useNavigate
 const { Sider } = Layout;
 const { SubMenu } = Menu;
 
-const Sidebar = ({ username, role }) => {
+const Sidebar = ({ username }) => {
     const navigate = useNavigate(); // Initialize navigate
 
     const handleMenuClick = ({ key }) => {
@@ -64,7 +64,7 @@ const Sidebar = ({ username, role }) => {
         <div style={{ color: "white", margin: "10px" }}>
           <span>{username}</span>
           <br />
-          <small>{role}</small>
+          <small>Sales</small>
         </div>
       </div>
       <div className="menu-container">
@@ -117,7 +117,6 @@ const Sidebar = ({ username, role }) => {
 
 Sidebar.propTypes = {
   username: PropTypes.string.isRequired,
-  role: PropTypes.string.isRequired,
 };
 
 export default Sidebar;
