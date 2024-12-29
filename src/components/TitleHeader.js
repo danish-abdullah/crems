@@ -2,14 +2,15 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import "../App.css";
 import { useNavigate } from "react-router-dom";
-import { Layout, Typography, Button, Badge, Drawer, List, Divider } from "antd";
+import { Layout, Typography, Button, Badge, Drawer, List, Divider, message } from "antd";
 import { LogoutOutlined, BellOutlined } from "@ant-design/icons";
+import axios from "axios";
 
 const { Header } = Layout;
 const { Title } = Typography;
 
 const TitleHeader = ({ title }) => {
-  const navigate = useNavigate(); // Initialize navigate
+  const navigate = useNavigate();
   const [notifications, setNotifications] = useState([
     { id: 1, message: "New tenant added", read: false },
     { id: 2, message: "Building maintenance scheduled", read: false },
@@ -17,13 +18,30 @@ const TitleHeader = ({ title }) => {
   ]);
   const [drawerVisible, setDrawerVisible] = useState(false);
 
-  const handleLogoutClick = () => {
-    navigate("/");
+  // Logout function
+  const handleLogoutClick = async () => {
+    try {
+      const token = localStorage.getItem("access_token"); // Retrieve token from localStorage
+      await axios.post(
+        "https://website-ed11b270.yeo.vug.mybluehost.me/api/auth/logout",
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // Pass token in headers
+          },
+        }
+      );
+      message.success("Logout successful!");
+      localStorage.removeItem("access_token"); // Clear token from localStorage
+      navigate("/"); // Redirect to login page
+    } catch (error) {
+      console.error("Logout failed:", error);
+      message.error("Failed to log out. Please try again.");
+    }
   };
 
   const handleNotificationClick = () => {
     setDrawerVisible(true);
-
     // Mark notifications as read
     setNotifications((prevNotifications) =>
       prevNotifications.map((notif) => ({ ...notif, read: true }))

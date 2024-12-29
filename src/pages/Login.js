@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router-dom"; // For navigation
+import { useNavigate } from "react-router-dom";
 import { Form, Input, Button, Checkbox, Typography, Card, message } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import "./Login.css";
@@ -9,39 +9,89 @@ import Logo from "../assets/logo.png";
 const { Title } = Typography;
 
 const Login = () => {
-  const navigate = useNavigate(); // React Router hook for navigation
+  const navigate = useNavigate();
 
-  const onFinish = (values) => {
+  // Login API call
+  const loginUser = async (email, password) => {
+    try {
+      const response = await fetch("https://website-ed11b270.yeo.vug.mybluehost.me/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        message.success(data.message);
+        // Store the token in localStorage
+        localStorage.setItem("access_token", data.data.access_token);
+        return true;
+      } else {
+        message.error(data.message || "Login failed");
+        return false;
+      }
+    } catch (error) {
+      message.error("Something went wrong!");
+      console.error("Login Error:", error);
+      return false;
+    }
+  };
+
+  // Fetch user details and redirect
+  const fetchUserDetails = async () => {
+    try {
+      const token = localStorage.getItem("access_token");
+      const response = await fetch("https://website-ed11b270.yeo.vug.mybluehost.me/api/auth/me", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        const role = data.data.roles[0]?.slug;
+
+        // Navigate to respective dashboard
+        switch (role) {
+          case "super-admin":
+            navigate("/super-admin-dashboard");
+            break;
+          case "admin":
+            navigate("/admin-dashboard");
+            break;
+          case "maintenance":
+            navigate("/maintenance-dashboard");
+            break;
+          case "tenant":
+            navigate("/tenant-dashboard");
+            break;
+          case "sales":
+            navigate("/sales-dashboard");
+            break;
+          default:
+            message.error("Role not recognized!");
+            break;
+        }
+      } else {
+        message.error(data.message || "Failed to fetch user details");
+      }
+    } catch (error) {
+      message.error("Failed to fetch user details");
+      console.error("Fetch User Details Error:", error);
+    }
+  };
+
+  // Handle form submission
+  const onFinish = async (values) => {
     const { username, password } = values;
+    const success = await loginUser(username, password);
 
-    if (username === "sa" && password === "a")
-    {
-        message.success("Login Successful!");
-        navigate("/super-admin-dashboard");
-    }
-    else if (username === "admin" && password === "a")
-    {
-        message.success("Login Successful!");
-        navigate("/admin-dashboard");
-    }
-    else if (username === "main" && password === "a")
-    {
-        message.success("Login Successful!");
-        navigate("/maintenance-dashboard");
-    }
-    else if (username === "tenant" && password === "a")
-    {
-        message.success("Login Successful!");
-        navigate("/tenant-dashboard");
-    }
-    else if (username === "sales" && password === "a")
-    {
-        message.success("Login Successful!");
-        navigate("/sales-dashboard");
-    }
-    else
-    {
-        message.error("Invalid credentials. Please try again.");
+    if (success) {
+      // Fetch user details and redirect
+      fetchUserDetails();
     }
   };
 
@@ -64,17 +114,17 @@ const Login = () => {
           >
             <Form.Item
               name="username"
-              rules={[{ required: true, message: "Please enter your User ID!" }]}
+              rules={[{ required: true, message: "Please enter your email!" }]}
             >
               <Input
                 prefix={<UserOutlined />}
-                placeholder="User Id"
+                placeholder="Email"
                 className="login-input"
               />
             </Form.Item>
             <Form.Item
               name="password"
-              rules={[{ required: true, message: "Please enter your Password!" }]}
+              rules={[{ required: true, message: "Please enter your password!" }]}
             >
               <Input.Password
                 prefix={<LockOutlined />}
