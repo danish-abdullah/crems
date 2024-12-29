@@ -8,6 +8,12 @@ const { Content } = Layout;
 const { Title } = Typography;
 
 const AddMaintenance = () => {
+  const [form] = Form.useForm();
+
+  const onClear = () => {
+    form.resetFields();
+  };
+
   const onFinish = (values) => {
     console.log("Form values:", values);
   };
@@ -28,7 +34,7 @@ const AddMaintenance = () => {
           <Title level={5} style={{ color: "#4b244a" }}>
             Add Maintenance Person Details
           </Title>
-          <Form layout="vertical" onFinish={onFinish} onFinishFailed={onFinishFailed}>
+          <Form layout="vertical" onFinish={onFinish} onFinishFailed={onFinishFailed} form={form}>
             <Row gutter={16}>
               <Col span={12}>
                 <Form.Item
@@ -77,8 +83,8 @@ const AddMaintenance = () => {
               </Col>
             </Row>
             <div style={{ display: "flex", justifyContent: "flex-end" }}>
-              <Button type="default" style={{ marginRight: "10px" }}>
-                Cancel
+              <Button type="default" onClick={onClear} style={{ marginRight: '8px' }}>
+                Clear
               </Button>
               <Button
                 type="primary"

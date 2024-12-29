@@ -7,6 +7,7 @@ import AdminDashboard from "./pages/dashboards/AdminDashboard";
 import MaintenanceDashboard from "./pages/dashboards/MaintenanceDashboard";
 import TenantDashboard from "./pages/dashboards/TenantDashboard";
 import SalesDashboard from "./pages/dashboards/SalesDashboard";
+import VisitorDashboard from "./pages/dashboards/VisitorDashboard";
 import AddTenant from "./pages/forms/AddTenant";
 import AddVisitor from "./pages/forms/AddVisitors";
 import AddBuilding from "./pages/forms/AddBuilding";
@@ -62,6 +63,7 @@ function App() {
         <Route path="/view-complaints-tenant" element={<ViewComplaintsTenant />} />
         <Route path="/add-complaint" element={<AddComplaint />} />
         <Route path="/add-maintenance-request" element={<AddMaintenanceRequest />} />
+        <Route path="/visitor-dashboard" element={<VisitorDashboard />} />
       </Routes>
   );
 }

@@ -7,6 +7,12 @@ import TitleHeader from "../../components/TitleHeader.js";
 const { Content } = Layout;
 
 const AddComplaint = () => {
+  const [form] = Form.useForm();
+
+  const onClear = () => {
+    form.resetFields();
+  };
+
   const onFinish = (values) => {
     console.log("Form values:", values);
   };
@@ -24,7 +30,7 @@ const AddComplaint = () => {
       <Layout>
         <TitleHeader title="Add Complaint" />
         <Content style={{ margin: "20px", padding: "20px", background: "white" }}>
-          <Form layout="vertical" onFinish={onFinish} onFinishFailed={onFinishFailed}>
+          <Form layout="vertical" onFinish={onFinish} onFinishFailed={onFinishFailed} form={form}>
             <Row gutter={16}>
               <Col span={24}>
                 <Form.Item label="Complaint Details" name="request">
@@ -33,8 +39,8 @@ const AddComplaint = () => {
               </Col>
             </Row>
             <div style={{ display: "flex", justifyContent: "flex-end" }}>
-              <Button type="default" style={{ marginRight: "10px" }}>
-                Cancel
+              <Button type="default" onClick={onClear} style={{ marginRight: '8px' }}>
+                Clear
               </Button>
               <Button
                 type="primary"

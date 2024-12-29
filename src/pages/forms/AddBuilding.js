@@ -8,6 +8,7 @@ const { Content } = Layout;
 const { Title } = Typography;
 
 const AddBuilding = () => {
+  const [form] = Form.useForm(); // Create form instance
   const [floorCount, setFloorCount] = useState(0);
   const [parkingFloorCount, setParkingFloorCount] = useState(0);
   const [floorOption, setFloorOption] = useState("");
@@ -19,6 +20,14 @@ const AddBuilding = () => {
 
   const onFinishFailed = (errorInfo) => {
     console.error("Form failed:", errorInfo);
+  };
+
+  const handleClear = () => {
+    form.resetFields(); // Clear all form fields
+    setFloorCount(0); // Reset floor count
+    setParkingFloorCount(0); // Reset parking floor count
+    setFloorOption(""); // Reset floor option
+    setParkingOption(""); // Reset parking option
   };
 
   return (
@@ -34,18 +43,14 @@ const AddBuilding = () => {
             Add Building Details
           </Title>
           {/* Add Building Form */}
-          <Form layout="vertical" onFinish={onFinish} onFinishFailed={onFinishFailed}>
+          <Form
+            form={form} // Link form instance
+            layout="vertical"
+            onFinish={onFinish}
+            onFinishFailed={onFinishFailed}
+          >
             {/* Building Details */}
             <Row gutter={16}>
-              <Col span={12}>
-                <Form.Item
-                  label="Full Name"
-                  name="fullName"
-                  rules={[{ required: true, message: "Please enter the full name" }]}
-                >
-                  <Input placeholder="Full Name" />
-                </Form.Item>
-              </Col>
               <Col span={12}>
                 <Form.Item
                   label="Building Name"
@@ -53,6 +58,15 @@ const AddBuilding = () => {
                   rules={[{ required: true, message: "Please enter the building name" }]}
                 >
                   <Input placeholder="Building Name" />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  label="Address"
+                  name="address"
+                  rules={[{ required: true, message: "Please enter the address" }]}
+                >
+                  <Input placeholder="Address" />
                 </Form.Item>
               </Col>
             </Row>
@@ -86,7 +100,7 @@ const AddBuilding = () => {
                 </Form.Item>
               </Col>
               <Col span={12}>
-               <Form.Item
+                <Form.Item
                   label="No. of Parking Floors"
                   name="parkingFloors"
                   rules={[
@@ -226,8 +240,12 @@ const AddBuilding = () => {
 
             {/* Action Buttons */}
             <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "20px" }}>
-              <Button type="default" style={{ marginRight: "10px" }}>
-                Cancel
+              <Button
+                type="default"
+                style={{ marginRight: "10px" }}
+                onClick={handleClear} // Call handleClear on click
+              >
+                Clear
               </Button>
               <Button
                 type="primary"

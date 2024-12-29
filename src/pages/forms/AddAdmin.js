@@ -8,6 +8,12 @@ const { Content } = Layout;
 const { Title } = Typography;
 
 const AddAdmin = () => {
+  const [form] = Form.useForm();
+
+  const onClear = () => {
+    form.resetFields();
+  };
+  
   const onFinish = (values) => {
     console.log("Form values:", values);
   };
@@ -32,7 +38,7 @@ const AddAdmin = () => {
             Add Admin Details
           </Title>
           {/* Add Admin Form */}
-          <Form layout="vertical" onFinish={onFinish} onFinishFailed={onFinishFailed}>
+          <Form layout="vertical" onFinish={onFinish} onFinishFailed={onFinishFailed} form={form}>
             {/* Add User Details */}
             <Row gutter={16}>
               <Col span={12}>
@@ -121,9 +127,9 @@ const AddAdmin = () => {
 
             {/* Action Buttons */}
             <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "20px" }}>
-              <Button type="default" style={{ marginRight: "10px" }}>
-                Cancel
-              </Button>
+            <Button type="default" onClick={onClear} style={{ marginRight: '10px' }}>
+              Clear
+            </Button>
               <Button
                 type="primary"
                 htmlType="submit"

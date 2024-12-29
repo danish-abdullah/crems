@@ -8,6 +8,12 @@ const { Content } = Layout;
 const { Title } = Typography;
 
 const AddTenant = () => {
+  const [form] = Form.useForm();
+
+  const onClear = () => {
+    form.resetFields();
+  };
+  
   const onFinish = (values) => {
     console.log("Form values:", values);
   };
@@ -32,6 +38,7 @@ const AddTenant = () => {
             layout="vertical"
             onFinish={onFinish}
             onFinishFailed={onFinishFailed}
+            form={form}
           >
             <Row gutter={16}>
               <Col span={12}>
@@ -104,9 +111,9 @@ const AddTenant = () => {
               </Col>
             </Row>
             <div style={{ display: "flex", justifyContent: "flex-end" }}>
-              <Button type="default" style={{ marginRight: "10px" }}>
-                Cancel
-              </Button>
+            <Button type="default" onClick={onClear} style={{ marginRight: '10px' }}>
+              Clear
+            </Button>
               <Button type="primary" htmlType="submit" style={{ backgroundColor: "#4b244a", borderColor: "#4b244a" }}>
                 Save
               </Button>

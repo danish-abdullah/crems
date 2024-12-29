@@ -71,6 +71,9 @@ const Login = () => {
           case "sales":
             navigate("/sales-dashboard");
             break;
+          case "visitor":
+            navigate("/visitor-dashboard");
+            break;
           default:
             message.error("Role not recognized!");
             break;

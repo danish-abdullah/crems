@@ -18,6 +18,12 @@ const AddApartment = () => {
     dining: 0,
   });
 
+  const [form] = Form.useForm();
+
+  const onClear = () => {
+    form.resetFields();
+  };
+
   const handleRoomCountChange = (room, increment) => {
     setRoomCounts((prevCounts) => ({
       ...prevCounts,
@@ -42,7 +48,7 @@ const AddApartment = () => {
           <Title level={5} style={{ color: "#4b244a" }}>
             Add Apartment Details
           </Title>
-          <Form layout="vertical" onFinish={onFinish}>
+          <Form layout="vertical" onFinish={onFinish} form={form}>
             <Row gutter={16}>
               <Col span={12}>
                 <Form.Item
@@ -140,9 +146,9 @@ const AddApartment = () => {
               </Col>
             </Row>
             <div style={{ display: "flex", justifyContent: "flex-end" }}>
-              <Button type="default" style={{ marginRight: "10px" }}>
-                Cancel
-              </Button>
+            <Button type="default" onClick={onClear} style={{ marginRight: '10px' }}>
+              Clear
+            </Button>
               <Button
                 type="primary"
                 htmlType="submit"
