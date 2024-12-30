@@ -208,7 +208,7 @@ const AddApartment = () => {
                   <Radio.Group>
                     <Radio.Button value="Semi-Furnished">Semi-Furnished</Radio.Button>
                     <Radio.Button value="Fully-Furnished">Fully-Furnished</Radio.Button>
-                    <Radio.Button value="Not Furnished">Not Furnished</Radio.Button>
+                    <Radio.Button value="Not-Furnished">Not Furnished</Radio.Button>
                   </Radio.Group>
                 </Form.Item>
                 <Form.Item label="Rooms">
