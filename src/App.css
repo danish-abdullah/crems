@@ -85,6 +85,11 @@
   }
   
   .ant-input, .ant-input-number, .ant-select-selector {
+    border: 1px solid #4b244a;
+    border-radius: 4px;
+  }
+
+  .ant-select-selector {
     border: 1px solid #4b244a !important;
     border-radius: 4px !important;
   }

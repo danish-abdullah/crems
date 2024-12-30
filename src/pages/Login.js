@@ -87,6 +87,10 @@ const Login = () => {
     }
   };
 
+  const handleMenuClick = () => {
+      navigate("/forgot-password");
+  };
+
   // Handle form submission
   const onFinish = async (values) => {
     const { username, password } = values;
@@ -149,7 +153,7 @@ const Login = () => {
               </Button>
             </Form.Item>
             <Form.Item>
-              <a href="/forgot-password" className="forgot-password-link">
+              <a onClick={handleMenuClick} className="forgot-password-link">
                 Forgot Password?
               </a>
             </Form.Item>

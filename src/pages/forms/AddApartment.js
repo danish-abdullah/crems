@@ -153,7 +153,7 @@ const AddApartment = () => {
                   <Input placeholder="Apartment name" />
                 </Form.Item>
                 <Form.Item
-                  label="Rent (per month)"
+                  label="Rent"
                   name="rent"
                   rules={[
                     { required: true, message: "Please enter the rent" },
@@ -212,23 +212,43 @@ const AddApartment = () => {
                   </Radio.Group>
                 </Form.Item>
                 <Form.Item label="Rooms">
-                  <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "10px" }}>
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: "repeat(3, 1fr)",
+                      gap: "10px",
+                    }}
+                  >
                     {Object.keys(roomCounts).map((room) => (
                       <div
                         key={room}
-                        style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "5px" }}
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                        }}
                       >
-                        <span>{room.charAt(0).toUpperCase() + room.slice(1)}</span>
+                        <span
+                          style={{
+                            width: "50px", // Equal width for room names
+                            textAlign: "left",
+                          }}
+                        >
+                          {room.charAt(0).toUpperCase() + room.slice(1)}
+                        </span>
                         <Button
                           size="small"
                           icon={<MinusOutlined />}
                           onClick={() => handleRoomCountChange(room, false)}
                         />
-                        <span>{roomCounts[room]}</span>
+                        <span style={{ width: "30px", textAlign: "center" }}>
+                          {roomCounts[room]}
+                        </span>
                         <Button
                           size="small"
                           icon={<PlusOutlined />}
                           onClick={() => handleRoomCountChange(room, true)}
+                          style={{ marginRight: "40px" }} // Fixed width for buttons
                         />
                       </div>
                     ))}
