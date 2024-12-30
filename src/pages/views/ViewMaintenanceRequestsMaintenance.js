@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Layout, Typography, Input, Table, Tooltip, Tag, message, Button } from "antd";
 import { CheckCircleOutlined, ToolOutlined, FileOutlined } from "@ant-design/icons";
 import "../../App.css";
-import Sidebar from "../../components/AdminSidebar.js";
+import Sidebar from "../../components/MaintenanceSidebar.js";
 import TitleHeader from "../../components/TitleHeader.js";
 
 const { Content } = Layout;
@@ -26,7 +26,7 @@ const ViewMaintenanceRequests = () => {
       buildingName: "Emerald Heights",
       flatNo: "B-202",
       description: "Elevator not working.",
-      status: "Sent to Maintenance",
+      status: "Resolved",
       attachment: null, // No file attachment
     },
   ]);
@@ -48,14 +48,6 @@ const ViewMaintenanceRequests = () => {
     );
     setData(updatedData);
     message.success("Request marked as resolved.");
-  };
-
-  const handleSendToMaintenance = (key) => {
-    const updatedData = data.map((item) =>
-      item.key === key ? { ...item, status: "Sent to Maintenance" } : item
-    );
-    setData(updatedData);
-    message.info("Request sent to maintenance.");
   };
 
   const columns = [
@@ -86,7 +78,6 @@ const ViewMaintenanceRequests = () => {
       render: (status) => {
         let color = "volcano";
         if (status === "Resolved") color = "green";
-        if (status === "Sent to Maintenance") color = "blue";
         return <Tag color={color}>{status}</Tag>;
       },
     },
@@ -127,18 +118,6 @@ const ViewMaintenanceRequests = () => {
               }
             />
           </Tooltip>
-          <Tooltip title="Send to Maintenance">
-            <ToolOutlined
-              style={{
-                fontSize: "20px",
-                color: record.status === "Pending" ? "#4b244a" : "gray",
-                cursor: record.status === "Pending" ? "pointer" : "not-allowed",
-              }}
-              onClick={() =>
-                record.status === "Pending" && handleSendToMaintenance(record.key)
-              }
-            />
-          </Tooltip>
         </div>
       ),
     },
@@ -146,7 +125,7 @@ const ViewMaintenanceRequests = () => {
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
-      <Sidebar username="Admin" />
+      <Sidebar username="4Walls Works" />
 
       <Layout>
         <TitleHeader title="View Maintenance Requests" />

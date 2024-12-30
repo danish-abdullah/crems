@@ -1,5 +1,5 @@
 import React from "react";
-import { Layout, Typography, Input, Button, Row, Col, Form, Radio, Checkbox } from "antd";
+import { Layout, Typography, Input, Button, Row, Col, Form, Radio, Checkbox, InputNumber } from "antd";
 import "../../App.css";
 import Sidebar from "../../components/SuperAdminSidebar.js";
 import TitleHeader from "../../components/TitleHeader.js";
@@ -43,20 +43,20 @@ const AddAdmin = () => {
             <Row gutter={16}>
               <Col span={12}>
                 <Form.Item
-                  label="Username"
-                  name="username"
-                  rules={[{ required: true, message: "Please enter the username" }]}
+                  label="Owner Name"
+                  name="owner"
+                  rules={[{ required: true, message: "Please enter the owner's name" }]}
                 >
-                  <Input placeholder="Username" />
+                  <Input placeholder="Owner Name" />
                 </Form.Item>
               </Col>
               <Col span={12}>
                 <Form.Item
-                  label="Mobile No"
-                  name="mobileNo"
-                  rules={[{ required: true, message: "Please enter the mobile number" }]}
+                  label="Agency Name"
+                  name="agency"
+                  rules={[{ required: true, message: "Please enter the agency name" }]}
                 >
-                  <Input placeholder="Mobile No" />
+                  <Input placeholder="Agency Name" />
                 </Form.Item>
               </Col>
             </Row>
@@ -73,14 +73,11 @@ const AddAdmin = () => {
               </Col>
               <Col span={12}>
                 <Form.Item
-                  label="Category of Admin"
-                  name="adminCategory"
-                  rules={[{ required: true, message: "Please select a category" }]}
+                  label="Mobile No"
+                  name="mobileNo"
+                  rules={[{ required: true, message: "Please enter the mobile number" }]}
                 >
-                  <Radio.Group>
-                    <Radio value="Management">Management</Radio>
-                    <Radio value="Staff">Staff</Radio>
-                  </Radio.Group>
+                  <Input placeholder="Mobile No" />
                 </Form.Item>
               </Col>
             </Row>
@@ -92,11 +89,26 @@ const AddAdmin = () => {
             <Row gutter={16}>
               <Col span={12}>
                 <Form.Item
-                  label="ID"
-                  name="id"
-                  rules={[{ required: true, message: "Please enter the ID" }]}
+                  label="No. of Properties"
+                  name="properties"
+                  rules={[{ required: true, message: "Please enter the no. of maximum properties" },
+                    {
+                      type: "number",
+                      min: 1,
+                      message: "Floors must be at least 1",
+                    }
+                  ]}
                 >
-                  <Input placeholder="ID" />
+                  <InputNumber
+                    min={1}
+                    placeholder="No. of Properties"
+                    style={{ width: "100%" }}
+                    onKeyPress={(e) => {
+                      if (!/[0-9]/.test(e.key)) {
+                        e.preventDefault();
+                      }
+                    }}
+                  />
                 </Form.Item>
               </Col>
               <Col span={12}>
@@ -111,7 +123,7 @@ const AddAdmin = () => {
             </Row>
 
             {/* User Access */}
-            <Title level={5} style={{ marginTop: "20px", color: "#4b244a" }}>
+            {/* <Title level={5} style={{ marginTop: "20px", color: "#4b244a" }}>
               Admin Access
             </Title>
             <Row>
@@ -123,7 +135,7 @@ const AddAdmin = () => {
                   <Checkbox>Create multiple buildings</Checkbox>
                 </Form.Item>
               </Col>
-            </Row>
+            </Row> */}
 
             {/* Action Buttons */}
             <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "20px" }}>

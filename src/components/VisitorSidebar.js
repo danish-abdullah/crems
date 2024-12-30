@@ -20,17 +20,11 @@ const Sidebar = ({ username }) => {
         if (key === "dashboard") {
           navigate("/visitor-dashboard");
         }
-        else if (key === "addMaintenanceRequest") {
-          navigate("/add-maintenance-request");
+        else if (key === "addVisitor") {
+          navigate("/add-visitor-visitor");
         }
-        else if (key === "viewMaintenanceRequests") {
-          navigate("/view-maintenance-requests-tenant");
-        }
-        else if (key === "addComplaint") {
-          navigate("/add-complaint");
-        }
-        else if (key === "viewComplaints") {
-          navigate("/view-complaints-tenant");
+        else if (key === "viewVisitors") {
+          navigate("/view-visitors-visitor");
         }
       };
   return (
@@ -48,8 +42,6 @@ const Sidebar = ({ username }) => {
         <Avatar size={64} style={{ backgroundColor: "#fff" }} />
         <div style={{ color: "white", margin: "10px" }}>
           <span>{username}</span>
-          <br />
-          <small>Receptionist</small>
         </div>
       </div>
       <div className="menu-container">
@@ -59,23 +51,12 @@ const Sidebar = ({ username }) => {
           style={{ backgroundColor: "#420B31", flexGrow: 1 }}
           onClick={handleMenuClick}
         >
-          <Menu.Item className="main-item" key="dashboard" icon={<UserOutlined />}>
-            Dashboard
-          </Menu.Item>
-          <SubMenu key="maintenance" icon={<UserOutlined />} title="Maintenance">
-            <Menu.Item key="addMaintenanceRequest" icon={<PlusOutlined />}>
-              Add Request
+          <SubMenu key="visitor" icon={<UserOutlined />} title="Visitor">
+            <Menu.Item key="addVisitor" icon={<PlusOutlined />}>
+              Add Visitor
             </Menu.Item>
-            <Menu.Item key="viewMaintenanceRequests" icon={<FileTextOutlined />}>
-              View Requests
-            </Menu.Item>
-          </SubMenu>
-          <SubMenu key="complaints" icon={<UserOutlined />} title="Complaints">
-            <Menu.Item key="addComplaint" icon={<PlusOutlined />}>
-              Add Complaint
-            </Menu.Item>
-            <Menu.Item key="viewComplaints" icon={<FileTextOutlined />}>
-              View Complaints
+            <Menu.Item key="viewVisitors" icon={<FileTextOutlined />}>
+              View Visitors
             </Menu.Item>
           </SubMenu>
         </Menu>

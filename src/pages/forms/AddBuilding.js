@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Layout, Typography, InputNumber, Button, Row, Col, Form, Radio, Input } from "antd";
+import { Layout, Typography, InputNumber, Button, Row, Col, Form, Radio, Input, message } from "antd";
 import "../../App.css";
 import Sidebar from "../../components/AdminSidebar.js";
 import TitleHeader from "../../components/TitleHeader.js";
@@ -14,12 +14,45 @@ const AddBuilding = () => {
   const [floorOption, setFloorOption] = useState("");
   const [parkingOption, setParkingOption] = useState("");
 
-  const onFinish = (values) => {
-    console.log("Form values:", values);
+  const onFinish = async (values) => {
+    const payload = {
+      address: values.address,
+      building_name: values.buildingName,
+      no_of_floors: values.noOfFloors,
+      no_of_parking_floors: values.parkingFloors,
+      count_of_floors: "same", // "same" or "distinct"
+      watchman: "Alex Smith",
+    };
+
+    try {
+      const token = localStorage.getItem("access_token"); // Retrieve token from localStorage
+      const response = await fetch(
+        "https://website-ed11b270.yeo.vug.mybluehost.me/api/admin/building",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+          body: JSON.stringify(payload),
+        }
+      );
+
+      if (response.ok) {
+        message.success("Building added successfully!");
+        form.resetFields();
+        setFloorOption("");
+        setParkingFloorCount(0);
+      } else {
+        const errorData = await response.json();
+        message.error(`Failed to add building: ${errorData.message || "Unknown error"}`);
+      }
+    } catch (error) {
+      console.error("API Error:", error);
+      message.error("An error occurred. Please try again.");
+    }
   };
 
   const onFinishFailed = (errorInfo) => {
     console.error("Form failed:", errorInfo);
+    message.error("Please fill out all required fields correctly.");
   };
 
   const handleClear = () => {
@@ -128,8 +161,7 @@ const AddBuilding = () => {
             </Row>
 
             {/* Floor Options and Parking Options in the same row */}
-            <Row gutter={16}>
-              {/* Count of Flats */}
+            {/* <Row gutter={16}>
               <Col span={12}>
                 {floorCount > 0 && (
                   <>
@@ -183,7 +215,6 @@ const AddBuilding = () => {
                 )}
               </Col>
 
-              {/* Count of Parking Slots */}
               <Col span={12}>
                 {parkingFloorCount > 0 && (
                   <>
@@ -236,7 +267,7 @@ const AddBuilding = () => {
                   </>
                 )}
               </Col>
-            </Row>
+            </Row> */}
 
             {/* Action Buttons */}
             <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "20px" }}>

@@ -2,7 +2,7 @@ import React from "react";
 import { Layout, Input, Button, Row, Col, Form, Upload, message } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import "../../App.css";
-import Sidebar from "../../components/TenantSidebar.js";
+import Sidebar from "../../components/AdminSidebar.js";
 import TitleHeader from "../../components/TitleHeader.js";
 
 const { Content } = Layout;
@@ -36,13 +36,33 @@ const AddMaintenanceRequest = () => {
   return (
     <Layout style={{ minHeight: "100vh" }}>
       {/* Sidebar */}
-      <Sidebar username="Tenant1" />
+      <Sidebar username="Admin" />
 
       {/* Main Content */}
       <Layout>
         <TitleHeader title="Add Maintenance Request" />
         <Content style={{ margin: "20px", padding: "20px", background: "white" }}>
           <Form layout="vertical" onFinish={onFinish} onFinishFailed={onFinishFailed} form={form}>
+          <Row gutter={16}>
+              <Col span={12}>
+                <Form.Item
+                  label="Building"
+                  name="building"
+                  rules={[{ required: true, message: "Please enter the building name" }]}
+                >
+                  <Input placeholder="Building" />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  label="Flat No"
+                  name="flatNo"
+                  rules={[{ required: true, message: "Please enter the flat number" }]}
+                >
+                  <Input placeholder="Flat No" />
+                </Form.Item>
+              </Col>
+            </Row>
             <Row gutter={16}>
               <Col span={24}>
                 <Form.Item label="Request Details" name="request" rules={[{ required: true, message: 'Please enter the request details' }]}>

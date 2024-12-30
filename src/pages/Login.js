@@ -57,22 +57,22 @@ const Login = () => {
         // Navigate to respective dashboard
         switch (role) {
           case "super-admin":
-            navigate("/super-admin-dashboard");
+            navigate("/view-admins");
             break;
           case "admin":
             navigate("/admin-dashboard");
             break;
           case "maintenance":
-            navigate("/maintenance-dashboard");
+            navigate("/view-requests");
             break;
           case "tenant":
             navigate("/tenant-dashboard");
             break;
-          case "sales":
+          case "sale":
             navigate("/sales-dashboard");
             break;
           case "visitor":
-            navigate("/visitor-dashboard");
+            navigate("/view-visitors-visitor");
             break;
           default:
             message.error("Role not recognized!");

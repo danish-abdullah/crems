@@ -1,45 +1,43 @@
 import React from "react";
-import { Layout, Table, Input, Button } from "antd";
-import {
-  EditOutlined,
-  DeleteOutlined,
-} from "@ant-design/icons";
+import { Layout, Table, Input } from "antd";
 import "../../App.css";
-import SuperAdminSidebar from "../../components/SuperAdminSidebar.js";
+import Sidebar from "../../components/VisitorSidebar.js";
 import TitleHeader from "../../components/TitleHeader.js";
 
 const { Content } = Layout;
 const { Search } = Input;
 
-const ViewAdmins = () => {
+const ViewVisitors = () => {
   // Sample data for visitors table
   const dataSource = [
     {
       key: "1",
-      agency: "Al Jeddah",
-      owner: "Masood",
-      properties: "3",
-      mobile: "0300-5626791",
-      email: "masood@gmail.com",
+      building: "Al jeddah",
+      person: "Visitor",
+      date: "2023-03-12",
+      name: "Umer",
+      mobile: "55 765 7028",
+      email: "umer30@gmail.com",
+      flat: "102"
     },
     // Add more rows as needed
   ];
 
   const columns = [
     {
-      title: "Agency Name",
-      dataIndex: "agency",
-      key: "agency",
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
     },
     {
-      title: "Owner",
-      dataIndex: "owner",
-      key: "owner",
+      title: "Building",
+      dataIndex: "building",
+      key: "building",
     },
     {
-      title: "No. of Properties",
-      dataIndex: "properties",
-      key: "properties",
+      title: "Flat No.",
+      dataIndex: "flat",
+      key: "flat",
     },
     {
       title: "Mobile No",
@@ -53,34 +51,23 @@ const ViewAdmins = () => {
       render: (text) => <a href={`mailto:${text}`}>{text}</a>,
     },
     {
-      title: "Update",
-      key: "update",
-      render: () => (
-        <div>
-          <Button
-            icon={<EditOutlined />}
-            type="link"
-            style={{ color: "#7b3e82" }}
-          />
-          <Button
-            icon={<DeleteOutlined />}
-            type="link"
-            danger
-          />
-        </div>
-      ),
+      title: "Date",
+      dataIndex: "date",
+      key: "date",
     },
   ];
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
       {/* Sidebar */}
-      <SuperAdminSidebar />
+      <Sidebar username="Receptionist" />
 
       {/* Main Content */}
       <Layout>
-        <TitleHeader title="View Admins" />
-        <Content style={{ margin: "20px", padding: "20px", background: "white" }}>
+        <TitleHeader title="View Visitors" />
+        <Content
+          style={{ margin: "20px", padding: "20px", background: "white" }}
+        >
           <Search
             placeholder="Search"
             allowClear
@@ -101,4 +88,4 @@ const ViewAdmins = () => {
   );
 };
 
-export default ViewAdmins;
+export default ViewVisitors;

@@ -1,5 +1,5 @@
-import React from "react";
-import { Layout, Table, Input } from "antd";
+import React, { useState } from "react";
+import { Layout, Table, Input, Button, Space, Tooltip, message } from "antd";
 import "../../App.css";
 import Sidebar from "../../components/SalesSidebar.js";
 import TitleHeader from "../../components/TitleHeader.js";
@@ -9,19 +9,61 @@ const { Search } = Input;
 
 const ViewVisitors = () => {
   // Sample data for visitors table
-  const dataSource = [
+  const [dataSource, setDataSource] = useState([
     {
       key: "1",
-      building: "Al jeddah",
+      building: "Al Jeddah",
       person: "Visitor",
       date: "2023-03-12",
       name: "Umer",
       mobile: "55 765 7028",
       email: "umer30@gmail.com",
-      flat: "102"
+      flat: "102",
+      status: "Pending",
+      followUpDate: null,
     },
-    // Add more rows as needed
-  ];
+    {
+      key: "2",
+      building: "Al Noor",
+      person: "Visitor",
+      date: "2023-03-14",
+      name: "Ahmed",
+      mobile: "55 123 4567",
+      email: "ahmed10@gmail.com",
+      flat: "202",
+      status: "Pending",
+      followUpDate: null,
+    },
+  ]);
+
+  // Function to get today's date in "YYYY-MM-DD" format
+  const getCurrentDate = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, "0");
+    const day = String(today.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
+  // Handler to mark as Followed Up
+  const handleFollowUp = (key) => {
+    const updatedData = dataSource.map((item) =>
+      item.key === key
+        ? { ...item, status: "Followed Up", followUpDate: getCurrentDate() }
+        : item
+    );
+    setDataSource(updatedData);
+    message.success("Marked as Followed Up!");
+  };
+
+  // Handler to send to admin for tenant onboarding
+  const handleSendToAdmin = (key) => {
+    const updatedData = dataSource.map((item) =>
+      item.key === key ? { ...item, status: "Sent to Admin" } : item
+    );
+    setDataSource(updatedData);
+    message.success("Sent to Admin for Tenant Onboarding!");
+  };
 
   const columns = [
     {
@@ -54,6 +96,55 @@ const ViewVisitors = () => {
       title: "Date",
       dataIndex: "date",
       key: "date",
+    },
+    {
+      title: "Follow-Up Date",
+      dataIndex: "followUpDate",
+      key: "followUpDate",
+      render: (text) => (text ? text : "Not Followed Up"),
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      render: (text) => (
+        <span
+          style={{
+            color: text === "Pending" ? "#d46b08" : text === "Followed Up" ? "#52c41a" : "#1890ff",
+          }}
+        >
+          {text}
+        </span>
+      ),
+    },
+    {
+      title: "Actions",
+      key: "actions",
+      render: (_, record) => (
+        <Space size="middle">
+          {/* Mark as Followed Up Button */}
+          <Tooltip title="Mark as Followed Up">
+            <Button
+              type="primary"
+              onClick={() => handleFollowUp(record.key)}
+              disabled={record.status === "Followed Up" || record.status === "Sent to Admin"}
+            >
+              Follow Up
+            </Button>
+          </Tooltip>
+
+          {/* Send to Admin Button */}
+          <Tooltip title="Send to Admin for Tenant Onboarding">
+            <Button
+              type="default"
+              onClick={() => handleSendToAdmin(record.key)}
+              disabled={record.status === "Sent to Admin"}
+            >
+              Send to Admin
+            </Button>
+          </Tooltip>
+        </Space>
+      ),
     },
   ];
 

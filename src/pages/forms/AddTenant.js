@@ -1,5 +1,5 @@
 import React from "react";
-import { Layout, Typography, Input, Button, Row, Col, Form } from "antd";
+import { Layout, Typography, Input, Button, Row, Col, Form, message } from "antd";
 import "../../App.css";
 import Sidebar from "../../components/AdminSidebar.js";
 import TitleHeader from "../../components/TitleHeader.js";
@@ -13,15 +13,49 @@ const AddTenant = () => {
   const onClear = () => {
     form.resetFields();
   };
-  
-  const onFinish = (values) => {
+
+  const onFinish = async (values) => {
     console.log("Form values:", values);
+
+    // Prepare the data to be sent to the API
+    const tenantData = {
+      full_name: values.fullName,
+      building_name: values.buildingName,
+      email: values.email,
+      mobile_no: values.mobileNo,
+      flat_no: values.flatNo,
+      nationality: values.nationality,
+    };
+
+    try {
+      // Send a POST request to the API to add the tenant
+      const token = localStorage.getItem("access_token");  // Get session token
+      const response = await fetch("https://website-ed11b270.yeo.vug.mybluehost.me/api/admin/tenant", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(tenantData),
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        message.success("Tenant added successfully");
+        form.resetFields(); // Reset the form fields on success
+      } else {
+        message.error("Failed to add tenant");
+      }
+    } catch (error) {
+      message.error("Error occurred while adding tenant");
+      console.error("Error:", error);
+    }
   };
 
   const onFinishFailed = (errorInfo) => {
     console.error("Form failed:", errorInfo);
   };
-  
+
   return (
     <Layout style={{ minHeight: "100vh" }}>
       {/* Sidebar */}
@@ -29,7 +63,7 @@ const AddTenant = () => {
 
       {/* Main Content */}
       <Layout>
-        <TitleHeader title="Add Tenant"/>
+        <TitleHeader title="Add Tenant" />
         <Content style={{ margin: "20px", padding: "20px", background: "white" }}>
           <Title level={5} style={{ color: "#4b244a" }}>
             Add Tenant Details
@@ -111,9 +145,9 @@ const AddTenant = () => {
               </Col>
             </Row>
             <div style={{ display: "flex", justifyContent: "flex-end" }}>
-            <Button type="default" onClick={onClear} style={{ marginRight: '10px' }}>
-              Clear
-            </Button>
+              <Button type="default" onClick={onClear} style={{ marginRight: '10px' }}>
+                Clear
+              </Button>
               <Button type="primary" htmlType="submit" style={{ backgroundColor: "#4b244a", borderColor: "#4b244a" }}>
                 Save
               </Button>

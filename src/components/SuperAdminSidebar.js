@@ -53,9 +53,9 @@ const SuperAdminSidebar = () => {
             style={{ backgroundColor: "#420B31", flexGrow: 1 }}
             onClick={handleMenuClick}
           >
-            <Menu.Item className="main-item" key="superAdminDashboard" icon={<UserOutlined />}>
-            Dashboard
-          </Menu.Item>
+            {/* <Menu.Item className="main-item" key="superAdminDashboard" icon={<UserOutlined />}>
+              Dashboard
+            </Menu.Item> */}
           <SubMenu key="admins" icon={<UserOutlined />} title="Admins">
           <Menu.Item key="addAdmin" icon={<PlusOutlined />}>
               Add Admin

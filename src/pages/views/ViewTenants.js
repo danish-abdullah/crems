@@ -1,5 +1,5 @@
-import React from "react";
-import { Layout, Table, Input, Button } from "antd";
+import React, { useEffect, useState } from "react";
+import { Layout, Table, Input, Button, message, Popconfirm } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import "../../App.css";
 import Sidebar from "../../components/AdminSidebar.js";
@@ -9,39 +9,75 @@ const { Content } = Layout;
 const { Search } = Input;
 
 const ViewTenants = () => {
-  // Sample data for visitors table
-  const dataSource = [
-    {
-      key: "1",
-      building: "Al jeddah",
-      flat: "203",
-      date: "2023-03-12",
-      name: "Umer",
-      mobile: "55 765 7028",
-      email: "umer30@gmail.com",
-    },
-    // Add more rows as needed
-  ];
+  const [dataSource, setDataSource] = useState([]);
+
+  // Fetch the tenants list from the API
+  const fetchTenants = async () => {
+    try {
+      const response = await fetch("https://website-ed11b270.yeo.vug.mybluehost.me/api/admin/tenant", {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${localStorage.getItem("access_token")}`,
+        },
+      });
+      const data = await response.json();
+      if (data.success) {
+        setDataSource(data.data);  // Set tenants data in state
+      } else {
+        message.error("Failed to fetch tenants");
+      }
+    } catch (error) {
+      message.error("Error fetching tenants");
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchTenants();  // Fetch tenants on component mount
+  }, []);
+
+  // Delete tenant
+  const deleteTenant = async (tenantId) => {
+    try {
+      const response = await fetch(`https://website-ed11b270.yeo.vug.mybluehost.me/api/admin/tenant/${tenantId}`, {
+        method: "DELETE",
+        headers: {
+          "Authorization": `Bearer ${localStorage.getItem("access_token")}`,
+        },
+      });
+      const data = await response.json();
+      if (data.success) {
+        message.success("Tenant deleted successfully");
+        // Refresh tenant list after deletion
+        fetchTenants();
+      } else {
+        message.error("Failed to delete tenant");
+      }
+    } catch (error) {
+      message.error("Error deleting tenant");
+      console.error(error);
+    }
+  };
 
   const columns = [
     {
       title: "Name",
-      dataIndex: "name",
+      dataIndex: "full_name",
       key: "name",
     },
     {
       title: "Building",
-      dataIndex: "building",
+      dataIndex: "building_name",
       key: "building",
     },
     {
-      title: "Flat no.",
-      dataIndex: "flat",
+      title: "Flat No.",
+      dataIndex: "flat_no",
       key: "flat",
     },
     {
       title: "Mobile No",
-      dataIndex: "mobile",
+      dataIndex: "mobile_no",
       key: "mobile",
     },
     {
@@ -51,21 +87,33 @@ const ViewTenants = () => {
       render: (text) => <a href={`mailto:${text}`}>{text}</a>,
     },
     {
-      title: "Date",
-      dataIndex: "date",
+      title: "Date Added",
+      dataIndex: "created_at",
       key: "date",
+      render: (text) => {
+        // Truncate the date string to remove time after 'T'
+        const date = text.split('T')[0];
+        return date; // Only return the date part (before 'T')
+      },
     },
     {
-      title: "Update",
-      key: "update",
-      render: () => (
+      title: "Actions",
+      key: "actions",
+      render: (text, record) => (
         <div>
           <Button
             icon={<EditOutlined />}
             type="link"
             style={{ color: "#7b3e82" }}
           />
-          <Button icon={<DeleteOutlined />} type="link" danger />
+          <Popconfirm
+            title="Are you sure to delete this tenant?"
+            onConfirm={() => deleteTenant(record.id)}
+            okText="Yes"
+            cancelText="No"
+          >
+            <Button icon={<DeleteOutlined />} type="link" danger />
+          </Popconfirm>
         </div>
       ),
     },
@@ -79,9 +127,7 @@ const ViewTenants = () => {
       {/* Main Content */}
       <Layout>
         <TitleHeader title="View Tenants" />
-        <Content
-          style={{ margin: "20px", padding: "20px", background: "white" }}
-        >
+        <Content style={{ margin: "20px", padding: "20px", background: "white" }}>
           <Search
             placeholder="Search"
             allowClear
@@ -95,6 +141,7 @@ const ViewTenants = () => {
             dataSource={dataSource}
             columns={columns}
             pagination={{ pageSize: 5 }}
+            rowKey="id"
           />
         </Content>
       </Layout>

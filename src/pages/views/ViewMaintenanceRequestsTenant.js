@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Layout, Typography, Input, Table, Tag } from "antd";
+import { Layout, Typography, Input, Table, Tag, Button, Tooltip } from "antd";
+import { FileOutlined } from "@ant-design/icons";
 import "../../App.css";
 import Sidebar from "../../components/TenantSidebar.js";
 import TitleHeader from "../../components/TitleHeader.js";
@@ -15,12 +16,14 @@ const ViewMaintenanceRequests = () => {
       Id: "C001",
       description: "Water leakage in the bathroom.",
       status: "Pending",
+      attachment: "https://example.com/files/water-leakage-photo.jpg", // Example file URL
     },
     {
       key: "2",
       Id: "C002",
       description: "Elevator not working.",
       status: "Sent to Maintenance",
+      attachment: null, // No file attachment
     },
   ]);
 
@@ -54,6 +57,26 @@ const ViewMaintenanceRequests = () => {
         if (status === "Sent to Maintenance") color = "blue";
         return <Tag color={color}>{status}</Tag>;
       },
+    },
+    {
+      title: "Attachment",
+      key: "attachment",
+      render: (_, record) =>
+        record.attachment ? (
+          <a href={record.attachment} target="_blank" rel="noopener noreferrer">
+            <Tooltip title="View Attachment">
+              <Button
+                type="link"
+                icon={<FileOutlined />}
+                style={{ color: "#4b244a" }}
+              >
+                View File
+              </Button>
+            </Tooltip>
+          </a>
+        ) : (
+          <span>No Attachment</span>
+        ),
     },
   ];
 

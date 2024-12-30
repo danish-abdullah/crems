@@ -1,108 +1,156 @@
 import React from "react";
-import { Layout, Card, Row, Col } from "antd";
-import { Line } from "react-chartjs-2";
-import { Bar } from "react-chartjs-2";
+import { Layout, Table, Card, Row, Col } from "antd";
 import Sidebar from "../../components/TenantSidebar";
 import TitleHeader from "../../components/TitleHeader";
 import "../../App.css";
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  BarElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-  ArcElement,
-} from "chart.js";
-
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  BarElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-  ArcElement
-);
 
 const { Content } = Layout;
 
 const TenantDashboard = () => {
-  // Mock data for graphs
-  const occupancyHistory = {
-    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
-    datasets: [
-      {
-        label: "Occupied Apartments",
-        data: [75, 80, 85, 90, 88, 85],
-        borderColor: "#4b244a",
-        backgroundColor: "rgba(75, 36, 74, 0.2)",
-      },
-    ],
-  };
-
-  const rentHistory = {
-    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
-    datasets: [
-      {
-        label: "Rent Income (PKR)",
-        data: [400000, 420000, 440000, 460000, 450000, 470000],
-        borderColor: "#4b244a",
-        backgroundColor: "rgba(75, 36, 74, 0.2)",
-      },
-    ],
-  };
-
-  const visitorsHistory = {
-    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
-    datasets: [
-      {
-        label: "Visitors",
-        data: [120, 150, 140, 170, 160, 135],
-        borderColor: "#4b244a",
-        backgroundColor: "rgba(75, 36, 74, 0.2)",
-      },
-    ],
-  };
-
-  const complaintsData = {
-    labels: ["Building A", "Building B", "Building C"], // Example labels for buildings
-    datasets: [
-      {
-        label: "Pending",
-        data: [12, 8, 15], // Mock data for pending complaints
-        backgroundColor: "rgba(255, 99, 132, 0.8)", // Red
-      },
-      {
-        label: "Resolved",
-        data: [20, 18, 25], // Mock data for resolved complaints
-        backgroundColor: "rgba(75, 192, 192, 0.8)", // Green
-      },
-      {
-        label: "Sent to Maintenance",
-        data: [10, 5, 8], // Mock data for sent-to-maintenance complaints
-        backgroundColor: "rgba(54, 162, 235, 0.8)", // Blue
-      },
-    ],
-  };
-
-  const barChartOptions = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: "top",
-      },
-      title: {
-        display: true,
-        text: "Complaints Overview by Building",
-      },
+  // Mock data for tables
+  const rentStatusData = [
+    {
+      key: "1",
+      month: "January",
+      amountDue: "20,000",
+      dueDate: "2024-01-10",
+      status: "Paid",
     },
-  };
+    {
+      key: "2",
+      month: "February",
+      amountDue: "20,000",
+      dueDate: "2024-02-10",
+      status: "Pending",
+    },
+    {
+      key: "3",
+      month: "March",
+      amountDue: "20,000",
+      dueDate: "2024-03-10",
+      status: "Pending",
+    },
+  ];
+
+  const complaintsData = [
+    {
+      key: "1",
+      complaintID: "C102",
+      description: "Noisy neighbors on floor 3",
+      status: "Pending",
+      dateSubmitted: "2024-01-15",
+    },
+  ];
+
+  const maintenanceRequestsData = [
+    {
+      key: "1",
+      requestID: "M201",
+      description: "Replace broken light in bedroom",
+      status: "In Progress",
+      dateSubmitted: "2024-01-20",
+    },
+    {
+      key: "2",
+      requestID: "M202",
+      description: "AC maintenance request",
+      status: "Resolved",
+      dateSubmitted: "2024-01-10",
+    },
+  ];
+
+  // Table columns
+  const rentColumns = [
+    {
+      title: "Month",
+      dataIndex: "month",
+      key: "month",
+    },
+    {
+      title: "Amount Due",
+      dataIndex: "amountDue",
+      key: "amountDue",
+    },
+    {
+      title: "Due Date",
+      dataIndex: "dueDate",
+      key: "dueDate",
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      render: (status) => (
+        <span style={{ color: status === "Paid" ? "green" : "red" }}>
+          {status}
+        </span>
+      ),
+    },
+  ];
+
+  const complaintsColumns = [
+    {
+      title: "Complaint ID",
+      dataIndex: "complaintID",
+      key: "complaintID",
+    },
+    {
+      title: "Description",
+      dataIndex: "description",
+      key: "description",
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      render: (status) => (
+        <span style={{ color: status === "Resolved" ? "green" : "orange" }}>
+          {status}
+        </span>
+      ),
+    },
+    {
+      title: "Date Submitted",
+      dataIndex: "dateSubmitted",
+      key: "dateSubmitted",
+    },
+  ];
+
+  const maintenanceColumns = [
+    {
+      title: "Request ID",
+      dataIndex: "requestID",
+      key: "requestID",
+    },
+    {
+      title: "Description",
+      dataIndex: "description",
+      key: "description",
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      render: (status) => (
+        <span
+          style={{
+            color: status === "Resolved"
+              ? "green"
+              : status === "In Progress"
+              ? "blue"
+              : "red",
+          }}
+        >
+          {status}
+        </span>
+      ),
+    },
+    {
+      title: "Date Submitted",
+      dataIndex: "dateSubmitted",
+      key: "dateSubmitted",
+    },
+  ];
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
@@ -114,47 +162,48 @@ const TenantDashboard = () => {
         <TitleHeader title="Tenant Dashboard" />
         <Content style={{ margin: "10px", padding: "10px", background: "#f0f2f5" }}>
           <Row gutter={[16, 16]}>
-            {/* Card 1: Occupancy with Line Chart */}
-            <Col span={12}>
+            {/* Rent Status Table */}
+            <Col span={24}>
               <Card
-                title="Building & Apartment Occupancy"
+                title="Rent Status"
                 bordered={false}
                 style={{ backgroundColor: "#f6f0f7", color: "#4b244a" }}
               >
-                <Line data={occupancyHistory} />
+                <Table
+                  dataSource={rentStatusData}
+                  columns={rentColumns}
+                  pagination={{ pageSize: 5 }}
+                />
               </Card>
             </Col>
 
-            {/* Card 2: Expected Rent Income with Line Chart */}
-            <Col span={12}>
+            {/* Complaints Overview Table */}
+            <Col span={24}>
               <Card
-                title="Expected Rent Income"
-                bordered={false}
-                style={{ backgroundColor: "#f6f0f7", color: "#4b244a" }}
-              >
-                <Line data={rentHistory} />
-              </Card>
-            </Col>
-
-            {/* Card 3: Visitors with Line Chart */}
-            <Col span={12}>
-              <Card
-                title="Total Visitors This Month"
-                bordered={false}
-                style={{ backgroundColor: "#f6f0f7", color: "#4b244a" }}
-              >
-                <Line data={visitorsHistory} />
-              </Card>
-            </Col>
-
-            {/* Card 4: Complaints with Bar Chart */}
-            <Col span={12}>
-              <Card 
                 title="Complaints Overview"
                 bordered={false}
-                style={{ backgroundColor: "#f6f0f7" }}
-                >
-                <Bar data={complaintsData} options={barChartOptions} />
+                style={{ backgroundColor: "#f6f0f7", color: "#4b244a" }}
+              >
+                <Table
+                  dataSource={complaintsData}
+                  columns={complaintsColumns}
+                  pagination={{ pageSize: 5 }}
+                />
+              </Card>
+            </Col>
+
+            {/* Maintenance Requests Overview Table */}
+            <Col span={24}>
+              <Card
+                title="Maintenance Requests Overview"
+                bordered={false}
+                style={{ backgroundColor: "#f6f0f7", color: "#4b244a" }}
+              >
+                <Table
+                  dataSource={maintenanceRequestsData}
+                  columns={maintenanceColumns}
+                  pagination={{ pageSize: 5 }}
+                />
               </Card>
             </Col>
           </Row>

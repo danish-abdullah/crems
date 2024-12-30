@@ -36,7 +36,8 @@ const TitleHeader = ({ title }) => {
       navigate("/"); // Redirect to login page
     } catch (error) {
       console.error("Logout failed:", error);
-      message.error("Failed to log out. Please try again.");
+      navigate("/"); // Redirect to login page
+      // message.error("Failed to log out. Please try again.");
     }
   };
 

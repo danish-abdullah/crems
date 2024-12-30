@@ -135,7 +135,7 @@ const AdminDashboard = () => {
             {/* Card 3: Visitors with Line Chart */}
             <Col span={12}>
               <Card
-                title="Total Visitors This Month"
+                title="Total Visitors"
                 bordered={false}
                 style={{ backgroundColor: "#f6f0f7", color: "#4b244a" }}
               >

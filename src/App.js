@@ -25,11 +25,16 @@ import ViewVisitors from "./pages/views/ViewVisitors";
 import ViewSales from "./pages/views/ViewSales";
 import ViewMaintenance from "./pages/views/ViewMaintenance";
 import ViewMaintenanceRequests from "./pages/views/ViewMaintenanceRequests";
+import ViewMaintenanceRequestsMaintenance from "./pages/views/ViewMaintenanceRequestsMaintenance";
 import ViewComplaintsAdmin from "./pages/views/ViewComplaintsAdmin";
 import ViewAdmins from "./pages/views/ViewAdmins";
 import ViewVisitorsSales from "./pages/views/ViewVisitorsSales";
 import ViewMaintenanceRequestsTenant from "./pages/views/ViewMaintenanceRequestsTenant";
 import ViewComplaintsTenant from "./pages/views/ViewComplaintsTenant";
+import AddVisitorVisitor from "./pages/forms/AddVisitorVisitor";
+import ViewVisitorsVisitor from "./pages/views/ViewVisitorsVisitor";
+import AddMaintenanceRequestAdmin from "./pages/forms/AddMaintenanceRequestAdmin";
+import AddComplaintAdmin from "./pages/forms/AddComplaintAdmin";
 
 function App() {
   return (
@@ -64,6 +69,11 @@ function App() {
         <Route path="/add-complaint" element={<AddComplaint />} />
         <Route path="/add-maintenance-request" element={<AddMaintenanceRequest />} />
         <Route path="/visitor-dashboard" element={<VisitorDashboard />} />
+        <Route path="/add-visitor-visitor" element={<AddVisitorVisitor />} />
+        <Route path="/view-visitors-visitor" element={<ViewVisitorsVisitor />} />
+        <Route path="/view-requests" element={<ViewMaintenanceRequestsMaintenance />} />
+        <Route path="/add-maintenance-request-admin" element={<AddMaintenanceRequestAdmin />} />
+        <Route path="/add-complaint-admin" element={<AddComplaintAdmin />} />
       </Routes>
   );
 }
