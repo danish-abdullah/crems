@@ -30,7 +30,7 @@ const ViewTenants = () => {
   const fetchTenants = async () => {
     try {
       const response = await fetch(
-        "https://website-ed11b270.yeo.vug.mybluehost.me/api/admin/tenant",
+        "https://website-64a18929.yeo.vug.mybluehost.me/api/admin/tenant",
         {
           method: "GET",
           headers: {
@@ -54,7 +54,7 @@ const ViewTenants = () => {
   const fetchBuildings = async () => {
     try {
       const response = await fetch(
-        "https://website-ed11b270.yeo.vug.mybluehost.me/api/admin/building",
+        "https://website-64a18929.yeo.vug.mybluehost.me/api/admin/building",
         {
           method: "GET",
           headers: {
@@ -83,7 +83,7 @@ const ViewTenants = () => {
   const deleteTenant = async (tenantId) => {
     try {
       const response = await fetch(
-        `https://website-ed11b270.yeo.vug.mybluehost.me/api/admin/tenant/${tenantId}`,
+        `https://website-64a18929.yeo.vug.mybluehost.me/api/admin/tenant/${tenantId}`,
         {
           method: "DELETE",
           headers: {
@@ -115,7 +115,7 @@ const ViewTenants = () => {
   const handleUpdateTenant = async (values) => {
     try {
       const response = await fetch(
-        `https://website-ed11b270.yeo.vug.mybluehost.me/api/admin/tenant/${editingTenant.id}`,
+        `https://website-64a18929.yeo.vug.mybluehost.me/api/admin/tenant/${editingTenant.id}`,
         {
           method: "PATCH",
           headers: {

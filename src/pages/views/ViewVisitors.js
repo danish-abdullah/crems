@@ -22,7 +22,7 @@ const ViewVisitors = () => {
     setLoading(true);
     try {
       const response = await fetch(
-        "https://website-ed11b270.yeo.vug.mybluehost.me/api/admin/visitor",
+        "https://website-64a18929.yeo.vug.mybluehost.me/api/admin/visitor",
         {
           method: "GET",
           headers: {
@@ -59,7 +59,7 @@ const ViewVisitors = () => {
   const fetchBuildings = async () => {
     try {
       const response = await fetch(
-        "https://website-ed11b270.yeo.vug.mybluehost.me/api/admin/building",
+        "https://website-64a18929.yeo.vug.mybluehost.me/api/admin/building",
         {
           method: "GET",
           headers: {
@@ -90,7 +90,7 @@ const ViewVisitors = () => {
     setLoading(true);
     try {
       const response = await fetch(
-        `https://website-ed11b270.yeo.vug.mybluehost.me/api/admin/visitor/${id}`,
+        `https://website-64a18929.yeo.vug.mybluehost.me/api/admin/visitor/${id}`,
         {
           method: "DELETE",
           headers: {
@@ -133,7 +133,7 @@ const ViewVisitors = () => {
     setLoading(true);
     try {
       const response = await fetch(
-        `https://website-ed11b270.yeo.vug.mybluehost.me/api/admin/visitor/${currentVisitor.key}`,
+        `https://website-64a18929.yeo.vug.mybluehost.me/api/admin/visitor/${currentVisitor.key}`,
         {
           method: "PATCH",
           headers: {

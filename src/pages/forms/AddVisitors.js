@@ -18,7 +18,7 @@ const AddVisitor = () => {
       try {
         const token = localStorage.getItem("access_token");
         const response = await fetch(
-          "https://website-ed11b270.yeo.vug.mybluehost.me/api/admin/building",
+          "https://website-64a18929.yeo.vug.mybluehost.me/api/admin/building",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -59,7 +59,7 @@ const AddVisitor = () => {
     console.log("Form values:", visitorData);
 
     try {
-      const response = await fetch("https://website-ed11b270.yeo.vug.mybluehost.me/api/admin/visitor", {
+      const response = await fetch("https://website-64a18929.yeo.vug.mybluehost.me/api/admin/visitor", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

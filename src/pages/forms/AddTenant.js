@@ -17,7 +17,7 @@ const AddTenant = () => {
       try {
         const token = localStorage.getItem("access_token"); // Get session token
         const response = await fetch(
-          "https://website-ed11b270.yeo.vug.mybluehost.me/api/admin/building", // Replace with actual endpoint for fetching buildings
+          "https://website-64a18929.yeo.vug.mybluehost.me/api/admin/building", // Replace with actual endpoint for fetching buildings
           {
             method: "GET",
             headers: {
@@ -59,7 +59,7 @@ const AddTenant = () => {
     try {
       const token = localStorage.getItem("access_token"); // Get session token
       const response = await fetch(
-        "https://website-ed11b270.yeo.vug.mybluehost.me/api/admin/tenant",
+        "https://website-64a18929.yeo.vug.mybluehost.me/api/admin/tenant",
         {
           method: "POST",
           headers: {

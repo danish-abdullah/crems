@@ -27,7 +27,7 @@ const AddBuilding = () => {
     try {
       const token = localStorage.getItem("access_token"); // Retrieve token from localStorage
       const response = await fetch(
-        "https://website-ed11b270.yeo.vug.mybluehost.me/api/admin/building",
+        "https://website-64a18929.yeo.vug.mybluehost.me/api/admin/building",
         {
           method: "POST",
           headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },

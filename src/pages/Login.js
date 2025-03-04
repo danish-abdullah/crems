@@ -14,7 +14,7 @@ const Login = () => {
   // Login API call
   const loginUser = async (email, password) => {
     try {
-      const response = await fetch("https://website-ed11b270.yeo.vug.mybluehost.me/api/auth/login", {
+      const response = await fetch("https://website-64a18929.yeo.vug.mybluehost.me/api/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -43,7 +43,7 @@ const Login = () => {
   const fetchUserDetails = async () => {
     try {
       const token = localStorage.getItem("access_token");
-      const response = await fetch("https://website-ed11b270.yeo.vug.mybluehost.me/api/auth/me", {
+      const response = await fetch("https://website-64a18929.yeo.vug.mybluehost.me/api/auth/me", {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,

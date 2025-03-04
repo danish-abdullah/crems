@@ -16,7 +16,7 @@ const ViewBuildings = () => {
     const fetchBuildings = async () => {
       const token = localStorage.getItem("access_token");  // Get session token
       try {
-        const response = await fetch("https://website-ed11b270.yeo.vug.mybluehost.me/api/admin/building", {
+        const response = await fetch("https://website-64a18929.yeo.vug.mybluehost.me/api/admin/building", {
           method: "GET",
           headers: {
             "Authorization": `Bearer ${token}`,  // Pass the token in the Authorization header
@@ -48,7 +48,7 @@ const ViewBuildings = () => {
   const deleteBuilding = async (id) => {
     const token = localStorage.getItem("access_token");  // Get session token
     try {
-      const response = await fetch(`https://website-ed11b270.yeo.vug.mybluehost.me/api/admin/building/${id}`, {
+      const response = await fetch(`https://website-64a18929.yeo.vug.mybluehost.me/api/admin/building/${id}`, {
         method: "DELETE",
         headers: {
           "Authorization": `Bearer ${token}`,

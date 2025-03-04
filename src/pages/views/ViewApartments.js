@@ -15,7 +15,7 @@ const ViewApartments = () => {
     const fetchApartments = async () => {
       try {
         const token = localStorage.getItem("access_token");  // Get session token
-        const response = await fetch("https://website-ed11b270.yeo.vug.mybluehost.me/api/admin/apartment", {
+        const response = await fetch("https://website-64a18929.yeo.vug.mybluehost.me/api/admin/apartment", {
           method: "GET",
           headers: {
             "Authorization": `Bearer ${token}`,
@@ -52,7 +52,7 @@ const ViewApartments = () => {
   const handleDelete = async (id) => {
     try {
       const token = localStorage.getItem("access_token"); // Get session token
-      const response = await fetch(`https://website-ed11b270.yeo.vug.mybluehost.me/api/admin/apartment/${id}`, {
+      const response = await fetch(`https://website-64a18929.yeo.vug.mybluehost.me/api/admin/apartment/${id}`, {
         method: "DELETE",
         headers: {
           "Authorization": `Bearer ${token}`,

@@ -23,7 +23,7 @@ const TitleHeader = ({ title }) => {
     try {
       const token = localStorage.getItem("access_token"); // Retrieve token from localStorage
       await axios.post(
-        "https://website-ed11b270.yeo.vug.mybluehost.me/api/auth/logout",
+        "https://website-64a18929.yeo.vug.mybluehost.me/api/auth/logout",
         {},
         {
           headers: {
