@@ -107,7 +107,7 @@ const Login = () => {
       <div className="logo-container">
         <img src={Logo} alt="Logo" className="logo" />
       </div>
-      <div className="login-centre" style={{ flexDirection: "row" }}>
+      <div className="login-centre">
         <div className="login-div"></div>
         <Card className="login-card">
           <Title level={4} className="login-title">
@@ -152,7 +152,7 @@ const Login = () => {
                 Login
               </Button>
             </Form.Item>
-            <Form.Item>
+            <Form.Item className="forgot-password-item">
               <a onClick={handleMenuClick} className="forgot-password-link">
                 Forgot Password?
               </a>

@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 .logo-container {
     position: absolute;
     top: 20px; /* Distance from the top of the page */
@@ -10,6 +14,10 @@
   height: auto; /* Maintain aspect ratio */
 }
 
+.sidebar {
+  background-color: white;
+}
+
 .avatar-container {
   display: flex;
   /* flex-direction: column; */
@@ -20,6 +28,15 @@
   margin-top: 80px;
 }
 
+.avatar-photo {
+  background-color: lightgray;
+}
+
+.avatar-text {
+  color: "black";
+  margin: 10px;
+}
+
 .ant-layout-sider {
   display: flex;
   flex-direction: column;
@@ -27,18 +44,23 @@
 }
 
  /* Ensure menu items have white font color */
-.ant-menu-dark .ant-menu-item, 
-.ant-menu-dark .ant-menu-submenu-title {
-  color: white !important;
+.ant-menu .ant-menu-item, 
+.ant-menu .ant-menu-submenu-title {
+  color: black !important;
+}
+
+.menu-container {
+  background-color: white !important;
+  color: black;
 }
 
 /* Set background color of submenu */
-.ant-menu-dark .ant-menu-submenu {
-  background-color: #420B31; /* Same as sidebar purple */
+.ant-menu .ant-menu-submenu {
+  background-color: white; /* Same as sidebar white */
 }
 
 .ant-menu-item {
-  padding-left: 30px !important;
+  padding-left: 15px !important;
 }
 
 .ant-menu-submenu-title {
@@ -50,26 +72,26 @@
 }
 
 /* Highlight the submenu items on hover */
-.ant-menu-dark .ant-menu-item:hover, 
-.ant-menu-dark .ant-menu-submenu-title:hover {
-  background-color: #5a0f47 !important; /* Slightly lighter purple for hover effect */
+.ant-menu .ant-menu-item:hover, 
+.ant-menu .ant-menu-submenu-title:hover {
+  /* background-color: white !important;  Slightly lighter purple for hover effect */
 }
 
 /* Style active menu items */
-.ant-menu-dark .ant-menu-item-selected {
-  background-color: #5a0f47; /* Highlight selected menu item */
+.ant-menu .ant-menu-item-selected {
+  background-color: #A52A2A; /* Highlight selected menu item */
   color: white !important; /* Ensure text remains white */
 }
 
 /* Style for submenu items */
-.ant-menu-dark .ant-menu-sub {
-  background-color: #420B31 !important; /* Purple background for submenu */
+.ant-menu .ant-menu-sub {
+  background-color: white !important; /* Purple background for submenu */
   border: none; /* Remove default border */
 }
 
 /* Submenu item hover effect */
-.ant-menu-dark .ant-menu-submenu-popup .ant-menu-item:hover {
-  background-color: #5a0f47 !important;
+.ant-menu .ant-menu-submenu-popup .ant-menu-item:hover {
+  background-color: white !important;
 }
 
   Header styles
@@ -80,47 +102,53 @@
   
   /* Form and input styling */
   .ant-form-item-label > label {
-    color: #4b244a !important;
+    color: black !important;
     font-weight: bold;
   }
   
   .ant-input, .ant-input-number, .ant-select-selector {
-    border: 1px solid #4b244a;
+    border: 1px solid black;
     border-radius: 4px;
   }
 
   .ant-select-selector {
-    border: 1px solid #4b244a !important;
+    border: 1px solid black !important;
     border-radius: 4px !important;
   }
 
   .ant-input:focus, .ant-input-number-focused, .ant-select-focused {
-    border-color: #5a0f47 !important;
-    box-shadow: 0 0 5px rgba(90, 15, 71, 0.5) !important;
+    border-color: black !important;
+    box-shadow: 0 0 5px black !important;
   }
 
   .ant-radio, .ant-checkbox {
-    border: 1px solid #4b244a;
+    border: 1px solid black !important;
+  }
+
+  /* When checkbox is checked */
+  .ant-checkbox-checked .ant-checkbox-inner {
+    background-color: #A52A2A !important; /* Red background when checked */
+    border-color: #A52A2A !important;
   }
 
   .ant-btn-primary {
-    background-color: #4b244a;
-    border-color: #4b244a;
+    background-color: #A52A2A !important;
+    border-color: #A52A2A !important;
   }
   
   .ant-btn-primary:hover {
-    background-color: #5a0f47;
-    border-color: #5a0f47;
+    /* background-color: #5a0f47;
+    border-color: #5a0f47; */
   }
   
   .ant-btn-default {
-    border-color: #4b244a;
-    color: #4b244a;
+    border-color: #A52A2A;
+    color: #A52A2A;
   }
   
   .ant-btn-default:hover {
-    background-color: #f5f5f5;
-    border-color: #4b244a;
+    /* background-color: #f5f5f5;
+    border-color: #4b244a; */
   }
   
   /* Layout and spacing */

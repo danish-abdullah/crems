@@ -35,6 +35,7 @@ import AddVisitorVisitor from "./pages/forms/AddVisitorVisitor";
 import ViewVisitorsVisitor from "./pages/views/ViewVisitorsVisitor";
 import AddMaintenanceRequestAdmin from "./pages/forms/AddMaintenanceRequestAdmin";
 import AddComplaintAdmin from "./pages/forms/AddComplaintAdmin";
+import ViewUserManagementSA from "./pages/views/ViewUserManagementSA";
 
 function App() {
   return (
@@ -74,6 +75,7 @@ function App() {
         <Route path="/view-requests" element={<ViewMaintenanceRequestsMaintenance />} />
         <Route path="/add-maintenance-request-admin" element={<AddMaintenanceRequestAdmin />} />
         <Route path="/add-complaint-admin" element={<AddComplaintAdmin />} />
+        <Route path="/view-user-management-sa" element={<ViewUserManagementSA />} />
       </Routes>
   );
 }

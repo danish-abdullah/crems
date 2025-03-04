@@ -79,7 +79,7 @@ const TitleHeader = ({ title }) => {
           size="small"
           offset={[-5, 5]}
           style={{
-            backgroundColor: "#4b244a", // Sidebar color
+            backgroundColor: "#A52A2A", // Sidebar color
           }}
         >
           <Button
@@ -121,8 +121,6 @@ const TitleHeader = ({ title }) => {
             type="default"
             onClick={handleClearNotifications}
             style={{
-              color: "#4b244a",
-              borderColor: "#4b244a",
               marginRight: "10px",
             }}
             disabled={notifications.length === 0}

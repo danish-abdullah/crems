@@ -18,6 +18,7 @@ body {
     background-size: cover;
     width: 400px;
     height: 427px;
+    box-shadow: -10px 4px 10px rgba(0, 0, 0, 0.2);
   }
   
   .login-left {
@@ -55,14 +56,15 @@ body {
     width: 400px;
     padding: 30px;
     border-radius: 0px;
-    /* box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); */
     border: 0px;
-    background-color: #420B31;
+    background-color: white;
+    box-shadow: 10px 4px 10px rgba(0, 0, 0, 0.2);
+    
   }
   
   .login-title {
     text-align: center;
-    color: #ffffff !important;
+    color: black !important;
   }
   
   .login-form {
@@ -74,25 +76,24 @@ body {
   }
   
   .login-checkbox {
-    color: #ffffff;
+    color: black;
   }
   
   .login-button {
-    background-color: #420B31;
-    color: #ffffff;
     border: 2px solid #ffffff;
     border-color: #f0f2f5;
     border-radius: 5px;
     font-weight: bold;
   }
   
-  .login-button:hover {
-    background-color: #3a1243;
+  .forgot-password-item {
+    text-align: right;
   }
-  
+
   .forgot-password-link {
-    color: #ffffff;
+    color: black;
     text-decoration: none;
+    text-align: right;
   }
   
   .forgot-password-link:hover {

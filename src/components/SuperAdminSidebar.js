@@ -16,8 +16,11 @@ const SuperAdminSidebar = () => {
     const navigate = useNavigate(); // Initialize navigate
 
     const handleMenuClick = ({ key }) => {
-        if (key === "superAdminDashboard") {
+        if (key === "viewDashboard") {
           navigate("/super-admin-dashboard");
+        }
+        else if (key === "viewUserManagement") {
+          navigate("/view-user-management-sa");
         }
         else if (key === "addAdmin") {
           navigate("/add-admin");
@@ -28,19 +31,13 @@ const SuperAdminSidebar = () => {
         
       };
   return (
-    <Sider
-        theme="dark"
-        style={{
-          backgroundColor: "#420B31",
-          color: "white",
-        }}
-      >
+    <Sider className="sidebar">
         <div className="logo-container">
           <img src={Logo} alt="Logo" className="logo" />
         </div>
         <div className="avatar-container">
-          <Avatar size={64} style={{ backgroundColor: "#fff" }} />
-          <div style={{ color: "white", margin: "10px" }}>
+          <Avatar size={64} className="avatar-photo"/>
+          <div className="avatar-text">
             <span>VLookin</span>
             <br />
             <small>SuperAdmin</small>
@@ -48,11 +45,30 @@ const SuperAdminSidebar = () => {
         </div>
         <div className="menu-container">
           <Menu
-            theme="dark"
             mode="inline"
-            style={{ backgroundColor: "#420B31", flexGrow: 1 }}
             onClick={handleMenuClick}
           >
+            <Menu.Item key="viewDashboard" icon={<FileTextOutlined />}>
+              Dashboard
+            </Menu.Item>
+            <Menu.Item key="viewUserManagement" icon={<FileTextOutlined />}>
+              User Management
+            </Menu.Item>
+            <Menu.Item key="viewRealEstates" icon={<FileTextOutlined />}>
+              Real Estates
+            </Menu.Item>
+            <Menu.Item key="viewAccessRealEstates" icon={<FileTextOutlined />}>
+              Access Real Estates
+            </Menu.Item>
+            <Menu.Item key="viewAvailableFlats" icon={<FileTextOutlined />}>
+              Available Flats
+            </Menu.Item>
+            <Menu.Item key="viewNotificationManagement" icon={<FileTextOutlined />}>
+              Notification Management
+            </Menu.Item>
+            <Menu.Item key="viewAccessControl" icon={<FileTextOutlined />}>
+              Access Control
+            </Menu.Item>
             {/* <Menu.Item className="main-item" key="superAdminDashboard" icon={<UserOutlined />}>
               Dashboard
             </Menu.Item> */}

@@ -28,27 +28,19 @@ const Sidebar = ({ username }) => {
         }
       };
   return (
-    <Sider
-      theme="dark"
-      style={{
-        backgroundColor: "#420B31",
-        color: "white",
-      }}
-    >
+    <Sider className="sidebar">
       <div className="logo-container">
         <img src={Logo} alt="Logo" className="logo" />
       </div>
       <div className="avatar-container">
-        <Avatar size={64} style={{ backgroundColor: "#fff" }} />
-        <div style={{ color: "white", margin: "10px" }}>
+        <Avatar size={64} className="avatar-photo"/>
+        <div className="avatar-text">
           <span>{username}</span>
         </div>
       </div>
       <div className="menu-container">
         <Menu
-          theme="dark"
           mode="inline"
-          style={{ backgroundColor: "#420B31", flexGrow: 1 }}
           onClick={handleMenuClick}
         >
           <SubMenu key="visitor" icon={<UserOutlined />} title="Visitor">
