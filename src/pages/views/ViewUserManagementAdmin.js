@@ -7,7 +7,7 @@ import {
   SearchOutlined, FilterOutlined, PlusOutlined, EditOutlined,
   UploadOutlined, DeleteOutlined
 } from "@ant-design/icons";
-import SuperAdminSidebar from "../../components/SuperAdminSidebar.js";
+import SuperAdminSidebar from "../../components/AdminSidebar.js";
 import TitleHeader from "../../components/TitleHeader.js";
 import "../../App.css";
 
@@ -57,7 +57,7 @@ const UserManagement = () => {
         // module: item.assigned_module || "-",
         // realState: item.real_state_company || "-",
         status: item.status === 1 ? "Active" : "Inactive",
-        avatar: item.profile_picture
+        avatar: item.profile_picture || "https://via.placeholder.com/150"
       })) || [];
       setUsers(formattedUsers);
     } catch (error) {
@@ -96,7 +96,7 @@ const UserManagement = () => {
   const handleAddUser = async (values) => {
     try {
       setSubmitLoading(true);
-
+  
       // Construct the payload as per your sample body
       const formData = {
         name: values.name,
@@ -104,7 +104,7 @@ const UserManagement = () => {
         password: values.password,
         role: userType?.toLowerCase() || "user", // Default to 'user' if not selected
       };
-
+  
       const response = await fetch("https://website-64a18929.yeo.vug.mybluehost.me/api/admin/users", {
         method: "POST",
         headers: {
@@ -113,7 +113,7 @@ const UserManagement = () => {
         },
         body: JSON.stringify(formData),
       });
-
+  
       const data = await response.json();
   
       if (response.ok && data.success) {

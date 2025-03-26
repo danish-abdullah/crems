@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from "react";
 import {
-  Layout, Table, Button, Input, Dropdown, Menu, Tag, Avatar, Modal, Space, Popconfirm,
+  Layout, Table, Button, Input, Dropdown, Menu, Tag, Avatar, Modal,
   Form, Select, Upload, Switch, DatePicker, Checkbox, message, Spin
 } from "antd";
 import {
   SearchOutlined, FilterOutlined, PlusOutlined, EditOutlined,
   UploadOutlined, DeleteOutlined
 } from "@ant-design/icons";
-import SuperAdminSidebar from "../../components/SuperAdminSidebar.js";
+import SuperAdminSidebar from "../../components/AdminSidebar.js";
 import TitleHeader from "../../components/TitleHeader.js";
+import axios from "axios";
 import "../../App.css";
 
 const { Content } = Layout;
@@ -22,7 +23,7 @@ const menu = (
   </Menu>
 );
 
-const UserManagement = () => {
+const RealEstate = () => {
   const [users, setUsers] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [form] = Form.useForm();
@@ -37,7 +38,7 @@ const UserManagement = () => {
     try {
       setLoading(true);
       const response = await fetch(
-        "https://website-64a18929.yeo.vug.mybluehost.me/api/admin/users",
+        "https://website-64a18929.yeo.vug.mybluehost.me/api/admin/real-estates",
         {
           method: "GET",
           headers: {
@@ -48,16 +49,15 @@ const UserManagement = () => {
       );
       const data = await response.json();
       const formattedUsers = data?.data?.map((item, index) => ({
-        id: item.id,
         key: index + 1,
-        name: item.name,
-        email: item.email,
-        phone: item.phone || "-",
-        type: item.roles[0]?.name || "-",
-        // module: item.assigned_module || "-",
-        // realState: item.real_state_company || "-",
-        status: item.status === 1 ? "Active" : "Inactive",
-        avatar: item.profile_picture
+        id: item.id,
+        name: item.real_estate_name,
+        email: item.email_address,
+        phone: item.phone_number || "-",
+        address: item.address || "-",
+        admin: item.assigned_admin || "-",
+        pricing_plan: item.pricing_plan_name,
+        logo : item.logo
       })) || [];
       setUsers(formattedUsers);
     } catch (error) {
@@ -97,33 +97,23 @@ const UserManagement = () => {
     try {
       setSubmitLoading(true);
 
-      // Construct the payload as per your sample body
       const formData = {
-        name: values.name,
-        email: values.email,
-        password: values.password,
-        role: userType?.toLowerCase() || "user", // Default to 'user' if not selected
+        ...values,
+        profile_picture: imageUrl,
+        status: values.status ? 1 : 0,
+        is_outsourced: isOutsourced ? 1 : 0,
+        user_type: userType,
       };
 
-      const response = await fetch("https://website-64a18929.yeo.vug.mybluehost.me/api/admin/users", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${localStorage.getItem("access_token")}` // Include if required
-        },
-        body: JSON.stringify(formData),
-      });
+      const response = await axios.post("https://website-64a18929.yeo.vug.mybluehost.me/api/admin/user", formData);
 
-      const data = await response.json();
-  
-      if (response.ok && data.success) {
+      if (response.data.success) {
         message.success("User added successfully!");
         handleCancel();
         fetchUsers();
       } else {
-        message.error(data.message || "Failed to add user.");
+        message.error(response.data.message || "Failed to add user.");
       }
-  
     } catch (err) {
       message.error("Error submitting user data.");
     } finally {
@@ -131,52 +121,23 @@ const UserManagement = () => {
     }
   };
 
-  const handleEdit = (record) => {
-    console.log("Edit clicked for:", record);
-    // You can open your edit modal here in the future
-  };
-
-  const handleDeleteUser = async (userId) => {
-    try {
-      const response = await fetch(`https://website-64a18929.yeo.vug.mybluehost.me/api/admin/users/${userId}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${localStorage.getItem("access_token")}`
-        }
-      });
-  
-      const data = await response.json();
-  
-      if (response.ok && data.success) {
-        message.success("User deleted successfully.");
-        fetchUsers(); // Refresh table data
-      } else {
-        message.error(data.message || "Failed to delete user.");
-      }
-    } catch (error) {
-      console.error("Error deleting user:", error);
-      message.error("Error deleting user.");
-    }
-  };
-
   const columns = [
     {
-      title: "User Name",
+      title: "Real Estate Name",
       dataIndex: "name",
       key: "name",
       render: (text, record) => (
         <div className="flex items-center gap-2">
-          <Avatar src={record.avatar} />
+          <Avatar src={record.logo} />
           {text}
         </div>
       ),
     },
     { title: "Email", dataIndex: "email", key: "email" },
+    { title: "Address", dataIndex: "address", key: "address" },
     { title: "Phone Number", dataIndex: "phone", key: "phone" },
-    { title: "User Type", dataIndex: "type", key: "type" },
-    // { title: "Assigned Module", dataIndex: "module", key: "module" },
-    // { title: "Real State", dataIndex: "realState", key: "realState" },
+    { title: "Assigned Admin", dataIndex: "admin", key: "admin" },
+    { title: "Pricing Plan", dataIndex: "pricing_plan", key: "pricing_plan" },
     {
       title: "Status",
       dataIndex: "status",
@@ -184,29 +145,17 @@ const UserManagement = () => {
       render: (status) => <Tag color={status === "Active" ? "green" : "red"}>{status}</Tag>,
     },
     {
-      title: "Actions",
-      key: "actions",
-      render: (text, record) => (
-        <Space size="middle">
-          <Button icon={<EditOutlined />} type="link" onClick={() => handleEdit(record)}></Button>
-          <Popconfirm
-            title="Are you sure you want to delete this user?"
-            onConfirm={() => handleDeleteUser(record.id)}
-            okText="Yes"
-            cancelText="No"
-          >
-            <Button icon={<DeleteOutlined />} type="link" danger></Button>
-          </Popconfirm>
-        </Space>
-      ),
-    }
+      title: "Action",
+      key: "action",
+      render: () => <EditOutlined className="text-red-500 cursor-pointer" />,
+    },
   ];
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
       <SuperAdminSidebar />
       <Layout>
-        <TitleHeader title="User Management" />
+        <TitleHeader title="Real Estates" />
         <Content className="p-6 bg-white">
           <div className="flex justify-between items-center mb-4">
             <Input placeholder="Search" prefix={<SearchOutlined />} className="w-1/3" />
@@ -214,7 +163,7 @@ const UserManagement = () => {
               <Dropdown overlay={menu} placement="bottomLeft">
                 <Button icon={<FilterOutlined />}>Filter By</Button>
               </Dropdown>
-              <Button icon={<PlusOutlined />} type="primary" onClick={showModal}>Add User</Button>
+              <Button icon={<PlusOutlined />} type="primary" onClick={showModal}>Add New</Button>
             </div>
           </div>
           {loading ? <Spin /> : <Table columns={columns} dataSource={users} pagination={{ pageSize: 10 }} />}
@@ -222,7 +171,7 @@ const UserManagement = () => {
       </Layout>
 
       {/* Add User Modal */}
-      <Modal title="Add User" open={isModalVisible} onCancel={handleCancel} footer={null}>
+      <Modal title="Add New" open={isModalVisible} onCancel={handleCancel} footer={null}>
         <Form layout="vertical" form={form} onFinish={handleAddUser}>
           <Form.Item label="Profile Picture">
             <Upload showUploadList={false} beforeUpload={() => false} onChange={handleUpload}>
@@ -334,4 +283,4 @@ const UserManagement = () => {
   );
 };
 
-export default UserManagement;
+export default RealEstate;

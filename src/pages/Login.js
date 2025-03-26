@@ -43,7 +43,7 @@ const Login = () => {
   const fetchUserDetails = async () => {
     try {
       const token = localStorage.getItem("access_token");
-      const response = await fetch("https://website-64a18929.yeo.vug.mybluehost.me/api/auth/me", {
+      const response = await fetch("https://website-64a18929.yeo.vug.mybluehost.me/api/auth/user", {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,

@@ -22,6 +22,9 @@ const SuperAdminSidebar = () => {
         else if (key === "viewUserManagement") {
           navigate("/view-user-management-sa");
         }
+        else if (key === "viewRealEstates") {
+          navigate("/view-real-estates-sa");
+        }
         else if (key === "addAdmin") {
           navigate("/add-admin");
         }

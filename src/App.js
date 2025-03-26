@@ -36,6 +36,9 @@ import ViewVisitorsVisitor from "./pages/views/ViewVisitorsVisitor";
 import AddMaintenanceRequestAdmin from "./pages/forms/AddMaintenanceRequestAdmin";
 import AddComplaintAdmin from "./pages/forms/AddComplaintAdmin";
 import ViewUserManagementSA from "./pages/views/ViewUserManagementSA";
+import ViewUserManagementAdmin from "./pages/views/ViewUserManagementAdmin";
+import ViewRealEstatesSA from "./pages/views/ViewRealEstatesSA";
+import ViewRealEstatesAdmin from "./pages/views/ViewRealEstatesAdmin";
 
 function App() {
   return (
@@ -76,6 +79,9 @@ function App() {
         <Route path="/add-maintenance-request-admin" element={<AddMaintenanceRequestAdmin />} />
         <Route path="/add-complaint-admin" element={<AddComplaintAdmin />} />
         <Route path="/view-user-management-sa" element={<ViewUserManagementSA />} />
+        <Route path="/view-user-management-admin" element={<ViewUserManagementAdmin />} />
+        <Route path="/view-real-estates-sa" element={<ViewRealEstatesSA />} />
+        <Route path="/view-real-estates-admin" element={<ViewRealEstatesAdmin />} />
       </Routes>
   );
 }

@@ -23,6 +23,12 @@ const AdminSidebar = ({ username }) => {
         if (key === "adminDashboard") {
           navigate("/admin-dashboard");
         }  
+        else if (key === "userManagement") {
+          navigate("/view-user-management-admin");
+        }  
+        else if (key === "realEstate") {
+          navigate("/view-real-estates-admin");
+        }  
         else if (key === "addTenant") {
           navigate("/add-tenant");
         }
@@ -92,6 +98,12 @@ const AdminSidebar = ({ username }) => {
         >
           <Menu.Item className="main-item" key="adminDashboard" icon={<UserOutlined />}>
             Dashboard
+          </Menu.Item>
+          <Menu.Item className="main-item" key="userManagement" icon={<UserOutlined />}>
+            User Management
+          </Menu.Item>
+          <Menu.Item className="main-item" key="realEstate" icon={<UserOutlined />}>
+            Real Estate
           </Menu.Item>
           <SubMenu key="visitor" icon={<UserOutlined />} title="Visitor">
           <Menu.Item key="addVisitor" icon={<PlusOutlined />}>
