@@ -7,7 +7,7 @@ import {
   SearchOutlined, FilterOutlined, PlusOutlined, EditOutlined,
   UploadOutlined, DeleteOutlined
 } from "@ant-design/icons";
-import SuperAdminSidebar from "../../components/AdminSidebar.js";
+import AdminSidebar from "../../components/AdminSidebar.js";
 import TitleHeader from "../../components/TitleHeader.js";
 import axios from "axios";
 import "../../App.css";
@@ -154,7 +154,7 @@ const RealEstate = () => {
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
-      <SuperAdminSidebar />
+      <AdminSidebar username="Admin" selectedTab="realEstate"/>
       <Layout>
         <TitleHeader title="Real Estates" />
         <Content className="p-6 bg-white">

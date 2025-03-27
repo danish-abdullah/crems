@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom"; // Import useNavigate
 
 const { Sider } = Layout;
 
-const Sidebar = ({ username }) => {
+const Sidebar = ({ username, selectedTab }) => {
     const navigate = useNavigate(); // Initialize navigate
 
     const handleMenuClick = ({ key }) => {
@@ -35,6 +35,7 @@ const Sidebar = ({ username }) => {
         <Menu
           mode="inline"
           onClick={handleMenuClick}
+          selectedKeys={[selectedTab]}
         >
           <Menu.Item className="main-item" key="viewRequests" icon={<UserOutlined />}>
             View Requests

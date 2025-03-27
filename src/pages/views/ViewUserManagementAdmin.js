@@ -7,7 +7,7 @@ import {
   SearchOutlined, FilterOutlined, PlusOutlined, EditOutlined,
   UploadOutlined, DeleteOutlined
 } from "@ant-design/icons";
-import SuperAdminSidebar from "../../components/AdminSidebar.js";
+import AdminSidebar from "../../components/AdminSidebar.js";
 import TitleHeader from "../../components/TitleHeader.js";
 import "../../App.css";
 
@@ -204,7 +204,7 @@ const UserManagement = () => {
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
-      <SuperAdminSidebar />
+      <AdminSidebar username="Admin" selectedTab="userManagement"/>
       <Layout>
         <TitleHeader title="User Management" />
         <Content className="p-6 bg-white">

@@ -143,7 +143,7 @@ const RealEstate = () => {
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
-      <SuperAdminSidebar />
+      <SuperAdminSidebar selectedTab="viewRealEstates"/>
       <Layout>
         <TitleHeader title="Real Estate" />
         <Content className="p-6 bg-white">

@@ -12,7 +12,7 @@ import { useNavigate } from "react-router-dom"; // Import useNavigate
 const { Sider } = Layout;
 const { SubMenu } = Menu;
 
-const SuperAdminSidebar = () => {
+const SuperAdminSidebar = ({selectedTab}) => {
     const navigate = useNavigate(); // Initialize navigate
 
     const handleMenuClick = ({ key }) => {
@@ -50,6 +50,7 @@ const SuperAdminSidebar = () => {
           <Menu
             mode="inline"
             onClick={handleMenuClick}
+            selectedKeys={[selectedTab]}
           >
             <Menu.Item key="viewDashboard" icon={<FileTextOutlined />}>
               Dashboard

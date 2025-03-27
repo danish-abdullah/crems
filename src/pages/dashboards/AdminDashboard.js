@@ -103,7 +103,7 @@ const AdminDashboard = () => {
   return (
     <Layout style={{ minHeight: "100vh" }}>
       {/* Sidebar */}
-      <Sidebar username="Admin" />
+      <Sidebar username="Admin" selectedTab="adminDashboard" />
 
       {/* Main Content */}
       <Layout>
