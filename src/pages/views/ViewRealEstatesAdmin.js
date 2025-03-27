@@ -11,6 +11,7 @@ import SuperAdminSidebar from "../../components/AdminSidebar.js";
 import TitleHeader from "../../components/TitleHeader.js";
 import axios from "axios";
 import "../../App.css";
+import AddRealEstateModal from "../../components/AddRealEstateModal.js"
 
 const { Content } = Layout;
 const { Option } = Select;
@@ -163,122 +164,16 @@ const RealEstate = () => {
               <Dropdown overlay={menu} placement="bottomLeft">
                 <Button icon={<FilterOutlined />}>Filter By</Button>
               </Dropdown>
-              <Button icon={<PlusOutlined />} type="primary" onClick={showModal}>Add New</Button>
+              <Button icon={<PlusOutlined />} type="primary" onClick={() => setIsModalVisible(true)}>Add New</Button>
             </div>
           </div>
           {loading ? <Spin /> : <Table columns={columns} dataSource={users} pagination={{ pageSize: 10 }} />}
         </Content>
       </Layout>
-
-      {/* Add User Modal */}
-      <Modal title="Add New" open={isModalVisible} onCancel={handleCancel} footer={null}>
-        <Form layout="vertical" form={form} onFinish={handleAddUser}>
-          <Form.Item label="Profile Picture">
-            <Upload showUploadList={false} beforeUpload={() => false} onChange={handleUpload}>
-              <div className="relative w-24 h-24 rounded-full border border-gray-300 flex items-center justify-center cursor-pointer overflow-hidden">
-                {imageUrl ? <img src={imageUrl} alt="Profile" className="w-full h-full object-cover" /> : <UploadOutlined className="text-gray-500 text-xl" />}
-              </div>
-            </Upload>
-            {imageUrl && (
-              <Button onClick={handleRemoveImage} icon={<DeleteOutlined />} className="mt-2">Remove</Button>
-            )}
-          </Form.Item>
-
-          <Form.Item label="User Type" name="user_type" rules={[{ required: true, message: "Please select user type" }]}>
-            <Select placeholder="Select user type" onChange={setUserType}>
-              <Option value="Admin">Admin</Option>
-              <Option value="Sales Person">Sales Person</Option>
-              <Option value="Tenant">Tenant</Option>
-              <Option value="Maintenance">Maintenance</Option>
-              <Option value="Visitor">Visitor</Option>
-              <Option value="Receptionist/Watchman">Receptionist/Watchman</Option>
-            </Select>
-          </Form.Item>
-
-          <div className="flex gap-4">
-            <div className="w-1/2">
-              <Form.Item label="Full Name" name="name" rules={[{ required: true, message: "Please enter full name" }]}>
-                <Input />
-              </Form.Item>
-              <Form.Item label="Phone Number" name="phone" rules={[{ required: true, message: "Please enter phone number" }]}>
-                <Input />
-              </Form.Item>
-            </div>
-            <div className="w-1/2">
-              <Form.Item label="Email Address" name="email" rules={[{ required: true, type: "email", message: "Please enter valid email" }]}>
-                <Input />
-              </Form.Item>
-              <Form.Item label="Password" name="password" rules={[{ required: true, message: "Please enter password" }]}>
-                <Input.Password />
-              </Form.Item>
-            </div>
-          </div>
-
-          {/* Dynamic Fields */}
-          {userType === "Tenant" && (
-            <>
-              <div className="flex gap-4">
-                <div className="w-1/2">
-                  <Form.Item label="Date of Birth" name="dob"><DatePicker /></Form.Item>
-                  <Form.Item label="Flat No" name="flat_no"><Input /></Form.Item>
-                  <Form.Item label="Creation Date" name="creation_date"><DatePicker /></Form.Item>
-                </div>
-                <div className="w-1/2">
-                  <Form.Item label="Nationality" name="nationality"><Input /></Form.Item>
-                  <Form.Item label="Assigned Building" name="building"><Input /></Form.Item>
-                  <Form.Item label="Joining Date" name="joining_date"><DatePicker /></Form.Item>
-                </div>
-              </div>
-            </>
-          )}
-
-          {userType === "Maintenance" && (
-            <>
-              <div className="flex gap-4">
-                <div className="w-1/2">
-                  <Form.Item label="Maintenance ID" name="maintenance_id"><Input /></Form.Item>
-                  <Form.Item label="Designation" name="designation"><Input /></Form.Item>
-                  <Form.Item label="Is Outsourced" name="is_outsourced"><Switch onChange={setIsOutsourced} /></Form.Item>
-                </div>
-                <div className="w-1/2">
-                  <Form.Item label="Assigned Building" name="building"><Input /></Form.Item>
-                  {isOutsourced && (
-                    <>
-                      <Form.Item label="Company Name" name="company_name"><Input /></Form.Item>
-                      <Form.Item label="Company Phone" name="company_phone"><Input /></Form.Item>
-                    </>
-                  )}
-                  <Form.Item label="Categories" name="categories">
-                    <Checkbox.Group options={["Plumbing", "Electrical", "Paint", "Lift"]} />
-                  </Form.Item>
-                </div>
-              </div>
-            </>
-          )}
-
-          {userType === "Visitor" && (
-            <>
-              <div className="flex gap-4">
-                <div className="w-1/2">
-                  <Form.Item label="Assigned Building" name="building"><Input /></Form.Item>
-                  <Form.Item label="Flat Type" name="flat_type"><Checkbox.Group options={["Studio", "1BHK", "2BHK", "3BHK"]} /></Form.Item>
-                  <Form.Item label="Submission Date" name="submission_date"><DatePicker /></Form.Item>
-                </div>
-                <div className="w-1/2">
-                  <Form.Item label="Notification Preference" name="notification_preference"><Checkbox.Group options={["Email", "SMS", "WhatsApp"]} /></Form.Item>
-                  <Form.Item label="Amenities" name="amenities"><Checkbox.Group options={["Pool", "Gym", "Parking"]} /></Form.Item>
-                  <Form.Item label="Desired Start Date" name="start_date"><DatePicker /></Form.Item>
-                </div>
-              </div>
-            </>
-          )}
-
-          <Form.Item label="Status" name="status" valuePropName="checked"><Switch /></Form.Item>
-          <Form.Item>
-            <Button type="primary" htmlType="submit" block loading={submitLoading}>Add</Button>
-          </Form.Item>
-        </Form>
-      </Modal>
+      <AddRealEstateModal
+        visible={isModalVisible}
+        onClose={() => setIsModalVisible(false)}
+      />
     </Layout>
   );
 };

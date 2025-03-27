@@ -162,6 +162,10 @@
     margin: 0 auto;
   }
   
+  .ant-radio-button-wrapper-checked.pricing-plan {
+    font-weight: 600 !important;
+  }
+
   /* Responsive adjustments */
   @media (max-width: 768px) {
     .ant-form {
