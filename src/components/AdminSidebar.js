@@ -16,7 +16,7 @@ import { useNavigate } from "react-router-dom"; // Import useNavigate
 const { Sider } = Layout;
 const { SubMenu } = Menu;
 
-const AdminSidebar = ({ username }) => {
+const AdminSidebar = ({ username, selectedTab }) => {
     const navigate = useNavigate(); // Initialize navigate
 
     const handleMenuClick = ({ key }) => {
@@ -95,6 +95,7 @@ const AdminSidebar = ({ username }) => {
         <Menu
           mode="inline"
           onClick={handleMenuClick}
+          selectedKeys={[selectedTab]}
         >
           <Menu.Item className="main-item" key="adminDashboard" icon={<UserOutlined />}>
             Dashboard
@@ -175,6 +176,7 @@ const AdminSidebar = ({ username }) => {
 
 AdminSidebar.propTypes = {
   username: PropTypes.string.isRequired,
+  selectedTab: PropTypes.string.isRequired,
 };
 
 export default AdminSidebar;

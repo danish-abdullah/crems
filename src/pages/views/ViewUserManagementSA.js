@@ -204,7 +204,7 @@ const UserManagement = () => {
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
-      <SuperAdminSidebar />
+      <SuperAdminSidebar selectedTab="viewUserManagement"/>
       <Layout>
         <TitleHeader title="User Management" />
         <Content className="p-6 bg-white">

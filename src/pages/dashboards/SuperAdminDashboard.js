@@ -22,7 +22,7 @@ const SuperAdminDashboard = () => {
   return (
     <Layout style={{ minHeight: "100vh" }}>
       {/* Sidebar */}
-      <SuperAdminSidebar />
+      <SuperAdminSidebar selectedTab="viewDashboard"/>
 
       {/* Main Content */}
       <Layout>
