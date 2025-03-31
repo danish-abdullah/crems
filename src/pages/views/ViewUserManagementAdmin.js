@@ -31,6 +31,7 @@ const UserManagement = () => {
   const [isOutsourced, setIsOutsourced] = useState(false);
   const [loading, setLoading] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(false);
+  const [editingUser, setEditingUser] = useState(null);
 
   // Fetch users from API
   const fetchUsers = async () => {
@@ -84,16 +85,21 @@ const UserManagement = () => {
     setImageUrl(null);
   };
 
-  const showModal = () => setIsModalVisible(true);
+  const showModal = () => {
+    setEditingUser(null);
+    setIsModalVisible(true);
+  };
+
   const handleCancel = () => {
     form.resetFields();
     setImageUrl(null);
     setUserType(null);
     setIsOutsourced(false);
     setIsModalVisible(false);
+    setEditingUser(null);
   };
 
-  const handleAddUser = async (values) => {
+  const handleSaveUser = async (values) => {
     try {
       setSubmitLoading(true);
   
@@ -104,9 +110,15 @@ const UserManagement = () => {
         password: values.password,
         role: userType?.toLowerCase() || "user", // Default to 'user' if not selected
       };
-  
-      const response = await fetch("https://website-64a18929.yeo.vug.mybluehost.me/api/admin/users", {
-        method: "POST",
+
+      const url = editingUser
+        ? `https://website-64a18929.yeo.vug.mybluehost.me/api/admin/users/${editingUser.id}`
+        : "https://website-64a18929.yeo.vug.mybluehost.me/api/admin/users";
+
+      const method = editingUser ? "PATCH" : "POST";
+
+      const response = await fetch(url, {
+        method,
         headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${localStorage.getItem("access_token")}` // Include if required
@@ -117,11 +129,11 @@ const UserManagement = () => {
       const data = await response.json();
   
       if (response.ok && data.success) {
-        message.success("User added successfully!");
+        message.success(editingUser ? "User updated successfully!" : "User added successfully!");
         handleCancel();
         fetchUsers();
       } else {
-        message.error(data.message || "Failed to add user.");
+        message.error(data.message || "Failed to save user.");
       }
   
     } catch (err) {
@@ -132,8 +144,17 @@ const UserManagement = () => {
   };
 
   const handleEdit = (record) => {
-    console.log("Edit clicked for:", record);
-    // You can open your edit modal here in the future
+    setEditingUser(record);
+    setUserType(record.type);
+    console.log(record);
+    form.setFieldsValue({
+      name: record.name,
+      email: record.email,
+      password: record.password,
+      phone: record.phone,
+      user_type: record.type,
+    });
+    setIsModalVisible(true);
   };
 
   const handleDeleteUser = async (userId) => {
@@ -223,7 +244,7 @@ const UserManagement = () => {
 
       {/* Add User Modal */}
       <Modal title="Add User" open={isModalVisible} onCancel={handleCancel} footer={null}>
-        <Form layout="vertical" form={form} onFinish={handleAddUser}>
+        <Form layout="vertical" form={form} onFinish={handleSaveUser}>
           <Form.Item label="Profile Picture">
             <Upload showUploadList={false} beforeUpload={() => false} onChange={handleUpload}>
               <div className="relative w-24 h-24 rounded-full border border-gray-300 flex items-center justify-center cursor-pointer overflow-hidden">
@@ -236,7 +257,7 @@ const UserManagement = () => {
           </Form.Item>
 
           <Form.Item label="User Type" name="user_type" rules={[{ required: true, message: "Please select user type" }]}>
-            <Select placeholder="Select user type" onChange={setUserType}>
+            <Select placeholder="Select user type" onChange={setUserType} value={userType}>
               <Option value="Admin">Admin</Option>
               <Option value="Sales Person">Sales Person</Option>
               <Option value="Tenant">Tenant</Option>
