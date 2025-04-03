@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
 import {
-  Layout, Table, Button, Input, Dropdown, Menu, Tag, Avatar, Modal,
-  Form, Select, Upload, Switch, DatePicker, Checkbox, message, Spin
+  Layout, Table, Button, Input, Dropdown, Menu, Tag, Avatar,
+  Form, message, Spin, Space, Popconfirm
 } from "antd";
 import {
-  SearchOutlined, FilterOutlined, PlusOutlined, EditOutlined,
-  UploadOutlined, DeleteOutlined
+  SearchOutlined, FilterOutlined, PlusOutlined, EditOutlined, DeleteOutlined
 } from "@ant-design/icons";
 import AdminSidebar from "../../components/AdminSidebar.js";
 import TitleHeader from "../../components/TitleHeader.js";
@@ -14,7 +13,6 @@ import "../../App.css";
 import AddRealEstateModal from "../../components/AddRealEstateModal.js"
 
 const { Content } = Layout;
-const { Option } = Select;
 
 const menu = (
   <Menu>
@@ -29,11 +27,9 @@ const RealEstate = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [form] = Form.useForm();
   const [imageUrl, setImageUrl] = useState(null);
-  const [userType, setUserType] = useState(null);
-  const [isOutsourced, setIsOutsourced] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [submitLoading, setSubmitLoading] = useState(false);
-
+  const [editData, setEditData] = useState(null);
+  
   // Fetch users from API
   const fetchUsers = async () => {
     try {
@@ -58,7 +54,8 @@ const RealEstate = () => {
         address: item.address || "-",
         admin: item.assigned_admin || "-",
         pricing_plan: item.pricing_plan_name,
-        logo : item.logo
+        logo : item.logo,
+        status: item.status,
       })) || [];
       setUsers(formattedUsers);
     } catch (error) {
@@ -72,56 +69,37 @@ const RealEstate = () => {
     fetchUsers();
   }, []);
 
-  // Upload Image Handler
-  const handleUpload = ({ file }) => {
-    const reader = new FileReader();
-    reader.onload = () => {
-      setImageUrl(reader.result);
-    };
-    reader.readAsDataURL(file);
+  const handleEdit = (record) => {
+    console.log("Editing Record:", record);
+    setEditData(record); // Set the selected row data
+    setIsModalVisible(true); // Open modal
   };
 
-  const handleRemoveImage = () => {
-    setImageUrl(null);
-  };
-
-  const showModal = () => setIsModalVisible(true);
-  const handleCancel = () => {
-    form.resetFields();
-    setImageUrl(null);
-    setUserType(null);
-    setIsOutsourced(false);
-    setIsModalVisible(false);
-  };
-
-  const handleAddUser = async (values) => {
+  const handleDeleteRealEstate = async (id) => {
     try {
-      setSubmitLoading(true);
-
-      const formData = {
-        ...values,
-        profile_picture: imageUrl,
-        status: values.status ? 1 : 0,
-        is_outsourced: isOutsourced ? 1 : 0,
-        user_type: userType,
-      };
-
-      const response = await axios.post("https://website-64a18929.yeo.vug.mybluehost.me/api/admin/user", formData);
-
+      setLoading(true);
+      const response = await axios.delete(
+        `https://website-64a18929.yeo.vug.mybluehost.me/api/admin/real-estates/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+          },
+        }
+      );
+  
       if (response.data.success) {
-        message.success("User added successfully!");
-        handleCancel();
-        fetchUsers();
+        message.success("Real estate deleted successfully!");
+        fetchUsers(); // Refresh the table
       } else {
-        message.error(response.data.message || "Failed to add user.");
+        message.error(response.data.message || "Failed to delete real estate.");
       }
-    } catch (err) {
-      message.error("Error submitting user data.");
+    } catch (error) {
+      message.error("Error deleting real estate.");
     } finally {
-      setSubmitLoading(false);
+      setLoading(false);
     }
   };
-
+  
   const columns = [
     {
       title: "Real Estate Name",
@@ -143,12 +121,24 @@ const RealEstate = () => {
       title: "Status",
       dataIndex: "status",
       key: "status",
-      render: (status) => <Tag color={status === "Active" ? "green" : "red"}>{status}</Tag>,
+      render: (status) => <Tag color={status === 1 ? "green" : "red"}>{status === 1 ? "Active" : "Inactive"}</Tag>,
     },
     {
-      title: "Action",
-      key: "action",
-      render: () => <EditOutlined className="text-red-500 cursor-pointer" />,
+      title: "Actions",
+      key: "actions",
+      render: (text, record) => (
+        <Space size="middle">
+          <Button icon={<EditOutlined />} type="link" onClick={() => handleEdit(record)}></Button>
+          <Popconfirm
+            title="Are you sure you want to delete this real estate?"
+            onConfirm={() => handleDeleteRealEstate(record.id)}
+            okText="Yes"
+            cancelText="No"
+          >
+            <Button icon={<DeleteOutlined />} type="link" danger></Button>
+          </Popconfirm>
+        </Space>
+      ),
     },
   ];
 
@@ -172,7 +162,11 @@ const RealEstate = () => {
       </Layout>
       <AddRealEstateModal
         visible={isModalVisible}
-        onClose={() => setIsModalVisible(false)}
+        onClose={() => {
+          setIsModalVisible(false);
+          setEditData(null); // Reset edit data when closing modal
+        }}
+        editData={editData}
       />
     </Layout>
   );

@@ -39,6 +39,7 @@ import ViewUserManagementSA from "./pages/views/ViewUserManagementSA";
 import ViewUserManagementAdmin from "./pages/views/ViewUserManagementAdmin";
 import ViewRealEstatesSA from "./pages/views/ViewRealEstatesSA";
 import ViewRealEstatesAdmin from "./pages/views/ViewRealEstatesAdmin";
+import ViewAccessRealEstateSA from "./pages/views/ViewAccessRealEstateSA";
 
 function App() {
   return (
@@ -82,6 +83,7 @@ function App() {
         <Route path="/view-user-management-admin" element={<ViewUserManagementAdmin />} />
         <Route path="/view-real-estates-sa" element={<ViewRealEstatesSA />} />
         <Route path="/view-real-estates-admin" element={<ViewRealEstatesAdmin />} />
+        <Route path="/view-access-real-estates-sa" element={<ViewAccessRealEstateSA />} />
       </Routes>
   );
 }
