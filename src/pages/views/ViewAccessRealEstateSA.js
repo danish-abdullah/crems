@@ -6,14 +6,14 @@ import { SearchOutlined, EditOutlined } from "@ant-design/icons";
 import SuperAdminSidebar from "../../components/SuperAdminSidebar.js";
 import TitleHeader from "../../components/TitleHeader.js";
 import "../../App.css";
+import { useNavigate } from "react-router-dom"; 
 
 const { Content } = Layout;
-
-
 
 const AccessRealEstate = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const fetchData = async () => {
     try {
@@ -99,6 +99,10 @@ const AccessRealEstate = () => {
     // Implement edit modal functionality
   };
 
+  const handleRowClick = (record) => {
+    navigate("/real-estate-detail-sa", { state: record });
+  };
+
   const columns = [
     {
       title: "Real Estate Name",
@@ -140,7 +144,11 @@ const AccessRealEstate = () => {
           <div>
             <Input placeholder="Search Real Estate" prefix={<SearchOutlined />} className="mb-4 w-1/3" />
           </div>
-          {loading ? <Spin /> : <Table columns={columns} dataSource={data} pagination={{ pageSize: 10 }} />}
+          {loading ? <Spin /> : <Table columns={columns} dataSource={data} pagination={{ pageSize: 10 }} 
+          onRow={(record) => ({
+            onClick: () => handleRowClick(record),
+          })}
+          />}
         </Content>
       </Layout>
     </Layout>
