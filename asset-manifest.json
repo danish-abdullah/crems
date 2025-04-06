@@ -1,18 +1,18 @@
 {
   "files": {
-    "main.css": "/crems/static/css/main.27df6a78.css",
-    "main.js": "/crems/static/js/main.d3e1c274.js",
+    "main.css": "/crems/static/css/main.2aa5e83f.css",
+    "main.js": "/crems/static/js/main.a0404756.js",
     "static/js/453.c601aeb0.chunk.js": "/crems/static/js/453.c601aeb0.chunk.js",
     "static/media/background.png": "/crems/static/media/background.f8c260ed2a47da20f264.png",
     "static/media/login.png": "/crems/static/media/login.42d2aacdc4d50713a7e9.png",
     "static/media/logo.png": "/crems/static/media/logo.7d4d29769df7a102f94a.png",
     "index.html": "/crems/index.html",
-    "main.27df6a78.css.map": "/crems/static/css/main.27df6a78.css.map",
-    "main.d3e1c274.js.map": "/crems/static/js/main.d3e1c274.js.map",
+    "main.2aa5e83f.css.map": "/crems/static/css/main.2aa5e83f.css.map",
+    "main.a0404756.js.map": "/crems/static/js/main.a0404756.js.map",
     "453.c601aeb0.chunk.js.map": "/crems/static/js/453.c601aeb0.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.27df6a78.css",
-    "static/js/main.d3e1c274.js"
+    "static/css/main.2aa5e83f.css",
+    "static/js/main.a0404756.js"
   ]
 }
