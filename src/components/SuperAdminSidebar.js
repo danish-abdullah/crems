@@ -34,6 +34,9 @@ const SuperAdminSidebar = ({selectedTab}) => {
         else if (key === "viewAccessRealEstates") {
           navigate("/view-access-real-estates-sa");
         }
+        else if (key === "viewNotificationManagement") {
+          navigate("/view-notification-management-sa");
+        }
       };
   return (
     <Sider className="sidebar">
