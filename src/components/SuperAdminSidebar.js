@@ -28,9 +28,9 @@ const SuperAdminSidebar = ({selectedTab}) => {
         else if (key === "addAdmin") {
           navigate("/add-admin");
         }
-        else if (key === "viewAdmins") {
-          navigate("/view-admins");
-        }
+        // else if (key === "viewAdmins") {
+        //   navigate("/view-admins");
+        // }
         else if (key === "viewAccessRealEstates") {
           navigate("/view-access-real-estates-sa");
         }
@@ -84,14 +84,14 @@ const SuperAdminSidebar = ({selectedTab}) => {
             {/* <Menu.Item className="main-item" key="superAdminDashboard" icon={<UserOutlined />}>
               Dashboard
             </Menu.Item> */}
-          <SubMenu key="admins" icon={<UserOutlined />} title="Admins">
+          {/* <SubMenu key="admins" icon={<UserOutlined />} title="Admins">
           <Menu.Item key="addAdmin" icon={<PlusOutlined />}>
               Add Admin
             </Menu.Item>
             <Menu.Item key="viewAdmins" icon={<FileTextOutlined />}>
               View Admins
             </Menu.Item>
-          </SubMenu>
+          </SubMenu> */}
           </Menu>
         </div>
       </Sider>

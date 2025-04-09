@@ -7,15 +7,15 @@
     top: 20px; /* Distance from the top of the page */
     left: 20px; /* Distance from the left of the page */
     z-index: 1000; /* Ensure it appears above other elements */
-}
+  }
+  
+  .logo {
+    width: 150px; /* Set the width of the logo */
+    height: auto; /* Maintain aspect ratio */
+  }
 
-.logo {
-  width: 150px; /* Set the width of the logo */
-  height: auto; /* Maintain aspect ratio */
-}
-
-.sidebar {
-  background-color: white;
+  .sidebar {
+    background-color: white;
 }
 
 .avatar-container {
@@ -41,6 +41,11 @@
   display: flex;
   flex-direction: column;
   justify-content: center; /* Center align menu vertically */
+}
+
+.ant-layout-sider-dark {
+  max-width: fit-content !important;
+  flex: auto !important;
 }
 
  /* Ensure menu items have white font color */
