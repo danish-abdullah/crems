@@ -37,6 +37,9 @@ const SuperAdminSidebar = ({selectedTab}) => {
         else if (key === "viewNotificationManagement") {
           navigate("/view-notification-management-sa");
         }
+        else if (key === "viewAccessControl") {
+          navigate("/view-access-control-sa");
+        }
       };
   return (
     <Sider className="sidebar">

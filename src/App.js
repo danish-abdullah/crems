@@ -43,6 +43,8 @@ import ViewAccessRealEstateSA from "./pages/views/ViewAccessRealEstateSA";
 import RealEstateDetailSA from "./pages/views/RealEstateDetailSA";
 import BuildingDetailSA from "./pages/views/BuildingDetailSA";
 import NotificationManagementSA from "./pages/views/NotificationManagementSA";
+import AccessControlSA from "./pages/views/AccessControlSA";
+import AdminDetailView from "./pages/views/AdminDetailView";
 
 function App() {
   return (
@@ -90,6 +92,8 @@ function App() {
         <Route path="/real-estate-detail-sa" element={<RealEstateDetailSA />} />
         <Route path="/building-detail-sa" element={<BuildingDetailSA />} />
         <Route path="/view-notification-management-sa" element={<NotificationManagementSA />} />
+        <Route path="/view-access-control-sa" element={<AccessControlSA />} />
+        <Route path="/view-access-control-sa/:adminId" element={<AdminDetailView />} />
       </Routes>
   );
 }
