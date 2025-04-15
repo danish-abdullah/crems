@@ -6,6 +6,7 @@ import { ArrowLeftOutlined, EyeOutlined, EditOutlined } from "@ant-design/icons"
 import SuperAdminSidebar from "../../components/SuperAdminSidebar";
 import TitleHeader from "../../components/TitleHeader";
 import "../../App.css";
+import ViewTenants from "./ViewTenants"
 
 const { Content } = Layout;
 
@@ -23,7 +24,7 @@ const BuildingDetail = () => {
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
-      <SuperAdminSidebar selectedTab="viewAccessRealEstates" />
+      <SuperAdminSidebar selectedTab="viewRealEstates" />
       <Layout>
         <TitleHeader title="Access Real Estate/Building" />
         <Content className="p-6">
@@ -41,9 +42,8 @@ const BuildingDetail = () => {
               </Tag>
             </div>
             <Descriptions layout="horizontal" column={3}>
-              <Descriptions.Item label="Admin">{data.admin}</Descriptions.Item>
-              <Descriptions.Item label="Phone Number">{data.phone}</Descriptions.Item>
-              <Descriptions.Item label="Email Address">{data.email}</Descriptions.Item>
+              <Descriptions.Item label="Building Name">{data.building}</Descriptions.Item>
+              <Descriptions.Item label="Address">{data.address}</Descriptions.Item>
               <Descriptions.Item label="Total Apartments">{data.apartments}</Descriptions.Item>
               <Descriptions.Item label="Total Tenants">{data.tenants}</Descriptions.Item>
               <Descriptions.Item label="Date Added">{data.dateAdded}</Descriptions.Item>
@@ -70,6 +70,7 @@ const BuildingDetail = () => {
               </Col>
             </Row>
           </div>
+          <ViewTenants></ViewTenants>
         </Content>
       </Layout>
     </Layout>

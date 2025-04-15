@@ -5,6 +5,7 @@ import { Layout, Table, Avatar, Tag, Button } from "antd";
 import { ArrowLeftOutlined, EditOutlined } from "@ant-design/icons";
 import SuperAdminSidebar from "../../components/SuperAdminSidebar";
 import TitleHeader from "../../components/TitleHeader";
+import ViewBuildings from "./ViewBuildings";
 import "../../App.css";
 
 const { Content } = Layout;
@@ -94,7 +95,7 @@ const RealEstateDetail = () => {
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
-      <SuperAdminSidebar selectedTab="viewAccessRealEstates" />
+      <SuperAdminSidebar selectedTab="viewRealEstates" />
       <Layout>
         <TitleHeader title="Access Real Estate/Building" />
         <Content className="p-6">
@@ -121,11 +122,12 @@ const RealEstateDetail = () => {
             </Button>
           </div>
 
-          <Table columns={columns} dataSource={sampleBuildings}
+          {/* <Table columns={columns} dataSource={sampleBuildings}
           onRow={(record) => ({
             onClick: () => handleBuildingClick(record),
           })}
-           />
+           /> */}
+           <ViewBuildings></ViewBuildings>
         </Content>
       </Layout>
     </Layout>

@@ -69,9 +69,9 @@ const SuperAdminSidebar = ({selectedTab}) => {
             <Menu.Item key="viewRealEstates" icon={<FileTextOutlined />}>
               Real Estates
             </Menu.Item>
-            <Menu.Item key="viewAccessRealEstates" icon={<FileTextOutlined />}>
+            {/* <Menu.Item key="viewAccessRealEstates" icon={<FileTextOutlined />}>
               Access Real Estates
-            </Menu.Item>
+            </Menu.Item> */}
             <Menu.Item key="viewAvailableFlats" icon={<FileTextOutlined />}>
               Available Flats
             </Menu.Item>

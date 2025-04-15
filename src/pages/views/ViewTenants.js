@@ -12,7 +12,6 @@ import {
 } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import "../../App.css";
-import Sidebar from "../../components/AdminSidebar.js";
 import TitleHeader from "../../components/TitleHeader.js";
 
 const { Content } = Layout;
@@ -30,7 +29,7 @@ const ViewTenants = () => {
   const fetchTenants = async () => {
     try {
       const response = await fetch(
-        "https://website-64a18929.yeo.vug.mybluehost.me/api/admin/tenant",
+        "https://website-64a18929.yeo.vug.mybluehost.me/api/admin/users",
         {
           method: "GET",
           headers: {
@@ -40,7 +39,7 @@ const ViewTenants = () => {
       );
       const data = await response.json();
       if (data.success) {
-        setDataSource(data.data); // Set tenants data in state
+        setDataSource(data?.data?.filter(user => user.roles[0]?.name === "Tenant") || []); // Set tenants data in state
       } else {
         message.error("Failed to fetch tenants");
       }
@@ -54,7 +53,7 @@ const ViewTenants = () => {
   const fetchBuildings = async () => {
     try {
       const response = await fetch(
-        "https://website-64a18929.yeo.vug.mybluehost.me/api/admin/building",
+        "https://website-64a18929.yeo.vug.mybluehost.me/api/admin/buildings",
         {
           method: "GET",
           headers: {
@@ -76,7 +75,6 @@ const ViewTenants = () => {
 
   useEffect(() => {
     fetchTenants(); // Fetch tenants on component mount
-    fetchBuildings(); // Fetch buildings on component mount
   }, []);
 
   // Delete tenant
@@ -106,6 +104,7 @@ const ViewTenants = () => {
 
   // Show edit modal
   const showEditModal = (record) => {
+    fetchBuildings(); // Fetch buildings on component mount
     setEditingTenant(record);
     form.setFieldsValue(record); // Pre-fill form with tenant's data
     setIsModalVisible(true);
@@ -142,7 +141,7 @@ const ViewTenants = () => {
   const columns = [
     {
       title: "Name",
-      dataIndex: "full_name",
+      dataIndex: "name",
       key: "name",
     },
     {
@@ -200,15 +199,9 @@ const ViewTenants = () => {
   ];
 
   return (
-    <Layout style={{ minHeight: "100vh" }}>
-      {/* Sidebar */}
-      <Sidebar username="Admin" />
-
-      {/* Main Content */}
+    
       <Layout>
-        <TitleHeader title="View Tenants" />
         <Content
-          style={{ margin: "20px", padding: "20px", background: "white" }}
         >
           <Search
             placeholder="Search"
@@ -290,7 +283,6 @@ const ViewTenants = () => {
           </Form>
         </Modal>
       </Layout>
-    </Layout>
   );
 };
 

@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Modal, Form, Input, Select, Switch, Button, Upload, Radio } from "antd";
+import {
+  Modal, Form, Input, Select, Switch, Button, Upload, Radio, message
+} from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 
 const { Option } = Select;
@@ -9,7 +11,29 @@ const AddRealEstateModal = ({ visible, onClose, editData }) => {
   const [fileList, setFileList] = useState([]);
   const [color, setColor] = useState("#0000FF");
   const [pricingPlan, setPricingPlan] = useState(null);
-  const isEditing = !!editData; // Check if it's edit mode
+  const [adminUsers, setAdminUsers] = useState([]);
+  const isEditing = !!editData;
+
+  useEffect(() => {
+    // Fetch admin users
+    const fetchAdmins = async () => {
+      try {
+        const res = await fetch("https://website-64a18929.yeo.vug.mybluehost.me/api/admin/users", {
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${localStorage.getItem("access_token")}`
+          }
+        });
+        const data = await res.json();
+        const admins = data?.data?.filter(user => user.roles[0]?.name === "Admin") || [];
+        setAdminUsers(admins);
+      } catch (err) {
+        message.error("Failed to fetch admins");
+      }
+    };
+
+    fetchAdmins();
+  }, []);
 
   useEffect(() => {
     if (editData) {
@@ -20,12 +44,12 @@ const AddRealEstateModal = ({ visible, onClose, editData }) => {
         email: editData.email,
         admin: editData.admin,
         totalBuildings: editData.totalBuildings,
-        status: editData.status === 1, // Convert 1/0 to true/false
+        status: editData.status === 1,
         plan: editData.pricing_plan,
       });
-      setPricingPlan(editData.plan); // Ensure state updates
+      setPricingPlan(editData.plan);
     } else {
-      form.resetFields(); // Clear form when adding new
+      form.resetFields();
     }
   }, [editData, form]);
 
@@ -33,7 +57,7 @@ const AddRealEstateModal = ({ visible, onClose, editData }) => {
     setFileList(fileList);
   };
 
-  const handleSubmit = (values) => {
+  const handleSubmit = async (values) => {
     const formData = new FormData();
     formData.append("real_estate_name", values.realStateName);
     formData.append("address", values.address);
@@ -42,24 +66,36 @@ const AddRealEstateModal = ({ visible, onClose, editData }) => {
     formData.append("total_number_of_buildings", values.totalBuildings);
     formData.append("pick_color", color);
     formData.append("status", values.status ? 1 : 0);
-    formData.append("user_id", 1); // Example user ID
+    formData.append("user_id", values.admin); // From dropdown
     formData.append("pricing_plan_id", pricingPlan);
 
-    // Append new logo file if uploaded
     if (fileList.length > 0 && fileList[0].originFileObj) {
       formData.append("logo", fileList[0].originFileObj);
     }
 
     const url = isEditing
-      ? `YOUR_API_URL_HERE/${editData.id}` // Edit URL (PUT)
-      : "YOUR_API_URL_HERE"; // Add URL (POST)
+      ? `https://website-64a18929.yeo.vug.mybluehost.me/api/admin/real-estates/${editData.id}`
+      : "https://website-64a18929.yeo.vug.mybluehost.me/api/admin/real-estates";
+    const method = isEditing ? "PATCH" : "POST"; // Adjust if PUT is supported
 
-    const method = isEditing ? "PUT" : "POST";
-
-    fetch(url, {
-      method,
-      body: formData,
-    })
+    try {
+      const response = await fetch(url, {
+        method,
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`
+        },
+        body: formData
+      });
+      const result = await response.json();
+      if (result.success) {
+        message.success(isEditing ? "Real estate updated" : "Real estate added");
+        onClose();
+      } else {
+        message.error(result.message || "Something went wrong");
+      }
+    } catch (err) {
+      message.error("Error submitting form");
+    }
   };
 
   return (
@@ -71,7 +107,6 @@ const AddRealEstateModal = ({ visible, onClose, editData }) => {
       width={700}
     >
       <Form layout="vertical" form={form} onFinish={handleSubmit}>
-        {/* Upload Logo */}
         <Form.Item label="Upload Logo">
           <Upload
             listType="picture-card"
@@ -88,7 +123,6 @@ const AddRealEstateModal = ({ visible, onClose, editData }) => {
           </Upload>
         </Form.Item>
 
-        {/* Real Estate Name & Address */}
         <div style={{ display: "flex", gap: "16px" }}>
           <Form.Item label="Real Estate Name" name="realStateName" style={{ flex: 1 }}>
             <Input placeholder="Enter Real Estate Name" />
@@ -98,7 +132,6 @@ const AddRealEstateModal = ({ visible, onClose, editData }) => {
           </Form.Item>
         </div>
 
-        {/* Phone & Email */}
         <div style={{ display: "flex", gap: "16px" }}>
           <Form.Item label="Phone Number" name="phoneNumber" style={{ flex: 1 }}>
             <Input placeholder="Enter Phone Number" />
@@ -108,12 +141,14 @@ const AddRealEstateModal = ({ visible, onClose, editData }) => {
           </Form.Item>
         </div>
 
-        {/* Assign Admin & Total Buildings */}
         <div style={{ display: "flex", gap: "16px" }}>
           <Form.Item label="Assign Admin" name="admin" style={{ flex: 1 }}>
             <Select placeholder="Select Admin">
-              <Option value="admin1">Admin 1</Option>
-              <Option value="admin2">Admin 2</Option>
+              {adminUsers.map((admin) => (
+                <Option key={admin.name} value={admin.name}>
+                  {admin.name}
+                </Option>
+              ))}
             </Select>
           </Form.Item>
           <Form.Item label="Total Number of Buildings" name="totalBuildings" style={{ flex: 1 }}>
@@ -121,7 +156,6 @@ const AddRealEstateModal = ({ visible, onClose, editData }) => {
           </Form.Item>
         </div>
 
-        {/* Color & Status */}
         <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
           <Form.Item label="Pick Colour" name="colour">
             <Input
@@ -141,7 +175,6 @@ const AddRealEstateModal = ({ visible, onClose, editData }) => {
           </Form.Item>
         </div>
 
-        {/* Pricing Plan */}
         <Form.Item label="Pricing Plan" name="plan">
           <Radio.Group onChange={(e) => setPricingPlan(e.target.value)} value={pricingPlan}>
             {[
@@ -150,7 +183,7 @@ const AddRealEstateModal = ({ visible, onClose, editData }) => {
               { label: "Platinum", value: "Platinum", price: "1200 AED", color: "#CD7F32" },
             ].map((option) => (
               <Radio.Button
-              className="pricing-plan"
+                className="pricing-plan"
                 key={option.value}
                 value={option.value}
                 style={{
@@ -172,7 +205,6 @@ const AddRealEstateModal = ({ visible, onClose, editData }) => {
           </Radio.Group>
         </Form.Item>
 
-        {/* Submit Button */}
         <Form.Item style={{ textAlign: "center", marginTop: 16 }}>
           <Button type="primary" htmlType="submit" style={{ backgroundColor: "#A52A2A", border: "none", width: "90px" }}>
             {isEditing ? "Update" : "Add"}

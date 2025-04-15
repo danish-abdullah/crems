@@ -1,22 +1,38 @@
 import React, { useEffect, useState } from "react";
 import { Layout, Table, Input, Button, message, Popconfirm } from "antd";
-import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import { EditOutlined, DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import "../../App.css";
-import Sidebar from "../../components/AdminSidebar.js";
-import TitleHeader from "../../components/TitleHeader.js";
+import { useLocation, useNavigate } from "react-router-dom";
+import AddBuildingModal from "../forms/AddBuilding"
 
 const { Content } = Layout;
 const { Search } = Input;
 
 const ViewBuildings = () => {
   const [buildings, setBuildings] = useState([]);
+  const [isBuildingModalVisible, setIsBuildingModalVisible] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [editData, setEditData] = useState(null);
+  const data = location.state;
+
+const handleRowClick = (record) => {
+  navigate("/building-detail-sa", {
+    state: {
+      ...record,
+      realEstateName: data.name,
+      dateAdded: "12-12-2024", // Example
+      tenants: 12, // You can replace with real data
+    },
+  });
+};
 
   // Fetch data from the API
   useEffect(() => {
     const fetchBuildings = async () => {
       const token = localStorage.getItem("access_token");  // Get session token
       try {
-        const response = await fetch("https://website-64a18929.yeo.vug.mybluehost.me/api/admin/building", {
+        const response = await fetch("https://website-64a18929.yeo.vug.mybluehost.me/api/admin/buildings", {
           method: "GET",
           headers: {
             "Authorization": `Bearer ${token}`,  // Pass the token in the Authorization header
@@ -48,7 +64,7 @@ const ViewBuildings = () => {
   const deleteBuilding = async (id) => {
     const token = localStorage.getItem("access_token");  // Get session token
     try {
-      const response = await fetch(`https://website-64a18929.yeo.vug.mybluehost.me/api/admin/building/${id}`, {
+      const response = await fetch(`https://website-64a18929.yeo.vug.mybluehost.me/api/admin/buildings/${id}`, {
         method: "DELETE",
         headers: {
           "Authorization": `Bearer ${token}`,
@@ -114,33 +130,40 @@ const ViewBuildings = () => {
   ];
 
   return (
-    <Layout style={{ minHeight: "100vh" }}>
-      {/* Sidebar */}
-      <Sidebar username="Admin" />
-
-      {/* Main Content */}
-      <Layout>
-        <TitleHeader title="View Buildings" />
-        <Content
-          style={{ margin: "20px", padding: "20px", background: "white" }}
-        >
-          <Search
-            placeholder="Search"
-            allowClear
-            style={{
-              width: 300,
-              marginBottom: "20px",
-              borderColor: "#4b244a",
-            }}
-          />
-          <Table
-            dataSource={buildings.length > 0 ? buildings : []}
-            columns={columns}
-            pagination={{ pageSize: 5 }}
-          />
-        </Content>
-      </Layout>
-    </Layout>
+    <Content
+    >
+      <div className="flex justify-between items-center mb-4">
+      <Search
+        placeholder="Search"
+        allowClear
+        style={{
+          width: 300,
+          marginBottom: "20px",
+          borderColor: "#4b244a",
+        }}
+      />
+      <div className="flex gap-2">
+        <Button icon={<PlusOutlined />} type="primary" onClick={() =>{ setIsBuildingModalVisible(true);}}>Add Building</Button>
+      </div>
+      </div>
+      <Table
+        dataSource={buildings.length > 0 ? buildings : []}
+        columns={columns}
+        pagination={{ pageSize: 5 }}
+        onRow={(record) => ({
+          onClick: () => handleRowClick(record),
+        })}
+      />
+      <AddBuildingModal
+        visible={isBuildingModalVisible}
+        onClose={() => {
+          setIsBuildingModalVisible(false);
+          setEditData(null); // Reset edit data when closing modal
+        }}
+        editData={editData}
+      />
+    </Content>
+    
   );
 };
 

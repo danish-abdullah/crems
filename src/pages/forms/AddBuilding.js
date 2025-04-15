@@ -1,18 +1,17 @@
 import React, { useState } from "react";
-import { Layout, Typography, InputNumber, Button, Row, Col, Form, Radio, Input, message } from "antd";
+import { Layout, Typography, InputNumber, Button, Row, Col, Form, Radio, Input, message, Modal } from "antd";
 import "../../App.css";
-import Sidebar from "../../components/AdminSidebar.js";
-import TitleHeader from "../../components/TitleHeader.js";
 
 const { Content } = Layout;
 const { Title } = Typography;
 
-const AddBuilding = () => {
+const AddBuilding = ({visible, onClose, editData}) => {
   const [form] = Form.useForm(); // Create form instance
   const [floorCount, setFloorCount] = useState(0);
   const [parkingFloorCount, setParkingFloorCount] = useState(0);
   const [floorOption, setFloorOption] = useState("");
   const [parkingOption, setParkingOption] = useState("");
+  const isEditing = !!editData;
 
   const onFinish = async (values) => {
     const payload = {
@@ -64,18 +63,14 @@ const AddBuilding = () => {
   };
 
   return (
-    <Layout style={{ minHeight: "100vh" }}>
-      {/* Sidebar */}
-      <Sidebar username="Admin" />
-
-      {/* Main Content */}
-      <Layout>
-        <TitleHeader title="Add Building" />
-        <Content style={{ margin: "20px", padding: "20px", background: "white" }}>
-          <Title level={5} style={{ color: "#4b244a" }}>
-            Add Building Details
-          </Title>
-          {/* Add Building Form */}
+      <Modal
+      title={isEditing ? "Edit Real Estate" : "Add New Real Estate"}
+      visible={visible}
+      onCancel={onClose}
+      footer={null}
+      width={700}
+    >
+       
           <Form
             form={form} // Link form instance
             layout="vertical"
@@ -287,9 +282,7 @@ const AddBuilding = () => {
               </Button>
             </div>
           </Form>
-        </Content>
-      </Layout>
-    </Layout>
+        </Modal>
   );
 };
 
