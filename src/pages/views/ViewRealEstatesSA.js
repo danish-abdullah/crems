@@ -32,7 +32,7 @@ const RealEstate = () => {
   const [editData, setEditData] = useState(null);
   
   const navigate = useNavigate();
-  // Fetch users from API
+
   const fetchUsers = async () => {
     try {
       setLoading(true);
@@ -42,7 +42,7 @@ const RealEstate = () => {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${localStorage.getItem("access_token")}`, // Add token if required
+            "Authorization": `Bearer ${localStorage.getItem("access_token")}`,
           },
         }
       );
@@ -56,8 +56,10 @@ const RealEstate = () => {
         address: item.address || "-",
         admin: item.assigned_admin || "-",
         pricing_plan: item.pricing_plan_name,
-        logo : item.logo,
+        logo: item.logo,
         status: item.status,
+        total_buildings: item.total_buildings || 0,
+        pricing_plan_id: item.pricing_plan_id
       })) || [];
       setUsers(formattedUsers);
     } catch (error) {
@@ -71,13 +73,14 @@ const RealEstate = () => {
     fetchUsers();
   }, []);
 
-  const handleEdit = (record) => {
-    console.log("Editing Record:", record);
-    setEditData(record); // Set the selected row data
-    setIsModalVisible(true); // Open modal
+  const handleEdit = (record, e) => {
+    e.stopPropagation(); // Prevent row click
+    setEditData(record);
+    setIsModalVisible(true);
   };
 
-  const handleDeleteRealEstate = async (id) => {
+  const handleDeleteRealEstate = async (id, e) => {
+    e.stopPropagation(); // Prevent row click
     try {
       setLoading(true);
       const response = await axios.delete(
@@ -91,7 +94,7 @@ const RealEstate = () => {
   
       if (response.data.success) {
         message.success("Real estate deleted successfully!");
-        fetchUsers(); // Refresh the table
+        fetchUsers();
       } else {
         message.error(response.data.message || "Failed to delete real estate.");
       }
@@ -135,14 +138,23 @@ const RealEstate = () => {
       key: "actions",
       render: (text, record) => (
         <Space size="middle">
-          <Button icon={<EditOutlined />} type="link" onClick={() => handleEdit(record)}></Button>
+          <Button
+            icon={<EditOutlined />}
+            type="link"
+            onClick={(e) => handleEdit(record, e)}
+          />
           <Popconfirm
             title="Are you sure you want to delete this real estate?"
-            onConfirm={() => handleDeleteRealEstate(record.id)}
+            onConfirm={(e) => handleDeleteRealEstate(record.id, e)}
             okText="Yes"
             cancelText="No"
           >
-            <Button icon={<DeleteOutlined />} type="link" danger></Button>
+            <Button
+              icon={<DeleteOutlined />}
+              type="link"
+              danger
+              onClick={(e) => e.stopPropagation()}
+            />
           </Popconfirm>
         </Space>
       ),
@@ -151,7 +163,7 @@ const RealEstate = () => {
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
-      <SuperAdminSidebar selectedTab="viewRealEstates"/>
+      <SuperAdminSidebar selectedTab="viewRealEstates" />
       <Layout>
         <TitleHeader title="Real Estates" />
         <Content className="p-6 bg-white">
@@ -161,23 +173,33 @@ const RealEstate = () => {
               <Dropdown overlay={menu} placement="bottomLeft">
                 <Button icon={<FilterOutlined />}>Filter By</Button>
               </Dropdown>
-              <Button icon={<PlusOutlined />} type="primary" onClick={() => setIsModalVisible(true)}>Add New</Button>
+              <Button icon={<PlusOutlined />} type="primary" onClick={() => setIsModalVisible(true)}>
+                Add New
+              </Button>
             </div>
           </div>
-          {loading ? <Spin /> : <Table columns={columns} dataSource={users} pagination={{ pageSize: 10 }} 
-          onRow={(record) => ({
-            onClick: () => handleRowClick(record),
-          })}
-          />}
+          {loading ? (
+            <Spin />
+          ) : (
+            <Table
+              columns={columns}
+              dataSource={users}
+              pagination={{ pageSize: 10 }}
+              onRow={(record) => ({
+                onClick: () => handleRowClick(record),
+              })}
+            />
+          )}
         </Content>
       </Layout>
       <AddRealEstateModal
         visible={isModalVisible}
         onClose={() => {
           setIsModalVisible(false);
-          setEditData(null); // Reset edit data when closing modal
+          setEditData(null);
         }}
         editData={editData}
+        onSuccess={fetchUsers}
       />
     </Layout>
   );

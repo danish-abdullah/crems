@@ -10,6 +10,13 @@ import ViewTenants from "./ViewTenants"
 
 const { Content } = Layout;
 
+
+<style>
+    .ant-card-body {
+        
+    }
+</style>
+
 const BuildingDetail = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -27,14 +34,14 @@ const BuildingDetail = () => {
       <SuperAdminSidebar selectedTab="viewRealEstates" />
       <Layout>
         <TitleHeader title="Access Real Estate/Building" />
-        <Content className="p-6">
-          <div className="mb-4">
+        <Content className="p-1">
+          <div className="mb-1">
             <Button icon={<ArrowLeftOutlined />} onClick={() => navigate(-1)}>
               Back
             </Button>
           </div>
 
-          <div className="bg-white p-6 rounded shadow mb-6">
+          <div className="bg-white p-2 rounded shadow">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-bold">{data.name}</h2>
               <Tag color={data.status === 1 ? "green" : "red"}>
@@ -48,13 +55,13 @@ const BuildingDetail = () => {
               <Descriptions.Item label="Total Tenants">{data.tenants}</Descriptions.Item>
               <Descriptions.Item label="Date Added">{data.dateAdded}</Descriptions.Item>
             </Descriptions>
-            <div className="text-right mt-4">
+            <div className="text-right">
               <Button icon={<EditOutlined />}>Edit</Button>
             </div>
           </div>
 
-          <div className="bg-white p-6 rounded shadow">
-            <h3 className="text-lg font-semibold mb-4">Insights & Statistics</h3>
+          <div className="bg-white rounded shadow">
+            <h3 className="text-lg font-semibold p-2">Insights & Statistics</h3>
             <Row gutter={16}>
               <Col span={6}>
                 <Card title="Tenant Overview">{stats.tenantOverview}</Card>

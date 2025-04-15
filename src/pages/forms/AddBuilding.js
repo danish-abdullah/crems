@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react"; // <-- added useEffect
 import { Layout, Typography, InputNumber, Button, Row, Col, Form, Radio, Input, message, Modal } from "antd";
 import "../../App.css";
 
@@ -12,6 +12,26 @@ const AddBuilding = ({visible, onClose, editData}) => {
   const [floorOption, setFloorOption] = useState("");
   const [parkingOption, setParkingOption] = useState("");
   const isEditing = !!editData;
+
+  useEffect(() => {
+    if (editData) {
+      form.setFieldsValue({
+        buildingName: editData.building_name,
+        address: editData.address,
+        noOfFloors: editData.no_of_floors,
+        parkingFloors: editData.no_of_parking_floors,
+      });
+
+      setFloorCount(editData.no_of_floors || 0);
+      setParkingFloorCount(editData.no_of_parking_floors || 0);
+    } else {
+      form.resetFields();
+      setFloorCount(0);
+      setParkingFloorCount(0);
+      setFloorOption("");
+      setParkingOption("");
+    }
+  }, [editData, form]);
 
   const onFinish = async (values) => {
     const payload = {

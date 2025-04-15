@@ -6,7 +6,7 @@ import { UploadOutlined } from "@ant-design/icons";
 
 const { Option } = Select;
 
-const AddRealEstateModal = ({ visible, onClose, editData }) => {
+const AddRealEstateModal = ({ visible, onClose, editData, onSuccess }) => {
   const [form] = Form.useForm();
   const [fileList, setFileList] = useState([]);
   const [color, setColor] = useState("#0000FF");
@@ -45,11 +45,13 @@ const AddRealEstateModal = ({ visible, onClose, editData }) => {
         admin: editData.admin,
         totalBuildings: editData.totalBuildings,
         status: editData.status === 1,
-        plan: editData.pricing_plan,
+        plan: editData.pricing_plan_id.toString(),
       });
-      setPricingPlan(editData.plan);
+      setPricingPlan(editData.pricing_plan_id.toString());
     } else {
       form.resetFields();
+      setPricingPlan(null); // reset when adding new
+        setFileList([]);
     }
   }, [editData, form]);
 
@@ -68,7 +70,6 @@ const AddRealEstateModal = ({ visible, onClose, editData }) => {
     formData.append("status", values.status ? 1 : 0);
     formData.append("user_id", values.admin); // From dropdown
     formData.append("pricing_plan_id", pricingPlan);
-
     if (fileList.length > 0 && fileList[0].originFileObj) {
       formData.append("logo", fileList[0].originFileObj);
     }
@@ -89,6 +90,7 @@ const AddRealEstateModal = ({ visible, onClose, editData }) => {
       const result = await response.json();
       if (result.success) {
         message.success(isEditing ? "Real estate updated" : "Real estate added");
+        onSuccess();
         onClose();
       } else {
         message.error(result.message || "Something went wrong");
@@ -145,7 +147,7 @@ const AddRealEstateModal = ({ visible, onClose, editData }) => {
           <Form.Item label="Assign Admin" name="admin" style={{ flex: 1 }}>
             <Select placeholder="Select Admin">
               {adminUsers.map((admin) => (
-                <Option key={admin.name} value={admin.name}>
+                <Option key={admin.id} value={admin.id}>
                   {admin.name}
                 </Option>
               ))}
@@ -176,11 +178,11 @@ const AddRealEstateModal = ({ visible, onClose, editData }) => {
         </div>
 
         <Form.Item label="Pricing Plan" name="plan">
-          <Radio.Group onChange={(e) => setPricingPlan(e.target.value)} value={pricingPlan}>
+          <Radio.Group onChange={(e) => {setPricingPlan(e.target.value); form.setFieldsValue({ plan: e.target.value });}}  value={pricingPlan}>
             {[
-              { label: "Silver", value: "Silver", price: "1200 AED", color: "#C0C0C0" },
-              { label: "Gold", value: "Gold", price: "1200 AED", color: "#FFD700" },
-              { label: "Platinum", value: "Platinum", price: "1200 AED", color: "#CD7F32" },
+              { label: "Silver", value: "1", id: "1", price: "1200 AED", color: "#C0C0C0" },
+              { label: "Gold", value: "2", id: "2", price: "1200 AED", color: "#FFD700" },
+              { label: "Platinum", value: "3", id: "3", price: "1200 AED", color: "#CD7F32" },
             ].map((option) => (
               <Radio.Button
                 className="pricing-plan"

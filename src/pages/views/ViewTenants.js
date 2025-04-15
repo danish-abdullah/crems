@@ -10,9 +10,8 @@ import {
   Form,
   Select,
 } from "antd";
-import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import { EditOutlined, DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import "../../App.css";
-import TitleHeader from "../../components/TitleHeader.js";
 
 const { Content } = Layout;
 const { Search } = Input;
@@ -20,12 +19,11 @@ const { Option } = Select;
 
 const ViewTenants = () => {
   const [dataSource, setDataSource] = useState([]);
-  const [buildingList, setBuildingList] = useState([]); // State for building list
+  const [buildingList, setBuildingList] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [editingTenant, setEditingTenant] = useState(null);
   const [form] = Form.useForm();
 
-  // Fetch the tenants list from the API
   const fetchTenants = async () => {
     try {
       const response = await fetch(
@@ -39,7 +37,7 @@ const ViewTenants = () => {
       );
       const data = await response.json();
       if (data.success) {
-        setDataSource(data?.data?.filter(user => user.roles[0]?.name === "Tenant") || []); // Set tenants data in state
+        setDataSource(data?.data?.filter(user => user.roles[0]?.name === "Tenant") || []);
       } else {
         message.error("Failed to fetch tenants");
       }
@@ -49,7 +47,6 @@ const ViewTenants = () => {
     }
   };
 
-  // Fetch the building list from the API
   const fetchBuildings = async () => {
     try {
       const response = await fetch(
@@ -63,7 +60,7 @@ const ViewTenants = () => {
       );
       const data = await response.json();
       if (data.success) {
-        setBuildingList(data.data); // Assuming data.data contains the list of buildings
+        setBuildingList(data.data);
       } else {
         message.error("Failed to fetch buildings");
       }
@@ -74,10 +71,9 @@ const ViewTenants = () => {
   };
 
   useEffect(() => {
-    fetchTenants(); // Fetch tenants on component mount
+    fetchTenants();
   }, []);
 
-  // Delete tenant
   const deleteTenant = async (tenantId) => {
     try {
       const response = await fetch(
@@ -92,7 +88,7 @@ const ViewTenants = () => {
       const data = await response.json();
       if (data.success) {
         message.success("Tenant deleted successfully");
-        fetchTenants(); // Refresh tenant list after deletion
+        fetchTenants();
       } else {
         message.error("Failed to delete tenant");
       }
@@ -102,15 +98,26 @@ const ViewTenants = () => {
     }
   };
 
-  // Show edit modal
   const showEditModal = (record) => {
-    fetchBuildings(); // Fetch buildings on component mount
+    fetchBuildings();
     setEditingTenant(record);
-    form.setFieldsValue(record); // Pre-fill form with tenant's data
+    form.setFieldsValue({
+      full_name: record.name,
+      building_name: record.building_name,
+      flat_no: record.flat_no,
+      mobile_no: record.mobile_no,
+      email: record.email,
+    });
     setIsModalVisible(true);
   };
 
-  // Handle modal submission with PATCH
+  const showAddModal = () => {
+    fetchBuildings();
+    setEditingTenant(null);
+    form.resetFields();
+    setIsModalVisible(true);
+  };
+
   const handleUpdateTenant = async (values) => {
     try {
       const response = await fetch(
@@ -128,12 +135,39 @@ const ViewTenants = () => {
       if (data.success) {
         message.success("Tenant updated successfully");
         setIsModalVisible(false);
-        fetchTenants(); // Refresh tenant list after update
+        fetchTenants();
       } else {
         message.error(data.message || "Failed to update tenant");
       }
     } catch (error) {
       message.error("Error updating tenant");
+      console.error(error);
+    }
+  };
+
+  const handleAddTenant = async (values) => {
+    try {
+      const response = await fetch(
+        `https://website-64a18929.yeo.vug.mybluehost.me/api/admin/tenant`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(values),
+        }
+      );
+      const data = await response.json();
+      if (data.success) {
+        message.success("Tenant added successfully");
+        setIsModalVisible(false);
+        fetchTenants();
+      } else {
+        message.error(data.message || "Failed to add tenant");
+      }
+    } catch (error) {
+      message.error("Error adding tenant");
       console.error(error);
     }
   };
@@ -169,10 +203,7 @@ const ViewTenants = () => {
       title: "Date Added",
       dataIndex: "created_at",
       key: "date",
-      render: (text) => {
-        const date = text.split("T")[0];
-        return date; // Only return the date part (before 'T')
-      },
+      render: (text) => text?.split("T")[0],
     },
     {
       title: "Actions",
@@ -199,90 +230,103 @@ const ViewTenants = () => {
   ];
 
   return (
-    
-      <Layout>
-        <Content
-        >
+    <Layout>
+      <Content>
+        <div className="flex justify-between items-center mb-4">
           <Search
             placeholder="Search"
             allowClear
             style={{
               width: 300,
-              marginBottom: "20px",
+              marginBottom: "10px",
               borderColor: "#4b244a",
             }}
           />
-          <Table
-            dataSource={dataSource}
-            columns={columns}
-            pagination={{ pageSize: 5 }}
-            rowKey="id"
-          />
-        </Content>
+          <div className="flex gap-2">
+            <Button
+              icon={<PlusOutlined />}
+              type="primary"
+              onClick={showAddModal}
+            >
+              Add Tenant
+            </Button>
+          </div>
+        </div>
+        <Table
+          dataSource={dataSource}
+          columns={columns}
+          pagination={{ pageSize: 5 }}
+          rowKey="id"
+        />
+      </Content>
 
-        {/* Edit Modal */}
-        <Modal
-          title="Edit Tenant"
-          visible={isModalVisible}
-          onCancel={() => setIsModalVisible(false)}
-          onOk={() => {
-            form
-              .validateFields()
-              .then((values) => {
-                handleUpdateTenant(values);
-              })
-              .catch((info) => {
-                console.error("Validation Failed:", info);
-              });
-          }}
-        >
-          <Form layout="vertical" form={form}>
-            <Form.Item
-              label="Name"
-              name="full_name"
-              rules={[{ required: true, message: "Please enter the name" }]}
-            >
-              <Input />
-            </Form.Item>
-            <Form.Item
-              label="Building"
-              name="building_name"
-              rules={[{ required: true, message: "Please select a building" }]}
-            >
-              <Select placeholder="Select Building">
-                {buildingList.map((building) => (
-                  <Option key={building.building_name} value={building.building_name}>
-                    {building.name}
-                  </Option>
-                ))}
-              </Select>
-            </Form.Item>
-            <Form.Item
-              label="Flat No."
-              name="flat_no"
-              rules={[{ required: true, message: "Please enter the flat number" }]}
-            >
-              <Input />
-            </Form.Item>
-            <Form.Item
-              label="Mobile No"
-              name="mobile_no"
-              rules={[{ required: true, message: "Please enter the mobile number" }]}
-            >
-              <Input />
-            </Form.Item>
-            <Form.Item
-              label="Email"
-              name="email"
-              rules={[
-                { required: true, type: "email", message: "Please enter a valid email" },
-              ]}
-            >
-              <Input />
-            </Form.Item>
-          </Form>
-        </Modal>
-      </Layout>
+      <Modal
+        title={editingTenant ? "Edit Tenant" : "Add Tenant"}
+        visible={isModalVisible}
+        onCancel={() => setIsModalVisible(false)}
+        onOk={() => {
+          form
+            .validateFields()
+            .then((values) => {
+              editingTenant
+                ? handleUpdateTenant(values)
+                : handleAddTenant(values);
+            })
+            .catch((info) => {
+              console.error("Validation Failed:", info);
+            });
+        }}
+      >
+        <Form layout="vertical" form={form}>
+          <Form.Item
+            label="Name"
+            name="full_name"
+            rules={[{ required: true, message: "Please enter the name" }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label="Building"
+            name="building_name"
+            rules={[{ required: true, message: "Please select a building" }]}
+          >
+            <Select placeholder="Select Building">
+              {buildingList.map((building) => (
+                <Option
+                  key={building.building_name}
+                  value={building.building_name}
+                >
+                  {building.name}
+                </Option>
+              ))}
+            </Select>
+          </Form.Item>
+          <Form.Item
+            label="Flat No."
+            name="flat_no"
+            rules={[{ required: true, message: "Please enter the flat number" }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label="Mobile No"
+            name="mobile_no"
+            rules={[{ required: true, message: "Please enter the mobile number" }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label="Email"
+            name="email"
+            rules={[
+              { required: true, type: "email", message: "Please enter a valid email" },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+        </Form>
+      </Modal>
+    </Layout>
   );
 };
 
