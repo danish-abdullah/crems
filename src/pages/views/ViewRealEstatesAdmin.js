@@ -10,7 +10,7 @@ import AdminSidebar from "../../components/AdminSidebar.js";
 import TitleHeader from "../../components/TitleHeader.js";
 import axios from "axios";
 import "../../App.css";
-import AddRealEstateModal from "../../components/AddRealEstateModal.js"
+import ViewBuildings from "./ViewBuildings.js"
 
 const { Content } = Layout;
 
@@ -144,30 +144,11 @@ const RealEstate = () => {
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
-      <AdminSidebar username="Admin" selectedTab="realEstate"/>
+      <AdminSidebar username="Admin" selectedTab="viewBuildings"/>
       <Layout>
-        <TitleHeader title="Real Estates" />
-        <Content className="p-6 bg-white">
-          <div className="flex justify-between items-center mb-4">
-            <Input placeholder="Search" prefix={<SearchOutlined />} className="w-1/3" />
-            <div className="flex gap-2">
-              <Dropdown overlay={menu} placement="bottomLeft">
-                <Button icon={<FilterOutlined />}>Filter By</Button>
-              </Dropdown>
-              <Button icon={<PlusOutlined />} type="primary" onClick={() => setIsModalVisible(true)}>Add New</Button>
-            </div>
-          </div>
-          {loading ? <Spin /> : <Table columns={columns} dataSource={users} pagination={{ pageSize: 10 }} />}
-        </Content>
+        <TitleHeader title="Buildings" />
+        <ViewBuildings></ViewBuildings>
       </Layout>
-      <AddRealEstateModal
-        visible={isModalVisible}
-        onClose={() => {
-          setIsModalVisible(false);
-          setEditData(null); // Reset edit data when closing modal
-        }}
-        editData={editData}
-      />
     </Layout>
   );
 };

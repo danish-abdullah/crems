@@ -15,89 +15,11 @@ const RealEstateDetail = () => {
   const navigate = useNavigate();
   const data = location.state;
 
-  const handleBuildingClick = (record) => {
-    navigate("/building-detail-sa", {
-      state: {
-        ...record,
-        realEstateName: data.name,
-        dateAdded: "12-12-2024", // Example
-        tenants: 12, // You can replace with real data
-      },
-    });
-  };
-
-  const sampleBuildings = [
-    {
-      key: 1,
-      logo: data.logo,
-      name: "ABC Tower",
-      email: "Johndoe12@yopmail.com",
-      phone: "+971-76-8763451",
-      admin: "John DOE",
-      apartments: 12,
-      status: 1,
-    },
-    {
-      key: 2,
-      logo: data.logo,
-      name: "ABC Tower",
-      email: "Johndoe12@yopmail.com",
-      phone: "+971-76-8763451",
-      admin: "John DOE",
-      apartments: 40,
-      status: 0,
-    },
-    {
-      key: 3,
-      logo: data.logo,
-      name: "ABC Tower",
-      email: "Johndoe12@yopmail.com",
-      phone: "+971-76-8763451",
-      admin: "John DOE",
-      apartments: 40,
-      status: 1,
-    },
-    // Add more buildings as needed
-  ];
-
-  const columns = [
-    {
-      title: "Building Name",
-      dataIndex: "name",
-      key: "name",
-      render: (text, record) => (
-        <div className="flex items-center gap-2">
-          <Avatar src={record.logo} />
-          {text}
-        </div>
-      ),
-    },
-    { title: "Email", dataIndex: "email", key: "email" },
-    { title: "Phone Number", dataIndex: "phone", key: "phone" },
-    { title: "Assigned Admin", dataIndex: "admin", key: "admin" },
-    { title: "Total Apartment", dataIndex: "apartments", key: "apartments" },
-    {
-      title: "Status",
-      dataIndex: "status",
-      key: "status",
-      render: (status) => (
-        <Tag color={status === 1 ? "green" : "red"}>
-          {status === 1 ? "Active" : "Inactive"}
-        </Tag>
-      ),
-    },
-    {
-      title: "Action",
-      key: "action",
-      render: () => <Button icon={<EditOutlined />} type="link" />,
-    },
-  ];
-
   return (
     <Layout style={{ minHeight: "100vh" }}>
       <SuperAdminSidebar selectedTab="viewRealEstates" />
       <Layout>
-        <TitleHeader title="Access Real Estate/Building" />
+        <TitleHeader title="Access Real Estate" />
         <Content className="p-6">
           <Button icon={<ArrowLeftOutlined />} onClick={() => navigate(-1)} className="mb-4">
             Back

@@ -33,7 +33,7 @@ const BuildingDetail = () => {
     <Layout style={{ minHeight: "100vh" }}>
       <SuperAdminSidebar selectedTab="viewRealEstates" />
       <Layout>
-        <TitleHeader title="Access Real Estate/Building" />
+        <TitleHeader title="Access Building" />
         <Content className="p-1">
           <div className="mb-1">
             <Button icon={<ArrowLeftOutlined />} onClick={() => navigate(-1)}>

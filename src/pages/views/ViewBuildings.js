@@ -67,7 +67,7 @@ const ViewBuildings = () => {
     navigate("/building-detail-sa", {
       state: {
         ...record,
-        realEstateName: data.name,
+        // realEstateName: data.name,
         dateAdded: "12-12-2024", // Example
         tenants: 12, // Optional: Replace with actual data
       },
