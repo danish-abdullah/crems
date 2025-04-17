@@ -58,7 +58,7 @@ const RealEstate = () => {
         pricing_plan: item.pricing_plan_name,
         logo: item.logo,
         status: item.status,
-        total_buildings: item.total_buildings || 0,
+        total_buildings: item.total_number_of_buildings || 0,
         pricing_plan_id: item.pricing_plan_id
       })) || [];
       setUsers(formattedUsers);

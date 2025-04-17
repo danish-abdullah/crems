@@ -49,7 +49,7 @@ const UserManagement = () => {
         key: index + 1,
         name: item.name,
         email: item.email,
-        phone: item.phone || "-",
+        phone: item.phone_no || "-",
         type: item.roles[0]?.name || "-",
         // module: item.assigned_module || "-",
         // realState: item.real_state_company || "-",
