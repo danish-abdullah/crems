@@ -1,4 +1,3 @@
-// pages/RealEstate/BuildingDetail.js
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Layout, Button, Tag, Descriptions, Card, Row, Col } from "antd";
@@ -9,13 +8,6 @@ import "../../App.css";
 import ViewTenants from "./ViewTenants"
 
 const { Content } = Layout;
-
-
-<style>
-    .ant-card-body {
-        
-    }
-</style>
 
 const BuildingDetail = () => {
   const navigate = useNavigate();
