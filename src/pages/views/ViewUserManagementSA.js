@@ -1,3 +1,5 @@
+import dayjs from "dayjs"
+import moment from "moment";
 import React, { useState, useEffect } from "react";
 import {
   Layout, Table, Button, Input, Dropdown, Menu, Tag, Avatar, Modal, Space, Popconfirm,
@@ -14,17 +16,20 @@ import "../../App.css";
 const { Content } = Layout;
 const { Option } = Select;
 
-const menu = (
-  <Menu>
-    <Menu.Item key="1">Date</Menu.Item>
-    <Menu.Item key="2">Flat Type</Menu.Item>
-    <Menu.Item key="3">Building</Menu.Item>
-  </Menu>
-);
+// const menu = (
+//   <Menu>
+//     <Menu.Item key="1">Date</Menu.Item>
+//     <Menu.Item key="2">Flat Type</Menu.Item>
+//     <Menu.Item key="3">Building</Menu.Item>
+//   </Menu>
+// );
 
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
+  const [realEstates, setRealEstates] = useState([]);
+  const [buildings, setBuildings] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
   const [form] = Form.useForm();
   const [imageUrl, setImageUrl] = useState(null);
   const [userType, setUserType] = useState(null);
@@ -54,9 +59,36 @@ const UserManagement = () => {
         // module: item.assigned_module || "-",
         // realState: item.real_state_company || "-",
         status: item.status === 1 ? "Active" : "Inactive",
-        avatar: item.profile_picture
+        avatar: item.profile_picture,
+        real_estate_id: item.real_estate_id,
+
+        dob: item.dob ? moment(item.dob) : null,
+      flat_no: item.apartment_id,
+      // creation_date: item.creation_date ? moment(item.creation_date) : null,
+      nationality: item.nationality,
+      building: item.building_id,
+      // joining_date: item.joining_date ? moment(item.joining_date) : null,
+      // maintenance_id: item.maintenance_id,
+      designation: item.designation,
+      is_outsourced: item.is_outsource,
+      company_name: item.company_name,
+      company_phone: item.company_phone,
+      categories: item.categories,
       })) || [];
-      setUsers(formattedUsers);
+
+      const realEstateMap = {};
+      realEstates.forEach((estate) => {
+        realEstateMap[estate.id] = estate.real_estate_name;
+      });
+  
+      // Enrich users with real_estate_name
+      const enrichedUsers = formattedUsers.map((user) => ({
+        ...user,
+        real_estate_name: realEstateMap[user.real_estate_id] || "-", // fallback
+        key: user.id,
+      }));
+  
+      setUsers(enrichedUsers);
     } catch (error) {
       message.error(error.message);
     } finally {
@@ -64,8 +96,52 @@ const UserManagement = () => {
     }
   };
 
+  const fetchRealEstates = async () => {
+    try {
+      const response = await fetch("https://website-64a18929.yeo.vug.mybluehost.me/api/admin/real-estates", {
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${localStorage.getItem("access_token")}`
+        }
+      });
+  
+      const data = await response.json();
+  
+      if (response.ok && data.success) {
+        setRealEstates(data.data);
+      } else {
+        message.error(data.message || "Failed to fetch real estates.");
+      }
+    } catch (error) {
+      message.error("Error fetching real estates.");
+    }
+  };
+  
+  const fetchBuildings = async () => {
+    try {
+      const response = await fetch("https://website-64a18929.yeo.vug.mybluehost.me/api/admin/buildings", {
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${localStorage.getItem("access_token")}`
+        }
+      });
+  
+      const data = await response.json();
+  
+      if (response.ok && data.success) {
+        setBuildings(data.data);
+      } else {
+        message.error(data.message || "Failed to fetch buildings.");
+      }
+    } catch (error) {
+      message.error("Error fetching buildings.");
+    }
+  };
+
   useEffect(() => {
+    fetchRealEstates();
     fetchUsers();
+    fetchBuildings();
   }, []);
 
   const handleUpload = ({ file }) => {
@@ -81,6 +157,7 @@ const UserManagement = () => {
   };
 
   const showModal = () => {
+    setIsEditMode(false);
     form.resetFields();
     setEditingUser(null);
     setImageUrl(null);
@@ -101,13 +178,31 @@ const UserManagement = () => {
   const handleAddUser = async (values) => {
     try {
       setSubmitLoading(true);
+      const categories = values.categories 
+      ? values.categories.map(category => String(category)) 
+      : [];
       const formData = {
         name: values.name,
         email: values.email,
-        phone: values.phone,
+        phone_no: values.phone,
         password: values.password,
         role: userType?.toLowerCase() || "user",
+        real_estate_id: values.real_estate,
         status: values.status ? 1 : 0,
+        ...(userType === 'Tenant' && {
+          dob: values.dob ? values.dob.format('YYYY-MM-DD') : null,
+          nationality: values.nationality,
+          building_id: values.building,
+          apartment_id: parseInt(values.flat_no)
+        }),
+        ...(userType === 'Maintenance' && {
+          designation: values.designation,
+          building_id: values.building,
+          is_outsource: values.is_outsourced ? 1 : 0,
+          categories: categories,
+          company_name: values.company_name,
+          company_phone: values.company_phone
+        }),
       };
 
       let url = "https://website-64a18929.yeo.vug.mybluehost.me/api/admin/users";
@@ -149,6 +244,7 @@ const UserManagement = () => {
     setImageUrl(record.avatar || null);
     setUserType(record.type);
     setIsModalVisible(true);
+    setIsEditMode(true);
 
     form.setFieldsValue({
       name: record.name,
@@ -156,7 +252,22 @@ const UserManagement = () => {
       phone: record.phone,
       user_type: record.type,
       status: record.status === "Active",
+      real_estate: record.real_estate_id || record.real_estate?.id,
+      // Add these if available:
+      dob: record.dob ? dayjs(record.dob) : null,
+      flat_no: record.flat_no,
+      creation_date: record.creation_date ? moment(record.creation_date) : null,
+      nationality: record.nationality,
+      building: record.building,
+      joining_date: record.joining_date ? moment(record.joining_date) : null,
+      maintenance_id: record.maintenance_id,
+      designation: record.designation,
+      is_outsourced: record.is_outsourced,
+      company_name: record.company_name,
+      company_phone: record.company_phone,
+      categories: record.categories,
     });
+    setIsOutsourced(record.is_outsourced || false);    
   };
 
   const handleDeleteUser = async (userId) => {
@@ -195,6 +306,7 @@ const UserManagement = () => {
         </div>
       ),
     },
+    { title: "Real Estate", dataIndex: "real_estate_name", key: "real_estate_name" },
     { title: "Email", dataIndex: "email", key: "email" },
     { title: "Phone Number", dataIndex: "phone", key: "phone" },
     { title: "User Type", dataIndex: "type", key: "type" },
@@ -234,9 +346,9 @@ const UserManagement = () => {
           <div className="flex justify-between items-center mb-4">
             <Input placeholder="Search" prefix={<SearchOutlined />} className="w-1/3" />
             <div className="flex gap-2">
-              <Dropdown overlay={menu} placement="bottomLeft">
+              {/* <Dropdown overlay={menu} placement="bottomLeft">
                 <Button icon={<FilterOutlined />}>Filter By</Button>
-              </Dropdown>
+              </Dropdown> */}
               <Button icon={<PlusOutlined />} type="primary" onClick={showModal}>Add User</Button>
             </div>
           </div>
@@ -263,17 +375,35 @@ const UserManagement = () => {
               <Button onClick={handleRemoveImage} icon={<DeleteOutlined />} className="mt-2">Remove</Button>
             )}
           </Form.Item>
-
+          <div className="flex gap-4">
+          <div className="w-1/2">
           <Form.Item label="User Type" name="user_type" rules={[{ required: true }]}>
             <Select placeholder="Select user type" onChange={setUserType}>
               <Option value="Admin">Admin</Option>
-              <Option value="Sales Person">Sales Person</Option>
+              <Option value="Sales">Sales</Option>
               <Option value="Tenant">Tenant</Option>
               <Option value="Maintenance">Maintenance</Option>
-              <Option value="Visitor">Visitor</Option>
+              {/* <Option value="Visitor">Visitor</Option> */}
               <Option value="Receptionist/Watchman">Receptionist/Watchman</Option>
             </Select>
           </Form.Item>
+          </div>
+          <div className="w-1/2">
+          <Form.Item
+            label="Real Estate"
+            name="real_estate"
+            rules={[{ required: true, message: "Please select a real estate" }]}
+          >
+            <Select placeholder="Select Real Estate">
+              {realEstates.map((estate, index) => (
+                <Option key={estate.id} value={estate.id}>
+                  {estate.real_estate_name}
+                </Option>
+              ))}
+            </Select>
+          </Form.Item>
+          </div>
+          </div>
 
           <div className="flex gap-4">
             <div className="w-1/2">
@@ -288,8 +418,16 @@ const UserManagement = () => {
               <Form.Item label="Email Address" name="email" rules={[{ required: true, type: "email", message: "Please enter valid email" }]}>
                 <Input />
               </Form.Item>
-              <Form.Item label="Password" name="password" rules={[{ required: true, message: "Please enter password" }]}>
-                <Input.Password />
+              <Form.Item
+                label="Password"
+                name="password"
+                rules={
+                  isEditMode
+                    ? []
+                    : [{ required: true, message: "Please input password" }]
+                }
+              >
+                <Input.Password placeholder="Enter password" />
               </Form.Item>
             </div>
           </div>
@@ -299,14 +437,27 @@ const UserManagement = () => {
             <>
               <div className="flex gap-4">
                 <div className="w-1/2">
-                  <Form.Item label="Date of Birth" name="dob"><DatePicker /></Form.Item>
-                  <Form.Item label="Flat No" name="flat_no"><Input /></Form.Item>
-                  <Form.Item label="Creation Date" name="creation_date"><DatePicker /></Form.Item>
+                  <Form.Item label="Date of Birth" name="dob"><DatePicker style={{width: "100%"}}/></Form.Item>
+                  <Form.Item
+                    label="Building"
+                    name="building"
+                    rules={[{ required: true, message: "Please select a building" }]}
+                  >
+                    <Select placeholder="Select Building">
+                      {buildings.map((building, index) => (
+                        <Option key={building.id} value={building.id}>
+                          {building.building_name}
+                        </Option>
+                      ))}
+                    </Select>
+                  </Form.Item>
+                  {/* <Form.Item label="Creation Date" name="creation_date"><DatePicker /></Form.Item> */}
                 </div>
                 <div className="w-1/2">
                   <Form.Item label="Nationality" name="nationality"><Input /></Form.Item>
-                  <Form.Item label="Assigned Building" name="building"><Input /></Form.Item>
-                  <Form.Item label="Joining Date" name="joining_date"><DatePicker /></Form.Item>
+                  <Form.Item label="Flat No" name="flat_no"><Input /></Form.Item>
+                  
+                  {/* <Form.Item label="Joining Date" name="joining_date"><DatePicker /></Form.Item> */}
                 </div>
               </div>
             </>
@@ -316,27 +467,42 @@ const UserManagement = () => {
             <>
               <div className="flex gap-4">
                 <div className="w-1/2">
-                  <Form.Item label="Maintenance ID" name="maintenance_id"><Input /></Form.Item>
                   <Form.Item label="Designation" name="designation"><Input /></Form.Item>
                   <Form.Item label="Is Outsourced" name="is_outsourced"><Switch onChange={setIsOutsourced} /></Form.Item>
-                </div>
-                <div className="w-1/2">
-                  <Form.Item label="Assigned Building" name="building"><Input /></Form.Item>
                   {isOutsourced && (
                     <>
-                      <Form.Item label="Company Name" name="company_name"><Input /></Form.Item>
-                      <Form.Item label="Company Phone" name="company_phone"><Input /></Form.Item>
+                      <Form.Item style={{paddingTop: "13px"}} label="Company Name" name="company_name"><Input /></Form.Item>
                     </>
                   )}
+                </div>
+                <div className="w-1/2">
+                <Form.Item
+                    label="Building"
+                    name="building"
+                    rules={[{ required: true, message: "Please select a building" }]}
+                  >
+                    <Select placeholder="Select Building">
+                      {buildings.map((building, index) => (
+                        <Option key={building.id} value={building.id}>
+                          {building.building_name}
+                        </Option>
+                      ))}
+                    </Select>
+                  </Form.Item>
                   <Form.Item label="Categories" name="categories">
                     <Checkbox.Group options={["Plumbing", "Electrical", "Paint", "Lift"]} />
                   </Form.Item>
+                  {isOutsourced && (
+                    <>
+                      <Form.Item label="Company Phone" name="company_phone"><Input /></Form.Item>
+                    </>
+                  )}
                 </div>
               </div>
             </>
           )}
 
-          {userType === "Visitor" && (
+          {/* {userType === "Visitor" && (
             <>
               <div className="flex gap-4">
                 <div className="w-1/2">
@@ -351,13 +517,13 @@ const UserManagement = () => {
                 </div>
               </div>
             </>
-          )}
+          )} */}
           <Form.Item label="Status" name="status" valuePropName="checked">
             <Switch />
           </Form.Item>
           <Form.Item>
-            <Button type="primary" htmlType="submit" block loading={submitLoading}>
-              {editingUser ? "Update" : "Add"}
+            <Button type="primary" htmlType="submit" loading={submitLoading} className="w-full mt-4">
+              {editingUser ? "Update User" : "Add User"}
             </Button>
           </Form.Item>
         </Form>
