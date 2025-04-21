@@ -33,15 +33,15 @@ const RealEstateDetail = () => {
                   <span className="text-gray-600">{data.phone}</span> |{" "}
                   <span className="text-gray-600">{data.email}</span>
                 </p>
-                <p className="text-sm text-gray-600">Admin: {data.admin}</p>
+                {/* <p className="text-sm text-gray-600">Admin: {data.admin}</p> */}
               </div>
               <Tag color={data.status === 1 ? "green" : "red"}>
                 {data.status === 1 ? "Active" : "Inactive"}
               </Tag>
             </div>
-            <Button icon={<EditOutlined />} type="default">
+            {/* <Button icon={<EditOutlined />} type="default">
               Edit
-            </Button>
+            </Button> */}
           </div>
 
           {/* <Table columns={columns} dataSource={sampleBuildings}
@@ -49,7 +49,7 @@ const RealEstateDetail = () => {
             onClick: () => handleBuildingClick(record),
           })}
            /> */}
-           <ViewBuildings></ViewBuildings>
+           <ViewBuildings realEstateID={data.id}></ViewBuildings>
         </Content>
       </Layout>
     </Layout>

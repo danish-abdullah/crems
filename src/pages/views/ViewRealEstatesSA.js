@@ -8,6 +8,7 @@ import {
 } from "@ant-design/icons";
 import SuperAdminSidebar from "../../components/SuperAdminSidebar.js";
 import TitleHeader from "../../components/TitleHeader.js";
+import SearchBar from "../../components/SearchBar.js";
 import axios from "axios";
 import "../../App.css";
 import AddRealEstateModal from "../../components/AddRealEstateModal.js"
@@ -15,13 +16,13 @@ import { useNavigate } from "react-router-dom";
 
 const { Content } = Layout;
 
-const menu = (
-  <Menu>
-    <Menu.Item key="1">Date</Menu.Item>
-    <Menu.Item key="2">Flat Type</Menu.Item>
-    <Menu.Item key="3">Building</Menu.Item>
-  </Menu>
-);
+// const menu = (
+//   <Menu>
+//     <Menu.Item key="1">Date</Menu.Item>
+//     <Menu.Item key="2">Flat Type</Menu.Item>
+//     <Menu.Item key="3">Building</Menu.Item>
+//   </Menu>
+// );
 
 const RealEstate = () => {
   const [users, setUsers] = useState([]);
@@ -30,6 +31,8 @@ const RealEstate = () => {
   const [imageUrl, setImageUrl] = useState(null);
   const [loading, setLoading] = useState(false);
   const [editData, setEditData] = useState(null);
+  const [filteredData, setFilteredData] = useState(users);
+  
   
   const navigate = useNavigate();
 
@@ -54,7 +57,7 @@ const RealEstate = () => {
         email: item.email_address,
         phone: item.phone_number || "-",
         address: item.address || "-",
-        admin: item.assigned_admin || "-",
+        // admin: item.assigned_admin || "-",
         pricing_plan: item.pricing_plan_name,
         logo: item.logo,
         status: item.status,
@@ -124,7 +127,7 @@ const RealEstate = () => {
     { title: "Email", dataIndex: "email", key: "email" },
     { title: "Address", dataIndex: "address", key: "address" },
     { title: "Phone Number", dataIndex: "phone", key: "phone" },
-    { title: "Assigned Admin", dataIndex: "admin", key: "admin" },
+    // { title: "Assigned Admin", dataIndex: "admin", key: "admin" },
     { title: "Total Buildings", dataIndex: "total_buildings", key: "total_buildings" },
     { title: "Pricing Plan", dataIndex: "pricing_plan", key: "pricing_plan" },
     {
@@ -168,11 +171,15 @@ const RealEstate = () => {
         <TitleHeader title="Real Estates" />
         <Content className="p-6 bg-white">
           <div className="flex justify-between items-center mb-4">
-            <Input placeholder="Search" prefix={<SearchOutlined />} className="w-1/3" />
+          <SearchBar
+            data={users}
+            fieldsToSearch={['name', 'email', 'address', 'real_estate_name']}
+            onFilteredData={setFilteredData}
+          />
             <div className="flex gap-2">
-              <Dropdown overlay={menu} placement="bottomLeft">
+              {/* <Dropdown overlay={menu} placement="bottomLeft">
                 <Button icon={<FilterOutlined />}>Filter By</Button>
-              </Dropdown>
+              </Dropdown> */}
               <Button icon={<PlusOutlined />} type="primary" onClick={() => setIsModalVisible(true)}>
                 Add New
               </Button>
@@ -183,7 +190,7 @@ const RealEstate = () => {
           ) : (
             <Table
               columns={columns}
-              dataSource={users}
+              dataSource={filteredData}
               pagination={{ pageSize: 10 }}
               onRow={(record) => ({
                 onClick: () => handleRowClick(record),

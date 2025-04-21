@@ -42,12 +42,20 @@ const AddRealEstateModal = ({ visible, onClose, editData, onSuccess }) => {
         address: editData.address,
         phoneNumber: editData.phone,
         email: editData.email,
-        admin: editData.admin,
-        totalBuildings: editData.totalBuildings,
+        // admin: editData.admin,
+        totalBuildings: editData.total_buildings,
         status: editData.status === 1,
         plan: editData.pricing_plan_id.toString(),
       });
       setPricingPlan(editData.pricing_plan_id.toString());
+      if (editData.logo)
+      {
+            setFileList([
+            {
+                url: editData.logo,
+            },
+        ]);
+      }
     } else {
       form.resetFields();
       setPricingPlan(null); // reset when adding new
@@ -131,9 +139,10 @@ const AddRealEstateModal = ({ visible, onClose, editData, onSuccess }) => {
           <Form.Item label="Real Estate Name" name="realStateName" style={{ flex: 1 }}>
             <Input placeholder="Enter Real Estate Name" />
           </Form.Item>
-          <Form.Item label="Address" name="address" style={{ flex: 1 }}>
-            <Input placeholder="Enter Full Address" />
+          <Form.Item label="Total Number of Buildings" name="totalBuildings" style={{ flex: 1 }}>
+            <Input placeholder="Enter Total Buildings" />
           </Form.Item>
+          
         </div>
 
         <div style={{ display: "flex", gap: "16px" }}>
@@ -146,7 +155,7 @@ const AddRealEstateModal = ({ visible, onClose, editData, onSuccess }) => {
         </div>
 
         <div style={{ display: "flex", gap: "16px" }}>
-          <Form.Item label="Assign Admin" name="admin" style={{ flex: 1 }}>
+          {/* <Form.Item label="Assign Admin" name="admin" style={{ flex: 1 }}>
             <Select placeholder="Select Admin">
               {adminUsers.map((admin) => (
                 <Option key={admin.id} value={admin.id}>
@@ -154,9 +163,9 @@ const AddRealEstateModal = ({ visible, onClose, editData, onSuccess }) => {
                 </Option>
               ))}
             </Select>
-          </Form.Item>
-          <Form.Item label="Total Number of Buildings" name="totalBuildings" style={{ flex: 1 }}>
-            <Input placeholder="Enter Total Buildings" />
+          </Form.Item> */}
+         <Form.Item label="Address" name="address" style={{ flex: 1 }}>
+            <Input placeholder="Enter Full Address" />
           </Form.Item>
         </div>
 

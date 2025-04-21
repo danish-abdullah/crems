@@ -141,13 +141,13 @@ const UserManagement = () => {
     }
   };
 
-  useEffect(() => {
-    const fetchInitialData = async () => {
-      await fetchBuildings();
-      const realEstatesList = await fetchRealEstates();
-      await fetchUsers(realEstatesList);
-    };
+  const fetchInitialData = async () => {
+    await fetchBuildings();
+    const realEstatesList = await fetchRealEstates();
+    await fetchUsers(realEstatesList);
+  };
 
+  useEffect(() => {
     fetchInitialData();
   }, []);
 
@@ -230,7 +230,7 @@ const UserManagement = () => {
       if (response.ok && data.success) {
         message.success(editingUser ? "User updated successfully!" : "User added successfully!");
         handleCancel();
-        fetchUsers();
+        fetchInitialData();
       } else {
         message.error(data.message || "Failed to save user.");
       }
@@ -295,7 +295,7 @@ const UserManagement = () => {
 
       if (response.ok && data.success) {
         message.success("User deleted successfully.");
-        fetchUsers();
+        fetchInitialData();
       } else {
         message.error(data.message || "Failed to delete user.");
       }

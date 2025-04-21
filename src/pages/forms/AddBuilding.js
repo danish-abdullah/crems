@@ -5,7 +5,7 @@ import "../../App.css";
 const { Content } = Layout;
 const { Title } = Typography;
 
-const AddBuilding = ({visible, onClose, editData}) => {
+const AddBuilding = ({visible, onClose, editData, realEstateID}) => {
   const [form] = Form.useForm(); // Create form instance
   const [floorCount, setFloorCount] = useState(0);
   const [parkingFloorCount, setParkingFloorCount] = useState(0);
@@ -39,6 +39,7 @@ const AddBuilding = ({visible, onClose, editData}) => {
       building_name: values.buildingName,
       no_of_floors: values.noOfFloors,
       no_of_parking_floors: values.parkingFloors,
+      real_estate_id: realEstateID,
       count_of_floors: "same", // "same" or "distinct"
       watchman: "Alex Smith",
     };
@@ -46,7 +47,7 @@ const AddBuilding = ({visible, onClose, editData}) => {
     try {
       const token = localStorage.getItem("access_token"); // Retrieve token from localStorage
       const response = await fetch(
-        "https://website-64a18929.yeo.vug.mybluehost.me/api/admin/building",
+        "https://website-64a18929.yeo.vug.mybluehost.me/api/admin/buildings",
         {
           method: "POST",
           headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
@@ -84,7 +85,7 @@ const AddBuilding = ({visible, onClose, editData}) => {
 
   return (
       <Modal
-      title={isEditing ? "Edit Real Estate" : "Add New Real Estate"}
+      title={isEditing ? "Edit Building" : "Add New Building"}
       visible={visible}
       onCancel={onClose}
       footer={null}

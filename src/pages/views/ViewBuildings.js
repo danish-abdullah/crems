@@ -15,16 +15,18 @@ import {
 import "../../App.css";
 import { useLocation, useNavigate } from "react-router-dom";
 import AddBuildingModal from "../forms/AddBuilding";
+import SearchBar from "../../components/SearchBar";
 
 const { Content } = Layout;
 const { Search } = Input;
 
-const ViewBuildings = () => {
+const ViewBuildings = ({realEstateID}) => {
   const [buildings, setBuildings] = useState([]);
   const [isBuildingModalVisible, setIsBuildingModalVisible] = useState(false);
   const [editData, setEditData] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
+  const [filteredData, setFilteredData] = useState(buildings);
   const data = location.state;
 
   const fetchBuildings = async () => {
@@ -159,15 +161,11 @@ const ViewBuildings = () => {
   return (
     <Content>
       <div className="flex justify-between items-center mb-4">
-        <Search
-          placeholder="Search"
-          allowClear
-          style={{
-            width: 300,
-            marginBottom: "20px",
-            borderColor: "#4b244a",
-          }}
-        />
+      <SearchBar
+            data={buildings}
+            fieldsToSearch={['building', 'address']}
+            onFilteredData={setFilteredData}
+          />
         <div className="flex gap-2">
           <Button
             icon={<PlusOutlined />}
@@ -183,7 +181,7 @@ const ViewBuildings = () => {
       </div>
 
       <Table
-        dataSource={buildings}
+        dataSource={filteredData}
         columns={columns}
         pagination={{ pageSize: 5 }}
         onRow={(record) => ({
@@ -198,6 +196,7 @@ const ViewBuildings = () => {
           setEditData(null);
         }}
         editData={editData}
+        realEstateID={realEstateID}
         refreshData={fetchBuildings} // refresh after add/edit
       />
     </Content>
