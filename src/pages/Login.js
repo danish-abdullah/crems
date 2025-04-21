@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Form, Input, Button, Checkbox, Typography, Card, message } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
@@ -9,7 +9,18 @@ import Logo from "../assets/logo.png";
 const { Title } = Typography;
 
 const Login = () => {
+  const [form] = Form.useForm();
   const navigate = useNavigate();
+  const [rememberMe, setRememberMe] = useState(false);
+
+  // Load remembered email
+  useEffect(() => {
+    const savedEmail = localStorage.getItem("rememberedEmail");
+    if (savedEmail) {
+      form.setFieldsValue({ username: savedEmail });
+      setRememberMe(true);
+    }
+  }, [form]);
 
   // Login API call
   const loginUser = async (email, password) => {
@@ -97,7 +108,11 @@ const Login = () => {
     const success = await loginUser(username, password);
 
     if (success) {
-      // Fetch user details and redirect
+      if (rememberMe) {
+        localStorage.setItem("rememberedEmail", username);
+      } else {
+        localStorage.removeItem("rememberedEmail");
+      }
       fetchUserDetails();
     }
   };
@@ -114,6 +129,7 @@ const Login = () => {
             Login
           </Title>
           <Form
+            form={form}
             name="login_form"
             onFinish={onFinish}
             layout="vertical"
@@ -140,7 +156,13 @@ const Login = () => {
               />
             </Form.Item>
             <Form.Item>
-              <Checkbox className="login-checkbox">Remember me</Checkbox>
+              <Checkbox
+                className="login-checkbox"
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
+              >
+                Remember me
+              </Checkbox>
             </Form.Item>
             <Form.Item>
               <Button
@@ -152,11 +174,11 @@ const Login = () => {
                 Login
               </Button>
             </Form.Item>
-            <Form.Item className="forgot-password-item">
+            {/* <Form.Item className="forgot-password-item">
               <a onClick={handleMenuClick} className="forgot-password-link">
                 Forgot Password?
               </a>
-            </Form.Item>
+            </Form.Item> */}
           </Form>
         </Card>
       </div>
