@@ -33,7 +33,7 @@ const ViewBuildings = ({realEstateID}) => {
     const token = localStorage.getItem("access_token");
     try {
       const response = await fetch(
-        "https://website-64a18929.yeo.vug.mybluehost.me/api/admin/buildings",
+        `https://website-64a18929.yeo.vug.mybluehost.me/api/admin/buildings?real_estate_id=${realEstateID}`,
         {
           method: "GET",
           headers: {
