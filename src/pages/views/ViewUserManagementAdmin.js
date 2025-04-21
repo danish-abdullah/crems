@@ -1,3 +1,4 @@
+import dayjs from "dayjs"
 import React, { useState, useEffect } from "react";
 import {
   Layout, Table, Button, Input, Dropdown, Menu, Tag, Avatar, Modal, Space, Popconfirm,
@@ -10,21 +11,25 @@ import {
 import AdminSidebar from "../../components/AdminSidebar.js";
 import TitleHeader from "../../components/TitleHeader.js";
 import "../../App.css";
+import SearchBar from "../../components/SearchBar.js";
 
 const { Content } = Layout;
 const { Option } = Select;
 
-const menu = (
-  <Menu>
-    <Menu.Item key="1">Date</Menu.Item>
-    <Menu.Item key="2">Flat Type</Menu.Item>
-    <Menu.Item key="3">Building</Menu.Item>
-  </Menu>
-);
+// const menu = (
+//   <Menu>
+//     <Menu.Item key="1">Date</Menu.Item>
+//     <Menu.Item key="2">Flat Type</Menu.Item>
+//     <Menu.Item key="3">Building</Menu.Item>
+//   </Menu>
+// );
 
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
+  const [realEstates, setRealEstates] = useState([]);
+  const [buildings, setBuildings] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
   const [form] = Form.useForm();
   const [imageUrl, setImageUrl] = useState(null);
   const [userType, setUserType] = useState(null);
@@ -32,6 +37,8 @@ const UserManagement = () => {
   const [loading, setLoading] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [editingUser, setEditingUser] = useState(null); // NEW
+  const [fileList, setFileList] = useState([]);
+  const [filteredData, setFilteredData] = useState(users);
 
   const fetchUsers = async () => {
     try {
@@ -54,8 +61,35 @@ const UserManagement = () => {
         // module: item.assigned_module || "-",
         // realState: item.real_state_company || "-",
         status: item.status === 1 ? "Active" : "Inactive",
-        avatar: item.profile_picture
+        avatar: item.profile_picture,
+        real_estate_id: item.real_estate_id,
+
+        dob: item.dob ? dayjs(item.dob) : null,
+      flat_no: item.apartment_id,
+      // creation_date: item.creation_date ? moment(item.creation_date) : null,
+      nationality: item.nationality,
+      building: item.building_id,
+      // joining_date: item.joining_date ? moment(item.joining_date) : null,
+      // maintenance_id: item.maintenance_id,
+      designation: item.designation,
+      is_outsourced: item.is_outsource,
+      company_name: item.company_name,
+      company_phone: item.company_phone,
+      categories: item.categories,
       })) || [];
+
+    //   const realEstateMap = {};
+    // realEstatesList.forEach((estate) => {
+    //   realEstateMap[estate.id] = estate.real_estate_name;
+    // });
+  
+      // Enrich users with real_estate_name
+      // const enrichedUsers = formattedUsers.map((user) => ({
+      //   ...user,
+      //   real_estate_name: realEstateMap[user.real_estate_id] || "-", // fallback
+      //   key: user.id,
+      // }));
+  
       setUsers(formattedUsers);
     } catch (error) {
       message.error(error.message);
@@ -64,23 +98,65 @@ const UserManagement = () => {
     }
   };
 
-  useEffect(() => {
-    fetchUsers();
-  }, []);
-
-  const handleUpload = ({ file }) => {
-    const reader = new FileReader();
-    reader.onload = () => {
-      setImageUrl(reader.result);
-    };
-    reader.readAsDataURL(file);
+  const fetchRealEstates = async () => {
+    try {
+      const response = await fetch("https://website-64a18929.yeo.vug.mybluehost.me/api/admin/real-estates", {
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${localStorage.getItem("access_token")}`
+        }
+      });
+  
+      const data = await response.json();
+      
+      if (response.ok && data.success) {
+        setRealEstates(data.data);
+        return data.data;
+      } else {
+        message.error(data.message || "Failed to fetch real estates.");
+      }
+    } catch (error) {
+      message.error("Error fetching real estates.");
+    }
+  };
+  
+  const fetchBuildings = async () => {
+    try {
+      const response = await fetch("https://website-64a18929.yeo.vug.mybluehost.me/api/admin/buildings", {
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${localStorage.getItem("access_token")}`
+        }
+      });
+  
+      const data = await response.json();
+  
+      if (response.ok && data.success) {
+        setBuildings(data.data);
+      } else {
+        message.error(data.message || "Failed to fetch buildings.");
+      }
+    } catch (error) {
+      message.error("Error fetching buildings.");
+    }
   };
 
-  const handleRemoveImage = () => {
-    setImageUrl(null);
+  useEffect(() => {
+    const fetchInitialData = async () => {
+      await fetchBuildings();
+      // const realEstatesList = await fetchRealEstates();
+      await fetchUsers();
+    };
+
+    fetchInitialData();
+  }, []);
+
+  const handleUpload = ({ fileList }) => {
+    setFileList(fileList);
   };
 
   const showModal = () => {
+    setIsEditMode(false);
     form.resetFields();
     setEditingUser(null);
     setImageUrl(null);
@@ -96,35 +172,57 @@ const UserManagement = () => {
     setUserType(null);
     setIsOutsourced(false);
     setIsModalVisible(false);
+    setFileList([]);
   };
 
   const handleAddUser = async (values) => {
     try {
       setSubmitLoading(true);
-      const formData = {
-        name: values.name,
-        email: values.email,
-        phone: values.phone,
-        password: values.password,
-        role: userType?.toLowerCase() || "user",
-        status: values.status ? 1 : 0,
-      };
+      
+      const formData = new FormData();
+      formData.append("name", values.name);
+      formData.append("email", values.email);
+      formData.append("phone_no", values.phone);
+      formData.append("password", values.password);
+      formData.append("role", userType?.toLowerCase() || "user");
+      // formData.append("real_estate_id", values.real_estate);
+      formData.append("status", values.status ? 1 : 0);
+
+      if (userType === 'Tenant')
+      {
+        formData.append("dob", values.dob ? values.dob.format('YYYY-MM-DD') : null);
+        formData.append("nationality", values.nationality);
+        formData.append("building_id", values.building);
+        formData.append("apartment_id", parseInt(values.flat_no));
+      }
+      else if (userType === 'Maintenance')
+      {
+        formData.append("designation", values.designation);
+        formData.append("building_id", values.building);
+        formData.append("is_outsource", values.is_outsourced? 1 : 0);
+        formData.append("categories", JSON.stringify(values.categories));
+        formData.append("company_name", values.company_name);
+        formData.append("company_phone", values.company_phone);
+      }
+
+      if (fileList.length > 0 && fileList[0].originFileObj) {
+        formData.append("profile_picture", fileList[0].originFileObj);
+      }
 
       let url = "https://website-64a18929.yeo.vug.mybluehost.me/api/admin/users";
       let method = "POST";
 
       if (editingUser) {
         url = `https://website-64a18929.yeo.vug.mybluehost.me/api/admin/users/${editingUser.id}`;
-        method = "PATCH";
+        formData.append("_method", "PATCH");
       }
 
       const response = await fetch(url, {
         method,
         headers: {
-          "Content-Type": "application/json",
           "Authorization": `Bearer ${localStorage.getItem("access_token")}`
         },
-        body: JSON.stringify(formData),
+        body: formData
       });
 
       const data = await response.json();
@@ -149,6 +247,7 @@ const UserManagement = () => {
     setImageUrl(record.avatar || null);
     setUserType(record.type);
     setIsModalVisible(true);
+    setIsEditMode(true);
 
     form.setFieldsValue({
       name: record.name,
@@ -156,7 +255,30 @@ const UserManagement = () => {
       phone: record.phone,
       user_type: record.type,
       status: record.status === "Active",
+      // real_estate: record.real_estate_id || record.real_estate?.id,
+      // Add these if available:
+      dob: record.dob ? dayjs(record.dob) : null,
+      flat_no: record.flat_no,
+      // creation_date: record.creation_date ? moment(record.creation_date) : null,
+      nationality: record.nationality,
+      building: record.building,
+      // joining_date: record.joining_date ? moment(record.joining_date) : null,
+      maintenance_id: record.maintenance_id,
+      designation: record.designation,
+      is_outsourced: record.is_outsourced,
+      company_name: record.company_name === "undefined" ? "" : record.company_name,
+      company_phone: record.company_phone === "undefined" ? "" : record.company_phone,
+      // categories: record.categories,
     });
+    setFileList([
+      {
+        uid: '-1',
+        name: 'Profile Picture',
+        status: 'done',
+        url: record.avatar,
+      },
+    ]);
+    setIsOutsourced(record.is_outsourced || false);    
   };
 
   const handleDeleteUser = async (userId) => {
@@ -195,6 +317,7 @@ const UserManagement = () => {
         </div>
       ),
     },
+    // { title: "Real Estate", dataIndex: "real_estate_name", key: "real_estate_name" },
     { title: "Email", dataIndex: "email", key: "email" },
     { title: "Phone Number", dataIndex: "phone", key: "phone" },
     { title: "User Type", dataIndex: "type", key: "type" },
@@ -232,15 +355,19 @@ const UserManagement = () => {
         <TitleHeader title="User Management" />
         <Content className="p-6 bg-white">
           <div className="flex justify-between items-center mb-4">
-            <Input placeholder="Search" prefix={<SearchOutlined />} className="w-1/3" />
+          <SearchBar
+            data={users}
+            fieldsToSearch={['name', 'email', 'role', 'real_estate_name']}
+            onFilteredData={setFilteredData}
+          />
             <div className="flex gap-2">
-              <Dropdown overlay={menu} placement="bottomLeft">
+              {/* <Dropdown overlay={menu} placement="bottomLeft">
                 <Button icon={<FilterOutlined />}>Filter By</Button>
-              </Dropdown>
+              </Dropdown> */}
               <Button icon={<PlusOutlined />} type="primary" onClick={showModal}>Add User</Button>
             </div>
           </div>
-          {loading ? <Spin /> : <Table columns={columns} dataSource={users} pagination={{ pageSize: 10 }} />}
+          {loading ? <Spin /> : <Table columns={columns} dataSource={filteredData} pagination={{ pageSize: 10 }} />}
         </Content>
       </Layout>
 
@@ -254,25 +381,49 @@ const UserManagement = () => {
           {/* Just add editing logic on submit (already done above) */}
 
           <Form.Item label="Profile Picture">
-            <Upload showUploadList={false} beforeUpload={() => false} onChange={handleUpload}>
-              <div className="relative w-24 h-24 rounded-full border border-gray-300 flex items-center justify-center cursor-pointer overflow-hidden">
-                {imageUrl ? <img src={imageUrl} alt="Profile" className="w-full h-full object-cover" /> : <UploadOutlined className="text-gray-500 text-xl" />}
+          <Upload
+            listType="picture-card"
+            fileList={fileList}
+            onChange={handleUpload}
+            beforeUpload={() => false}
+          >
+            {fileList.length < 1 && (
+              <div>
+                <UploadOutlined />
+                <div style={{ marginTop: 8 }}>Upload</div>
               </div>
-            </Upload>
-            {imageUrl && (
-              <Button onClick={handleRemoveImage} icon={<DeleteOutlined />} className="mt-2">Remove</Button>
             )}
-          </Form.Item>
-
+          </Upload>
+        </Form.Item>
+          {/* <div className="flex gap-4">
+          <div className="w-1/2"> */}
           <Form.Item label="User Type" name="user_type" rules={[{ required: true }]}>
             <Select placeholder="Select user type" onChange={setUserType}>
-              <Option value="Sales Person">Sales Person</Option>
+              {/* <Option value="Admin">Admin</Option> */}
+              <Option value="Sales">Sales</Option>
               <Option value="Tenant">Tenant</Option>
               <Option value="Maintenance">Maintenance</Option>
-              <Option value="Visitor">Visitor</Option>
+              {/* <Option value="Visitor">Visitor</Option> */}
               <Option value="Receptionist/Watchman">Receptionist/Watchman</Option>
             </Select>
           </Form.Item>
+          {/* </div>
+          <div className="w-1/2">
+          <Form.Item
+            label="Real Estate"
+            name="real_estate"
+            rules={[{ required: true, message: "Please select a real estate" }]}
+          >
+            <Select placeholder="Select Real Estate">
+              {realEstates.map((estate, index) => (
+                <Option key={estate.id} value={estate.id}>
+                  {estate.real_estate_name}
+                </Option>
+              ))}
+            </Select>
+          </Form.Item>
+          </div>
+          </div> */}
 
           <div className="flex gap-4">
             <div className="w-1/2">
@@ -287,8 +438,16 @@ const UserManagement = () => {
               <Form.Item label="Email Address" name="email" rules={[{ required: true, type: "email", message: "Please enter valid email" }]}>
                 <Input />
               </Form.Item>
-              <Form.Item label="Password" name="password" rules={[{ required: true, message: "Please enter password" }]}>
-                <Input.Password />
+              <Form.Item
+                label="Password"
+                name="password"
+                rules={
+                  isEditMode
+                    ? []
+                    : [{ required: true, message: "Please input password" }]
+                }
+              >
+                <Input.Password placeholder="Enter password" />
               </Form.Item>
             </div>
           </div>
@@ -298,14 +457,27 @@ const UserManagement = () => {
             <>
               <div className="flex gap-4">
                 <div className="w-1/2">
-                  <Form.Item label="Date of Birth" name="dob"><DatePicker /></Form.Item>
-                  <Form.Item label="Flat No" name="flat_no"><Input /></Form.Item>
-                  <Form.Item label="Creation Date" name="creation_date"><DatePicker /></Form.Item>
+                  <Form.Item label="Date of Birth" name="dob"><DatePicker style={{width: "100%"}}/></Form.Item>
+                  <Form.Item
+                    label="Building"
+                    name="building"
+                    rules={[{ required: true, message: "Please select a building" }]}
+                  >
+                    <Select placeholder="Select Building">
+                      {buildings.map((building, index) => (
+                        <Option key={building.id} value={building.id}>
+                          {building.building_name}
+                        </Option>
+                      ))}
+                    </Select>
+                  </Form.Item>
+                  {/* <Form.Item label="Creation Date" name="creation_date"><DatePicker /></Form.Item> */}
                 </div>
                 <div className="w-1/2">
                   <Form.Item label="Nationality" name="nationality"><Input /></Form.Item>
-                  <Form.Item label="Assigned Building" name="building"><Input /></Form.Item>
-                  <Form.Item label="Joining Date" name="joining_date"><DatePicker /></Form.Item>
+                  <Form.Item label="Flat No" name="flat_no"><Input /></Form.Item>
+                  
+                  {/* <Form.Item label="Joining Date" name="joining_date"><DatePicker /></Form.Item> */}
                 </div>
               </div>
             </>
@@ -315,27 +487,42 @@ const UserManagement = () => {
             <>
               <div className="flex gap-4">
                 <div className="w-1/2">
-                  <Form.Item label="Maintenance ID" name="maintenance_id"><Input /></Form.Item>
                   <Form.Item label="Designation" name="designation"><Input /></Form.Item>
                   <Form.Item label="Is Outsourced" name="is_outsourced"><Switch onChange={setIsOutsourced} /></Form.Item>
-                </div>
-                <div className="w-1/2">
-                  <Form.Item label="Assigned Building" name="building"><Input /></Form.Item>
                   {isOutsourced && (
                     <>
                       <Form.Item label="Company Name" name="company_name"><Input /></Form.Item>
+                    </>
+                  )}
+                </div>
+                <div className="w-1/2">
+                <Form.Item
+                    label="Building"
+                    name="building"
+                    rules={[{ required: true, message: "Please select a building" }]}
+                  >
+                    <Select placeholder="Select Building">
+                      {buildings.map((building, index) => (
+                        <Option key={building.id} value={building.id}>
+                          {building.building_name}
+                        </Option>
+                      ))}
+                    </Select>
+                  </Form.Item>
+                  {/* <Form.Item label="Categories" name="categories">
+                    <Checkbox.Group options={["Plumbing", "Electrical", "Paint", "Lift"]} />
+                  </Form.Item> */}
+                  {isOutsourced && (
+                    <>
                       <Form.Item label="Company Phone" name="company_phone"><Input /></Form.Item>
                     </>
                   )}
-                  <Form.Item label="Categories" name="categories">
-                    <Checkbox.Group options={["Plumbing", "Electrical", "Paint", "Lift"]} />
-                  </Form.Item>
                 </div>
               </div>
             </>
           )}
 
-          {userType === "Visitor" && (
+          {/* {userType === "Visitor" && (
             <>
               <div className="flex gap-4">
                 <div className="w-1/2">
@@ -350,13 +537,13 @@ const UserManagement = () => {
                 </div>
               </div>
             </>
-          )}
+          )} */}
           <Form.Item label="Status" name="status" valuePropName="checked">
             <Switch />
           </Form.Item>
           <Form.Item>
-            <Button type="primary" htmlType="submit" block loading={submitLoading}>
-              {editingUser ? "Update" : "Add"}
+            <Button type="primary" htmlType="submit" loading={submitLoading} className="w-full mt-4">
+              {editingUser ? "Update User" : "Add User"}
             </Button>
           </Form.Item>
         </Form>

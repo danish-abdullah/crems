@@ -70,16 +70,16 @@ const AddRealEstateModal = ({ visible, onClose, editData, onSuccess }) => {
     formData.append("status", values.status ? 1 : 0);
     formData.append("user_id", 1); // From dropdown
     formData.append("pricing_plan_id", pricingPlan);
-    formData.append("_method", "PATCH");
     if (fileList.length > 0 && fileList[0].originFileObj) {
-        formData.append("logo", fileList[0].originFileObj);
-
+      formData.append("logo", fileList[0].originFileObj); 
     }
-
+    
     const url = isEditing
       ? `https://website-64a18929.yeo.vug.mybluehost.me/api/admin/real-estates/${editData.id}`
       : "https://website-64a18929.yeo.vug.mybluehost.me/api/admin/real-estates";
-    const method = isEditing ? "POST" : "POST"; // Adjust if PUT is supported
+    const method = "POST";
+    if (isEditing)
+      formData.append("_method", "PATCH");
 
     try {
       const response = await fetch(url, {

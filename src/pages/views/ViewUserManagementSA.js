@@ -1,5 +1,4 @@
 import dayjs from "dayjs"
-import moment from "moment";
 import React, { useState, useEffect } from "react";
 import {
   Layout, Table, Button, Input, Dropdown, Menu, Tag, Avatar, Modal, Space, Popconfirm,
@@ -12,6 +11,7 @@ import {
 import SuperAdminSidebar from "../../components/SuperAdminSidebar.js";
 import TitleHeader from "../../components/TitleHeader.js";
 import "../../App.css";
+import SearchBar from "../../components/SearchBar.js";
 
 const { Content } = Layout;
 const { Option } = Select;
@@ -37,8 +37,10 @@ const UserManagement = () => {
   const [loading, setLoading] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [editingUser, setEditingUser] = useState(null); // NEW
+  const [fileList, setFileList] = useState([]);
+  const [filteredData, setFilteredData] = useState(users);
 
-  const fetchUsers = async () => {
+  const fetchUsers = async (realEstatesList = []) => {
     try {
       setLoading(true);
       const response = await fetch("https://website-64a18929.yeo.vug.mybluehost.me/api/admin/users", {
@@ -62,7 +64,7 @@ const UserManagement = () => {
         avatar: item.profile_picture,
         real_estate_id: item.real_estate_id,
 
-        dob: item.dob ? moment(item.dob) : null,
+        dob: item.dob ? dayjs(item.dob) : null,
       flat_no: item.apartment_id,
       // creation_date: item.creation_date ? moment(item.creation_date) : null,
       nationality: item.nationality,
@@ -77,9 +79,9 @@ const UserManagement = () => {
       })) || [];
 
       const realEstateMap = {};
-      realEstates.forEach((estate) => {
-        realEstateMap[estate.id] = estate.real_estate_name;
-      });
+    realEstatesList.forEach((estate) => {
+      realEstateMap[estate.id] = estate.real_estate_name;
+    });
   
       // Enrich users with real_estate_name
       const enrichedUsers = formattedUsers.map((user) => ({
@@ -106,9 +108,10 @@ const UserManagement = () => {
       });
   
       const data = await response.json();
-  
+      
       if (response.ok && data.success) {
         setRealEstates(data.data);
+        return data.data;
       } else {
         message.error(data.message || "Failed to fetch real estates.");
       }
@@ -139,21 +142,17 @@ const UserManagement = () => {
   };
 
   useEffect(() => {
-    fetchRealEstates();
-    fetchUsers();
-    fetchBuildings();
+    const fetchInitialData = async () => {
+      await fetchBuildings();
+      const realEstatesList = await fetchRealEstates();
+      await fetchUsers(realEstatesList);
+    };
+
+    fetchInitialData();
   }, []);
 
-  const handleUpload = ({ file }) => {
-    const reader = new FileReader();
-    reader.onload = () => {
-      setImageUrl(reader.result);
-    };
-    reader.readAsDataURL(file);
-  };
-
-  const handleRemoveImage = () => {
-    setImageUrl(null);
+  const handleUpload = ({ fileList }) => {
+    setFileList(fileList);
   };
 
   const showModal = () => {
@@ -173,53 +172,57 @@ const UserManagement = () => {
     setUserType(null);
     setIsOutsourced(false);
     setIsModalVisible(false);
+    setFileList([]);
   };
 
   const handleAddUser = async (values) => {
     try {
       setSubmitLoading(true);
-      const categories = values.categories 
-      ? values.categories.map(category => String(category)) 
-      : [];
-      const formData = {
-        name: values.name,
-        email: values.email,
-        phone_no: values.phone,
-        password: values.password,
-        role: userType?.toLowerCase() || "user",
-        real_estate_id: values.real_estate,
-        status: values.status ? 1 : 0,
-        ...(userType === 'Tenant' && {
-          dob: values.dob ? values.dob.format('YYYY-MM-DD') : null,
-          nationality: values.nationality,
-          building_id: values.building,
-          apartment_id: parseInt(values.flat_no)
-        }),
-        ...(userType === 'Maintenance' && {
-          designation: values.designation,
-          building_id: values.building,
-          is_outsource: values.is_outsourced ? 1 : 0,
-          categories: categories,
-          company_name: values.company_name,
-          company_phone: values.company_phone
-        }),
-      };
+      
+      const formData = new FormData();
+      formData.append("name", values.name);
+      formData.append("email", values.email);
+      formData.append("phone_no", values.phone);
+      formData.append("password", values.password);
+      formData.append("role", userType?.toLowerCase() || "user");
+      formData.append("real_estate_id", values.real_estate);
+      formData.append("status", values.status ? 1 : 0);
+
+      if (userType === 'Tenant')
+      {
+        formData.append("dob", values.dob ? values.dob.format('YYYY-MM-DD') : null);
+        formData.append("nationality", values.nationality);
+        formData.append("building_id", values.building);
+        formData.append("apartment_id", parseInt(values.flat_no));
+      }
+      else if (userType === 'Maintenance')
+      {
+        formData.append("designation", values.designation);
+        formData.append("building_id", values.building);
+        formData.append("is_outsource", values.is_outsourced? 1 : 0);
+        formData.append("categories", JSON.stringify(values.categories));
+        formData.append("company_name", values.company_name);
+        formData.append("company_phone", values.company_phone);
+      }
+
+      if (fileList.length > 0 && fileList[0].originFileObj) {
+        formData.append("profile_picture", fileList[0].originFileObj);
+      }
 
       let url = "https://website-64a18929.yeo.vug.mybluehost.me/api/admin/users";
       let method = "POST";
 
       if (editingUser) {
         url = `https://website-64a18929.yeo.vug.mybluehost.me/api/admin/users/${editingUser.id}`;
-        method = "PATCH";
+        formData.append("_method", "PATCH");
       }
 
       const response = await fetch(url, {
         method,
         headers: {
-          "Content-Type": "application/json",
           "Authorization": `Bearer ${localStorage.getItem("access_token")}`
         },
-        body: JSON.stringify(formData),
+        body: formData
       });
 
       const data = await response.json();
@@ -256,17 +259,25 @@ const UserManagement = () => {
       // Add these if available:
       dob: record.dob ? dayjs(record.dob) : null,
       flat_no: record.flat_no,
-      creation_date: record.creation_date ? moment(record.creation_date) : null,
+      // creation_date: record.creation_date ? moment(record.creation_date) : null,
       nationality: record.nationality,
       building: record.building,
-      joining_date: record.joining_date ? moment(record.joining_date) : null,
+      // joining_date: record.joining_date ? moment(record.joining_date) : null,
       maintenance_id: record.maintenance_id,
       designation: record.designation,
       is_outsourced: record.is_outsourced,
-      company_name: record.company_name,
-      company_phone: record.company_phone,
-      categories: record.categories,
+      company_name: record.company_name === "undefined" ? "" : record.company_name,
+      company_phone: record.company_phone === "undefined" ? "" : record.company_phone,
+      // categories: record.categories,
     });
+    setFileList([
+      {
+        uid: '-1',
+        name: 'Profile Picture',
+        status: 'done',
+        url: record.avatar,
+      },
+    ]);
     setIsOutsourced(record.is_outsourced || false);    
   };
 
@@ -344,7 +355,11 @@ const UserManagement = () => {
         <TitleHeader title="User Management" />
         <Content className="p-6 bg-white">
           <div className="flex justify-between items-center mb-4">
-            <Input placeholder="Search" prefix={<SearchOutlined />} className="w-1/3" />
+          <SearchBar
+            data={users}
+            fieldsToSearch={['name', 'email', 'role', 'real_estate_name']}
+            onFilteredData={setFilteredData}
+          />
             <div className="flex gap-2">
               {/* <Dropdown overlay={menu} placement="bottomLeft">
                 <Button icon={<FilterOutlined />}>Filter By</Button>
@@ -352,7 +367,7 @@ const UserManagement = () => {
               <Button icon={<PlusOutlined />} type="primary" onClick={showModal}>Add User</Button>
             </div>
           </div>
-          {loading ? <Spin /> : <Table columns={columns} dataSource={users} pagination={{ pageSize: 10 }} />}
+          {loading ? <Spin /> : <Table columns={columns} dataSource={filteredData} pagination={{ pageSize: 10 }} />}
         </Content>
       </Layout>
 
@@ -366,15 +381,20 @@ const UserManagement = () => {
           {/* Just add editing logic on submit (already done above) */}
 
           <Form.Item label="Profile Picture">
-            <Upload showUploadList={false} beforeUpload={() => false} onChange={handleUpload}>
-              <div className="relative w-24 h-24 rounded-full border border-gray-300 flex items-center justify-center cursor-pointer overflow-hidden">
-                {imageUrl ? <img src={imageUrl} alt="Profile" className="w-full h-full object-cover" /> : <UploadOutlined className="text-gray-500 text-xl" />}
+          <Upload
+            listType="picture-card"
+            fileList={fileList}
+            onChange={handleUpload}
+            beforeUpload={() => false}
+          >
+            {fileList.length < 1 && (
+              <div>
+                <UploadOutlined />
+                <div style={{ marginTop: 8 }}>Upload</div>
               </div>
-            </Upload>
-            {imageUrl && (
-              <Button onClick={handleRemoveImage} icon={<DeleteOutlined />} className="mt-2">Remove</Button>
             )}
-          </Form.Item>
+          </Upload>
+        </Form.Item>
           <div className="flex gap-4">
           <div className="w-1/2">
           <Form.Item label="User Type" name="user_type" rules={[{ required: true }]}>
@@ -471,7 +491,7 @@ const UserManagement = () => {
                   <Form.Item label="Is Outsourced" name="is_outsourced"><Switch onChange={setIsOutsourced} /></Form.Item>
                   {isOutsourced && (
                     <>
-                      <Form.Item style={{paddingTop: "13px"}} label="Company Name" name="company_name"><Input /></Form.Item>
+                      <Form.Item label="Company Name" name="company_name"><Input /></Form.Item>
                     </>
                   )}
                 </div>
@@ -489,9 +509,9 @@ const UserManagement = () => {
                       ))}
                     </Select>
                   </Form.Item>
-                  <Form.Item label="Categories" name="categories">
+                  {/* <Form.Item label="Categories" name="categories">
                     <Checkbox.Group options={["Plumbing", "Electrical", "Paint", "Lift"]} />
-                  </Form.Item>
+                  </Form.Item> */}
                   {isOutsourced && (
                     <>
                       <Form.Item label="Company Phone" name="company_phone"><Input /></Form.Item>
