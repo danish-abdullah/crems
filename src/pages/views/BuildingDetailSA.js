@@ -47,9 +47,9 @@ const BuildingDetail = () => {
               <Descriptions.Item label="Total Tenants">{data.tenants}</Descriptions.Item>
               <Descriptions.Item label="Date Added">{data.dateAdded}</Descriptions.Item>
             </Descriptions>
-            <div className="text-right">
+            {/* <div className="text-right">
               <Button icon={<EditOutlined />}>Edit</Button>
-            </div>
+            </div> */}
           </div>
 
           <div className="bg-white rounded shadow">
@@ -69,7 +69,7 @@ const BuildingDetail = () => {
               </Col>
             </Row>
           </div>
-          <ViewTenants></ViewTenants>
+          <ViewTenants buildingName={data.building} buildingID={data.key}></ViewTenants>
         </Content>
       </Layout>
     </Layout>

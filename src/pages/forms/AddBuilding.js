@@ -5,7 +5,7 @@ import "../../App.css";
 const { Content } = Layout;
 const { Title } = Typography;
 
-const AddBuilding = ({visible, onClose, editData, realEstateID}) => {
+const AddBuilding = ({visible, onClose, editData, realEstateID, refreshData}) => {
   const [form] = Form.useForm(); // Create form instance
   const [floorCount, setFloorCount] = useState(0);
   const [parkingFloorCount, setParkingFloorCount] = useState(0);
@@ -42,12 +42,16 @@ const AddBuilding = ({visible, onClose, editData, realEstateID}) => {
       real_estate_id: realEstateID,
       count_of_floors: "same", // "same" or "distinct"
       watchman: "Alex Smith",
+      ...(isEditing && { _method: "PATCH" }),
     };
 
     try {
+      let url = "https://website-64a18929.yeo.vug.mybluehost.me/api/admin/buildings";
+      if (isEditing)
+        url = `https://website-64a18929.yeo.vug.mybluehost.me/api/admin/buildings/${editData.id}`
       const token = localStorage.getItem("access_token"); // Retrieve token from localStorage
       const response = await fetch(
-        "https://website-64a18929.yeo.vug.mybluehost.me/api/admin/buildings",
+        url,
         {
           method: "POST",
           headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
@@ -56,10 +60,12 @@ const AddBuilding = ({visible, onClose, editData, realEstateID}) => {
       );
 
       if (response.ok) {
-        message.success("Building added successfully!");
+        message.success(isEditing ? "Building updated successfully!" : "Building added successfully!");
         form.resetFields();
         setFloorOption("");
         setParkingFloorCount(0);
+        refreshData();
+        onClose();
       } else {
         const errorData = await response.json();
         message.error(`Failed to add building: ${errorData.message || "Unknown error"}`);

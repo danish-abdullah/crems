@@ -120,6 +120,12 @@ const ViewBuildings = ({realEstateID}) => {
       key: "building",
     },
     {
+      title: "Building ID",
+      dataIndex: "key",
+      key: "key",
+      visible: false
+    },
+    {
       title: "Address",
       dataIndex: "address",
       key: "address",
@@ -158,6 +164,8 @@ const ViewBuildings = ({realEstateID}) => {
     },
   ];
 
+  const visibleColumns = columns.filter(col => col.visible !== false);
+
   return (
     <Content>
       <div className="flex justify-between items-center mb-4">
@@ -182,7 +190,7 @@ const ViewBuildings = ({realEstateID}) => {
 
       <Table
         dataSource={filteredData}
-        columns={columns}
+        columns={visibleColumns}
         pagination={{ pageSize: 5 }}
         onRow={(record) => ({
           onClick: () => handleRowClick(record),

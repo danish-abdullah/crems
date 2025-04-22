@@ -36,7 +36,7 @@ const UserManagement = () => {
   const [isOutsourced, setIsOutsourced] = useState(false);
   const [loading, setLoading] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(false);
-  const [editingUser, setEditingUser] = useState(null); // NEW
+  const [editingUser, setEditingUser] = useState(null);
   const [fileList, setFileList] = useState([]);
   const [filteredData, setFilteredData] = useState(users);
 
