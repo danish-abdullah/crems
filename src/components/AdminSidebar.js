@@ -53,6 +53,9 @@ const AdminSidebar = ({ username, selectedTab }) => {
         else if (key === "viewTenants") {
           navigate("/view-tenants");
         }
+        else if (key === "viewTenantsList") {
+          navigate("/view-tenants-admin");
+        }
         // else if (key === "viewBuildings") {
         //   navigate("/view-buildings");
         // }
@@ -106,6 +109,13 @@ const AdminSidebar = ({ username, selectedTab }) => {
           <Menu.Item className="main-item" key="viewBuildings" icon={<UserOutlined />}>
             Buildings
           </Menu.Item>
+          <Menu.Item className="main-item" key="viewTenantsList" icon={<UserOutlined />}>
+            Tenants
+          </Menu.Item>
+          <Menu.Item className="main-item" key="">
+          </Menu.Item>
+          <Menu.Item className="main-item" key="">
+          </Menu.Item>
           <SubMenu key="visitor" icon={<UserOutlined />} title="Visitor">
           <Menu.Item key="addVisitor" icon={<PlusOutlined />}>
               Add Visitor
@@ -120,14 +130,6 @@ const AdminSidebar = ({ username, selectedTab }) => {
             </Menu.Item>
             <Menu.Item key="viewTenants" icon={<FileTextOutlined />}>
               View Tenants
-            </Menu.Item>
-          </SubMenu>
-          <SubMenu key="building" icon={<HomeOutlined />} title="Building">
-          <Menu.Item key="addBuilding" icon={<PlusOutlined />}>
-              Add Building
-            </Menu.Item>
-            <Menu.Item key="viewBuildings" icon={<FileTextOutlined />}>
-              VIew Buildings
             </Menu.Item>
           </SubMenu>
           <SubMenu key="apartment" icon={<ApartmentOutlined />} title="Apartment">

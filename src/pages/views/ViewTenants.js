@@ -9,22 +9,29 @@ import {
   Modal,
   Form,
   Select,
-  Upload, Switch, DatePicker, Avatar
+  Upload,
+  Switch,
+  DatePicker,
+  Avatar,
+  Spin,
 } from "antd";
-import { EditOutlined, UploadOutlined, DeleteOutlined, PlusOutlined } from "@ant-design/icons";
+import {
+  EditOutlined,
+  UploadOutlined,
+  DeleteOutlined,
+  PlusOutlined,
+} from "@ant-design/icons";
 import "../../App.css";
 import SearchBar from "../../components/SearchBar";
-import dayjs from "dayjs"
+import dayjs from "dayjs";
 
 const { Content } = Layout;
-const { Search } = Input;
 const { Option } = Select;
 
-const ViewTenants = ({realEstateID, buildingName, buildingID}) => {
+const ViewTenants = ({ realEstateID, buildingName, buildingID, isViewAll }) => {
   const [dataSource, setDataSource] = useState([]);
-  const [buildingList, setBuildingList] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [filteredData, setFilteredData] = useState(dataSource);
   const [editingUser, setEditingUser] = useState(null);
   const [form] = Form.useForm();
   const [isEditMode, setIsEditMode] = useState(false);
@@ -32,9 +39,35 @@ const ViewTenants = ({realEstateID, buildingName, buildingID}) => {
   const [submitLoading, setSubmitLoading] = useState(false);
   const [fileList, setFileList] = useState([]);
   const [imageUrl, setImageUrl] = useState(null);
+  const [buildings, setBuildings] = useState([]);
+
+  const fetchBuildings = async () => {
+    try {
+      const response = await fetch(
+        "https://website-64a18929.yeo.vug.mybluehost.me/api/admin/buildings",
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+          },
+        }
+      );
+      const data = await response.json();
+      if (data.success) {
+        setBuildings(data.data || []);
+      } else {
+        message.error("Failed to fetch buildings");
+      }
+    } catch (error) {
+      message.error("Error fetching buildings");
+      console.error(error);
+    }
+  };
+  
 
   const fetchTenants = async () => {
     try {
+      setLoading(true);
       const response = await fetch(
         "https://website-64a18929.yeo.vug.mybluehost.me/api/admin/users",
         {
@@ -46,35 +79,68 @@ const ViewTenants = ({realEstateID, buildingName, buildingID}) => {
       );
       const data = await response.json();
       if (data.success) {
-        setDataSource(data?.data?.filter(user => user.roles[0]?.name === "Tenant" && user.building_id === buildingID) || []);
+        const filtered = isViewAll
+          ? data?.data?.filter(
+            (user) =>
+              user.roles[0]?.name === "Tenant"
+          )
+          : data?.data?.filter(
+              (user) =>
+                user.roles[0]?.name === "Tenant" &&
+                user.building_id === buildingID
+            );
+
+            if (isViewAll)
+            {
+              const tenantsWithBuildingName = filtered.map((tenant) => {
+                const building = buildings.find((b) => b.id === tenant.building_id);
+                return { ...tenant, building_name: building?.building_name || "-" };
+              });
+        
+              setDataSource(tenantsWithBuildingName);
+              setFilteredData(tenantsWithBuildingName);
+            }
+            else
+            {
+              setDataSource(filtered || []);
+              setFilteredData(filtered || []);
+            }
+
       } else {
         message.error("Failed to fetch tenants");
       }
     } catch (error) {
       message.error("Error fetching tenants");
       console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  useEffect(() => {
-    fetchTenants();
-  }, []);
-
-  const handleUpload = ({ fileList }) => {
-    setFileList(fileList);
+useEffect(() => {
+  const fetchData = async () => {
+    await fetchBuildings();
   };
-  
+  fetchData();
+}, []);
+
+useEffect(() => {
+  if (buildings.length > 0) {
+    fetchTenants();
+  }
+}, [buildings]);
+
+  const handleUpload = ({ fileList }) => setFileList(fileList);
+
   const showModal = () => {
     setIsEditMode(false);
     form.resetFields();
-    form.setFieldsValue({
-      building_name: buildingName,
-    });
+    form.setFieldsValue({ building_name: buildingName });
     setEditingUser(null);
     setImageUrl(null);
     setIsModalVisible(true);
   };
-  
+
   const handleCancel = () => {
     form.resetFields();
     setEditingUser(null);
@@ -82,7 +148,7 @@ const ViewTenants = ({realEstateID, buildingName, buildingID}) => {
     setIsModalVisible(false);
     setFileList([]);
   };
-  
+
   const handleAddUser = async (values) => {
     try {
       setSubmitLoading(true);
@@ -94,54 +160,52 @@ const ViewTenants = ({realEstateID, buildingName, buildingID}) => {
       formData.append("role", "Tenant");
       formData.append("real_estate_id", realEstateID);
       formData.append("status", values.status ? 1 : 0);
-      formData.append("dob", values.dob ? values.dob.format('YYYY-MM-DD') : null);
+      formData.append("dob", values.dob ? values.dob.format("YYYY-MM-DD") : "");
       formData.append("nationality", values.nationality);
       formData.append("building_id", buildingID);
       formData.append("apartment_id", parseInt(values.flat_no));
-      
+
       if (fileList.length > 0 && fileList[0].originFileObj) {
         formData.append("profile_picture", fileList[0].originFileObj);
       }
-  
+
       let url = "https://website-64a18929.yeo.vug.mybluehost.me/api/admin/users";
       let method = "POST";
-  
+
       if (editingUser) {
-        url = `https://website-64a18929.yeo.vug.mybluehost.me/api/admin/users/${editingUser.id}`;
+        url = `${url}/${editingUser.id}`;
         formData.append("_method", "PATCH");
       }
-  
+
       const response = await fetch(url, {
         method,
         headers: {
-          "Authorization": `Bearer ${localStorage.getItem("access_token")}`
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
         },
-        body: formData
+        body: formData,
       });
-  
+
       const data = await response.json();
-  
       if (response.ok && data.success) {
-        message.success(editingUser ? "Tenant updated successfully!" : "Tenant added successfully!");
+        message.success(editingUser ? "Tenant updated!" : "Tenant added!");
         handleCancel();
         fetchTenants();
       } else {
         message.error(data.message || "Failed to save tenant.");
       }
-  
     } catch (err) {
       message.error("Error submitting tenant data.");
     } finally {
       setSubmitLoading(false);
     }
   };
-  
+
   const handleEdit = (record) => {
     setEditingUser(record);
     setImageUrl(record.profile_picture || null);
     setIsModalVisible(true);
     setIsEditMode(true);
-  
+
     form.setFieldsValue({
       name: record.name,
       email: record.email,
@@ -153,59 +217,34 @@ const ViewTenants = ({realEstateID, buildingName, buildingID}) => {
       nationality: record.nationality,
       building_name: buildingName,
     });
-    setFileList([
-      {
-        url: record.profile_picture,
-      },
-    ]);
+    setFileList([{ url: record.profile_picture }]);
   };
-  
+
   const handleDeleteUser = async (userId) => {
     try {
-      const response = await fetch(`https://website-64a18929.yeo.vug.mybluehost.me/api/admin/users/${userId}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${localStorage.getItem("access_token")}`
+      const response = await fetch(
+        `https://website-64a18929.yeo.vug.mybluehost.me/api/admin/users/${userId}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+          },
         }
-      });
-  
+      );
+
       const data = await response.json();
-  
+
       if (response.ok && data.success) {
-        message.success("Tenant deleted successfully.");
+        message.success("Tenant deleted.");
         fetchTenants();
       } else {
-        message.error(data.message || "Failed to delete tenant.");
+        message.error(data.message || "Delete failed.");
       }
     } catch (error) {
-      console.error("Error deleting tenant:", error);
       message.error("Error deleting tenant.");
     }
   };
-  
-  // const showEditModal = (record) => {
-  //   fetchBuildings();
-  //   setEditingTenant(record);
-  //   form.setFieldsValue({
-  //     full_name: record.name,
-  //     building_name: buildingName,
-  //     apartment_id: record.apartment_id,
-  //     phone_no: record.phone_no,
-  //     email: record.email,
-  //   });
-  //   setIsModalVisible(true);
-  // };
-
-  // const showAddModal = () => {
-  //   fetchBuildings();
-  //   setEditingTenant(null);
-  //   form.resetFields();
-  //   form.setFieldsValue({
-  //     building_name: buildingName,
-  //   })
-  //   setIsModalVisible(true);
-  // };
 
   const columns = [
     {
@@ -217,13 +256,13 @@ const ViewTenants = ({realEstateID, buildingName, buildingID}) => {
           <Avatar src={record.profile_picture} />
           {text}
         </div>
-      ),  
+      ),
     },
-    // {
-    //   title: "Building",
-    //   dataIndex: "building_name",
-    //   key: "building",
-    // },
+    isViewAll && {
+      title: "Building",
+      dataIndex: "building_name",
+      key: "building_name",
+    },
     {
       title: "Flat No.",
       dataIndex: "apartment_id",
@@ -246,7 +285,7 @@ const ViewTenants = ({realEstateID, buildingName, buildingID}) => {
       key: "date",
       render: (text) => text?.split("T")[0],
     },
-    {
+    !isViewAll && {
       title: "Actions",
       key: "actions",
       render: (text, record) => (
@@ -268,33 +307,32 @@ const ViewTenants = ({realEstateID, buildingName, buildingID}) => {
         </div>
       ),
     },
-  ];
+  ].filter(Boolean); // Remove falsy columns
 
   return (
     <Layout>
       <Content>
         <div className="flex justify-between items-center mb-4">
-        <SearchBar
+          <SearchBar
             data={dataSource}
-            fieldsToSearch={['name', 'email', 'role', 'real_estate_name']}
+            fieldsToSearch={["name", "email", "role", "real_estate_name"]}
             onFilteredData={setFilteredData}
           />
-          <div className="flex gap-2">
-            <Button
-              icon={<PlusOutlined />}
-              type="primary"
-              onClick={showModal}
-            >
+          {!isViewAll && (
+            <Button icon={<PlusOutlined />} type="primary" onClick={showModal}>
               Add Tenant
             </Button>
-          </div>
+          )}
         </div>
-        <Table
-          dataSource={filteredData}
-          columns={columns}
-          pagination={{ pageSize: 5 }}
-          rowKey="id"
-        />
+
+        <Spin spinning={loading}>
+          <Table
+            dataSource={filteredData}
+            columns={columns}
+            pagination={{ pageSize: 8 }}
+            rowKey="id"
+          />
+        </Spin>
       </Content>
 
       <Modal title={editingUser ? "Edit Tenant" : "Add Tenant"} open={isModalVisible} onCancel={handleCancel} footer={null}>

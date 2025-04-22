@@ -49,7 +49,7 @@ const RealEstateDetail = () => {
             onClick: () => handleBuildingClick(record),
           })}
            /> */}
-           <ViewBuildings realEstateID={data.id}></ViewBuildings>
+           <ViewBuildings realEstateID={data.id} isSuperAdmin={true}></ViewBuildings>
         </Content>
       </Layout>
     </Layout>

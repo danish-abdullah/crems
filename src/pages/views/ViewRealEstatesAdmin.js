@@ -3,24 +3,12 @@ import {
   Layout, Table, Button, Input, Dropdown, Menu, Tag, Avatar,
   Form, message, Spin, Space, Popconfirm
 } from "antd";
-import {
-  SearchOutlined, FilterOutlined, PlusOutlined, EditOutlined, DeleteOutlined
-} from "@ant-design/icons";
 import AdminSidebar from "../../components/AdminSidebar.js";
 import TitleHeader from "../../components/TitleHeader.js";
-import axios from "axios";
 import "../../App.css";
-import ViewBuildings from "./ViewBuildings.js"
+import ViewBuildings from "./ViewBuildings.js";
 
 const { Content } = Layout;
-
-const menu = (
-  <Menu>
-    <Menu.Item key="1">Date</Menu.Item>
-    <Menu.Item key="2">Flat Type</Menu.Item>
-    <Menu.Item key="3">Building</Menu.Item>
-  </Menu>
-);
 
 const RealEstate = () => {
   const [users, setUsers] = useState([]);
@@ -29,9 +17,9 @@ const RealEstate = () => {
   const [imageUrl, setImageUrl] = useState(null);
   const [loading, setLoading] = useState(false);
   const [editData, setEditData] = useState(null);
-  
+
   // Fetch users from API
-  const fetchUsers = async () => {
+  const fetchRealEstates = async () => {
     try {
       setLoading(true);
       const response = await fetch(
@@ -40,7 +28,7 @@ const RealEstate = () => {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${localStorage.getItem("access_token")}`, // Add token if required
+            "Authorization": `Bearer ${localStorage.getItem("access_token")}`,
           },
         }
       );
@@ -54,7 +42,7 @@ const RealEstate = () => {
         address: item.address || "-",
         admin: item.assigned_admin || "-",
         pricing_plan: item.pricing_plan_name,
-        logo : item.logo,
+        logo: item.logo,
         status: item.status,
       })) || [];
       setUsers(formattedUsers);
@@ -66,88 +54,22 @@ const RealEstate = () => {
   };
 
   useEffect(() => {
-    fetchUsers();
+    fetchRealEstates();
   }, []);
-
-  const handleEdit = (record) => {
-    console.log("Editing Record:", record);
-    setEditData(record); // Set the selected row data
-    setIsModalVisible(true); // Open modal
-  };
-
-  const handleDeleteRealEstate = async (id) => {
-    try {
-      setLoading(true);
-      const response = await axios.delete(
-        `https://website-64a18929.yeo.vug.mybluehost.me/api/admin/real-estates/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-          },
-        }
-      );
-  
-      if (response.data.success) {
-        message.success("Real estate deleted successfully!");
-        fetchUsers(); // Refresh the table
-      } else {
-        message.error(response.data.message || "Failed to delete real estate.");
-      }
-    } catch (error) {
-      message.error("Error deleting real estate.");
-    } finally {
-      setLoading(false);
-    }
-  };
-  
-  const columns = [
-    {
-      title: "Real Estate Name",
-      dataIndex: "name",
-      key: "name",
-      render: (text, record) => (
-        <div className="flex items-center gap-2">
-          <Avatar src={record.logo} />
-          {text}
-        </div>
-      ),
-    },
-    { title: "Email", dataIndex: "email", key: "email" },
-    { title: "Address", dataIndex: "address", key: "address" },
-    { title: "Phone Number", dataIndex: "phone", key: "phone" },
-    { title: "Assigned Admin", dataIndex: "admin", key: "admin" },
-    { title: "Pricing Plan", dataIndex: "pricing_plan", key: "pricing_plan" },
-    {
-      title: "Status",
-      dataIndex: "status",
-      key: "status",
-      render: (status) => <Tag color={status === 1 ? "green" : "red"}>{status === 1 ? "Active" : "Inactive"}</Tag>,
-    },
-    {
-      title: "Actions",
-      key: "actions",
-      render: (text, record) => (
-        <Space size="middle">
-          <Button icon={<EditOutlined />} type="link" onClick={() => handleEdit(record)}></Button>
-          <Popconfirm
-            title="Are you sure you want to delete this real estate?"
-            onConfirm={() => handleDeleteRealEstate(record.id)}
-            okText="Yes"
-            cancelText="No"
-          >
-            <Button icon={<DeleteOutlined />} type="link" danger></Button>
-          </Popconfirm>
-        </Space>
-      ),
-    },
-  ];
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
-      <AdminSidebar username="Admin" selectedTab="viewBuildings"/>
+      <AdminSidebar username="Admin" selectedTab="viewBuildings" />
       <Layout>
         <TitleHeader title="Buildings" />
-        <ViewBuildings></ViewBuildings>
+        
+        {loading ? "" : users.length > 0 ? (
+          <ViewBuildings realEstateID={users[0].id} isSuperAdmin={false}/>
+        ) : (
+          <div style={{ textAlign: "center", padding: "2rem" }}>
+            No Real Estates Found
+          </div>
+        )}
       </Layout>
     </Layout>
   );
