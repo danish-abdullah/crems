@@ -69,7 +69,7 @@ const BuildingDetail = () => {
               </Col>
             </Row>
           </div>
-          <ViewTenants buildingName={data.building} buildingID={data.key}></ViewTenants>
+          <ViewTenants realEstateID={data.rawData.real_estate_id} buildingName={data.building} buildingID={data.key}></ViewTenants>
         </Content>
       </Layout>
     </Layout>

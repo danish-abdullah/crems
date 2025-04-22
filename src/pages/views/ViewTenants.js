@@ -86,14 +86,13 @@ const ViewTenants = ({realEstateID, buildingName, buildingID}) => {
   const handleAddUser = async (values) => {
     try {
       setSubmitLoading(true);
-      alert(values.real_estate);
       const formData = new FormData();
       formData.append("name", values.name);
       formData.append("email", values.email);
       formData.append("phone_no", values.phone);
       formData.append("password", values.password);
       formData.append("role", "Tenant");
-      formData.append("real_estate_id", values.real_estate);
+      formData.append("real_estate_id", realEstateID);
       formData.append("status", values.status ? 1 : 0);
       formData.append("dob", values.dob ? values.dob.format('YYYY-MM-DD') : null);
       formData.append("nationality", values.nationality);
@@ -139,28 +138,24 @@ const ViewTenants = ({realEstateID, buildingName, buildingID}) => {
   
   const handleEdit = (record) => {
     setEditingUser(record);
-    setImageUrl(record.avatar || null);
+    setImageUrl(record.profile_picture || null);
     setIsModalVisible(true);
     setIsEditMode(true);
   
     form.setFieldsValue({
       name: record.name,
       email: record.email,
-      phone: record.phone,
-      user_type: record.type,
-      status: record.status === "Active",
+      phone: record.phone_no,
+      status: record.status,
       real_estate: record.real_estate_id || record.real_estate?.id,
       dob: record.dob ? dayjs(record.dob) : null,
-      flat_no: record.flat_no,
+      flat_no: record.apartment_id,
       nationality: record.nationality,
       building_name: buildingName,
     });
     setFileList([
       {
-        uid: '-1',
-        name: 'Profile Picture',
-        status: 'done',
-        url: record.avatar,
+        url: record.profile_picture,
       },
     ]);
   };
@@ -178,14 +173,14 @@ const ViewTenants = ({realEstateID, buildingName, buildingID}) => {
       const data = await response.json();
   
       if (response.ok && data.success) {
-        message.success("User deleted successfully.");
+        message.success("Tenant deleted successfully.");
         fetchTenants();
       } else {
-        message.error(data.message || "Failed to delete user.");
+        message.error(data.message || "Failed to delete tenant.");
       }
     } catch (error) {
-      console.error("Error deleting user:", error);
-      message.error("Error deleting user.");
+      console.error("Error deleting tenant:", error);
+      message.error("Error deleting tenant.");
     }
   };
   
@@ -219,7 +214,7 @@ const ViewTenants = ({realEstateID, buildingName, buildingID}) => {
       key: "name",
       render: (text, record) => (
         <div className="flex items-center gap-2">
-          <Avatar src={record.avatar} />
+          <Avatar src={record.profile_picture} />
           {text}
         </div>
       ),  
