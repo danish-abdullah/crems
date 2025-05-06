@@ -77,7 +77,7 @@ const Login = () => {
             navigate("/view-requests");
             break;
           case "tenant":
-            navigate("/tenant-dashboard");
+            navigate("/view-complaints-tenant");
             break;
           case "sale":
             navigate("/sales-dashboard");
