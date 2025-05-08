@@ -5,7 +5,6 @@ import ForgotPassword from "./pages/ForgotPassword";
 import SuperAdminDashboard from "./pages/dashboards/SuperAdminDashboard";
 import AdminDashboard from "./pages/dashboards/AdminDashboard";
 import MaintenanceDashboard from "./pages/dashboards/MaintenanceDashboard";
-import TenantDashboard from "./pages/dashboards/TenantDashboard";
 import SalesDashboard from "./pages/dashboards/SalesDashboard";
 import VisitorDashboard from "./pages/dashboards/VisitorDashboard";
 import AddTenant from "./pages/forms/AddTenant";
@@ -30,7 +29,7 @@ import ViewComplaintsAdmin from "./pages/views/ViewComplaintsAdmin";
 import ViewAdmins from "./pages/views/ViewAdmins";
 import ViewVisitorsSales from "./pages/views/ViewVisitorsSales";
 import ViewMaintenanceRequestsTenant from "./pages/views/ViewMaintenanceRequestsTenant";
-import ViewComplaintsTenant from "./pages/views/ViewComplaintsTenant";
+import ViewComplaintsTenant from "./pages/views/tenant/ViewComplaintsTenant";
 import AddVisitorVisitor from "./pages/forms/AddVisitorVisitor";
 import ViewVisitorsVisitor from "./pages/views/ViewVisitorsVisitor";
 import AddMaintenanceRequestAdmin from "./pages/forms/AddMaintenanceRequestAdmin";
@@ -57,7 +56,6 @@ function App() {
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
         <Route path="/maintenance-dashboard" element={<MaintenanceDashboard />} />
         <Route path="/sales-dashboard" element={<SalesDashboard />} />
-        <Route path="/tenant-dashboard" element={<TenantDashboard />} />
         <Route path="/add-tenant" element={<AddTenant />} />
         <Route path="/add-visitor" element={<AddVisitor />} />
         <Route path="/add-building" element={<AddBuilding />} />
