@@ -183,7 +183,9 @@ const UserManagement = () => {
       formData.append("name", values.name);
       formData.append("email", values.email);
       formData.append("phone_no", values.phone);
-      formData.append("password", values.password);
+      if (values.password?.length > 0) {
+        formData.append("password", values.password);
+      }
       formData.append("role", userType?.toLowerCase() || "user");
       // formData.append("real_estate_id", values.real_estate);
       formData.append("status", values.status ? 1 : 0);
@@ -457,7 +459,7 @@ const UserManagement = () => {
             <>
               <div className="flex gap-4">
                 <div className="w-1/2">
-                  <Form.Item label="Date of Birth" name="dob"><DatePicker style={{width: "100%"}}/></Form.Item>
+                  <Form.Item label="Date of Birth" name="dob"rules={[{ required: true, message: "Please enter date of birth" }]}><DatePicker style={{width: "100%"}}/></Form.Item>
                   <Form.Item
                     label="Building"
                     name="building"
@@ -474,8 +476,8 @@ const UserManagement = () => {
                   {/* <Form.Item label="Creation Date" name="creation_date"><DatePicker /></Form.Item> */}
                 </div>
                 <div className="w-1/2">
-                  <Form.Item label="Nationality" name="nationality"><Input /></Form.Item>
-                  <Form.Item label="Flat No" name="flat_no"><Input /></Form.Item>
+                  <Form.Item label="Nationality" name="nationality" rules={[{ required: true, message: "Please enter nationality" }]}><Input /></Form.Item>
+                  <Form.Item label="Flat No" name="flat_no" rules={[{ required: true, message: "Please enter flat no." }]}><Input /></Form.Item>
                   
                   {/* <Form.Item label="Joining Date" name="joining_date"><DatePicker /></Form.Item> */}
                 </div>
