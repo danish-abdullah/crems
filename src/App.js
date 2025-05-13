@@ -24,7 +24,7 @@ import ViewVisitors from "./pages/views/ViewVisitors";
 import ViewSales from "./pages/views/ViewSales";
 import ViewMaintenance from "./pages/views/ViewMaintenance";
 import ViewMaintenanceRequests from "./pages/views/ViewMaintenanceRequests";
-import ViewMaintenanceRequestsMaintenance from "./pages/views/ViewMaintenanceRequestsMaintenance";
+import ViewComplaintsMaintenance from "./pages/views/maintenance/ViewComplaintsMaintenance";
 import ViewComplaintsAdmin from "./pages/views/ViewComplaintsAdmin";
 import ViewAdmins from "./pages/views/ViewAdmins";
 import ViewVisitorsSales from "./pages/views/ViewVisitorsSales";
@@ -81,7 +81,7 @@ function App() {
         <Route path="/visitor-dashboard" element={<VisitorDashboard />} />
         <Route path="/add-visitor-visitor" element={<AddVisitorVisitor />} />
         <Route path="/view-visitors-visitor" element={<ViewVisitorsVisitor />} />
-        <Route path="/view-requests" element={<ViewMaintenanceRequestsMaintenance />} />
+        <Route path="/view-complaints-maintenance" element={<ViewComplaintsMaintenance />} />
         <Route path="/add-maintenance-request-admin" element={<AddMaintenanceRequestAdmin />} />
         <Route path="/add-complaint-admin" element={<AddComplaintAdmin />} />
         <Route path="/view-user-management-sa" element={<ViewUserManagementSA />} />

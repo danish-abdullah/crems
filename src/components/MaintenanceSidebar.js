@@ -17,6 +17,9 @@ const Sidebar = ({ username, selectedTab }) => {
         if (key === "dashboard") {
           navigate("/maintenance-dashboard");
         }
+        else if (key === "viewComplaints") {
+          navigate("/view-complaints-maintenance");
+        }
       };
   return (
     <Sider className="sidebar">
@@ -37,8 +40,11 @@ const Sidebar = ({ username, selectedTab }) => {
           onClick={handleMenuClick}
           selectedKeys={[selectedTab]}
         >
-          <Menu.Item className="main-item" key="viewRequests" icon={<UserOutlined />}>
-            View Requests
+          <Menu.Item className="main-item" key="dashboard" icon={<UserOutlined />}>
+            Dashboard
+          </Menu.Item>
+          <Menu.Item className="main-item" key="viewComplaints" icon={<UserOutlined />}>
+            Complaints
           </Menu.Item>
         </Menu>
       </div>
