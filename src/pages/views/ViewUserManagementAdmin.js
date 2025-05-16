@@ -406,7 +406,7 @@ const UserManagement = () => {
               <Option value="Tenant">Tenant</Option>
               <Option value="Maintenance">Maintenance</Option>
               {/* <Option value="Visitor">Visitor</Option> */}
-              <Option value="Receptionist/Watchman">Receptionist/Watchman</Option>
+              <Option value="Visitor">Receptionist/Watchman</Option>
             </Select>
           </Form.Item>
           {/* </div>

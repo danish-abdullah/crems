@@ -153,10 +153,6 @@ const MaintenanceDashboard = () => {
           }}
         >
           <h3 style={{ margin: 0 }}>Total Complaints</h3>
-          <Select defaultValue="Monthly" style={{ width: 120 }}>
-            <Option value="Monthly">Monthly</Option>
-            <Option value="Weekly" disabled>Weekly</Option>
-          </Select>
         </div>
         <div style={{ height: 240 }}>
           <Bar data={barData} options={barOptions} />

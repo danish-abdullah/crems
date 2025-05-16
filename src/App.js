@@ -31,7 +31,7 @@ import ViewVisitorsSales from "./pages/views/ViewVisitorsSales";
 import ViewMaintenanceRequestsTenant from "./pages/views/ViewMaintenanceRequestsTenant";
 import ViewComplaintsTenant from "./pages/views/tenant/ViewComplaintsTenant";
 import AddVisitorVisitor from "./pages/forms/AddVisitorVisitor";
-import ViewVisitorsVisitor from "./pages/views/ViewVisitorsVisitor";
+import ViewVisitorsVisitor from "./pages/views/visitor/ViewVisitorsVisitor";
 import AddMaintenanceRequestAdmin from "./pages/forms/AddMaintenanceRequestAdmin";
 import AddComplaintAdmin from "./pages/forms/AddComplaintAdmin";
 import ViewUserManagementSA from "./pages/views/ViewUserManagementSA";

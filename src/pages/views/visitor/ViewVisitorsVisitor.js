@@ -1,14 +1,17 @@
 import React from "react";
 import { Layout, Table, Input } from "antd";
-import "../../App.css";
-import Sidebar from "../../components/VisitorSidebar.js";
-import TitleHeader from "../../components/TitleHeader.js";
+import "../../../App.css";
+import Sidebar from "../../../components/VisitorSidebar.js";
+import TitleHeader from "../../../components/TitleHeader.js";
+import SearchBar from "../../../components/SearchBar.js";
+import { useState, useEffect } from "react";
 
 const { Content } = Layout;
 const { Search } = Input;
 
 const ViewVisitors = () => {
   // Sample data for visitors table
+  const [filteredData, setFilteredData] = useState([]);
   const dataSource = [
     {
       key: "1",
@@ -57,10 +60,14 @@ const ViewVisitors = () => {
     },
   ];
 
+  useEffect(() => {
+    setFilteredData(dataSource);
+  }, []);
+
   return (
     <Layout style={{ minHeight: "100vh" }}>
       {/* Sidebar */}
-      <Sidebar username="Receptionist" />
+      <Sidebar username="Receptionist" selectedTab="viewVisitors" />
 
       {/* Main Content */}
       <Layout>
@@ -68,17 +75,13 @@ const ViewVisitors = () => {
         <Content
           style={{ margin: "20px", padding: "20px", background: "white" }}
         >
-          <Search
-            placeholder="Search"
-            allowClear
-            style={{
-              width: 300,
-              marginBottom: "20px",
-              borderColor: "#4b244a",
-            }}
+          <SearchBar
+           data={dataSource}
+           fieldsToSearch={["name", "building", "email"]}
+           onFilteredData={setFilteredData}
           />
           <Table
-            dataSource={dataSource}
+            dataSource={filteredData}
             columns={columns}
             pagination={{ pageSize: 5 }}
           />

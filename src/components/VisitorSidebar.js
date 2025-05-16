@@ -20,9 +20,6 @@ const Sidebar = ({ username, selectedTab }) => {
         if (key === "dashboard") {
           navigate("/visitor-dashboard");
         }
-        else if (key === "addVisitor") {
-          navigate("/add-visitor-visitor");
-        }
         else if (key === "viewVisitors") {
           navigate("/view-visitors-visitor");
         }
@@ -44,14 +41,12 @@ const Sidebar = ({ username, selectedTab }) => {
           onClick={handleMenuClick}
           selectedKeys={[selectedTab]}
         >
-          <SubMenu key="visitor" icon={<UserOutlined />} title="Visitor">
-            <Menu.Item key="addVisitor" icon={<PlusOutlined />}>
-              Add Visitor
-            </Menu.Item>
-            <Menu.Item key="viewVisitors" icon={<FileTextOutlined />}>
-              View Visitors
-            </Menu.Item>
-          </SubMenu>
+          <Menu.Item key="dashboard" icon={<FileTextOutlined />}>
+            Dashboard
+          </Menu.Item>
+          <Menu.Item key="viewVisitors" icon={<FileTextOutlined />}>
+            Visitors
+          </Menu.Item>
         </Menu>
       </div>
     </Sider>

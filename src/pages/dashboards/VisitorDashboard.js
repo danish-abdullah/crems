@@ -1,6 +1,5 @@
 import React from "react";
-import { Layout, Card, Row, Col } from "antd";
-import { Line } from "react-chartjs-2";
+import { Layout, Card, Row, Col, Select } from "antd";
 import { Bar } from "react-chartjs-2";
 import Sidebar from "../../components/VisitorSidebar";
 import TitleHeader from "../../components/TitleHeader";
@@ -30,76 +29,82 @@ ChartJS.register(
   ArcElement
 );
 
-const { Content } = Layout;
+const { Option } = Select;
 
 const VisitorDashboard = () => {
-  // Mock data for graphs
-  const occupancyHistory = {
-    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
-    datasets: [
-      {
-        label: "Occupied Apartments",
-        data: [75, 80, 85, 90, 88, 85],
-        borderColor: "#4b244a",
-        backgroundColor: "rgba(75, 36, 74, 0.2)",
-      },
-    ],
+  const currentMonth = "Sep";
+  const monthlyData = {
+    Jan: 10,
+    Feb: 11,
+    Mar: 8,
+    Apr: 9,
+    May: 5,
+    Jun: 3,
+    Jul: 4,
+    Aug: 6,
+    Sep: 12,
+    Oct: 6,
+    Nov: 9,
+    Dec: 4,
   };
 
-  const rentHistory = {
-    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
-    datasets: [
-      {
-        label: "Rent Income (PKR)",
-        data: [400000, 420000, 440000, 460000, 450000, 470000],
-        borderColor: "#4b244a",
-        backgroundColor: "rgba(75, 36, 74, 0.2)",
-      },
-    ],
-  };
+  const months = Object.keys(monthlyData);
+  const values = Object.values(monthlyData);
 
-  const visitorsHistory = {
-    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+  const backgroundColors = months.map((month) =>
+    month === currentMonth ? "rgba(164, 22, 26, 0.4)" : "rgba(164, 22, 26, 0.2)"
+  );
+
+  const hoverColors = months.map(() => "#a4161a");
+
+  const barData = {
+    labels: months,
     datasets: [
       {
         label: "Visitors",
-        data: [120, 150, 140, 170, 160, 135],
-        borderColor: "#4b244a",
-        backgroundColor: "rgba(75, 36, 74, 0.2)",
+        data: values,
+        backgroundColor: backgroundColors,
+        hoverBackgroundColor: hoverColors,
+        borderRadius: 4,
+        barThickness: 30,
       },
     ],
   };
 
-  const complaintsData = {
-    labels: ["Building A", "Building B", "Building C"], // Example labels for buildings
-    datasets: [
-      {
-        label: "Pending",
-        data: [12, 8, 15], // Mock data for pending complaints
-        backgroundColor: "rgba(255, 99, 132, 0.8)", // Red
-      },
-      {
-        label: "Resolved",
-        data: [20, 18, 25], // Mock data for resolved complaints
-        backgroundColor: "rgba(75, 192, 192, 0.8)", // Green
-      },
-      {
-        label: "Sent to Maintenance",
-        data: [10, 5, 8], // Mock data for sent-to-maintenance complaints
-        backgroundColor: "rgba(54, 162, 235, 0.8)", // Blue
-      },
-    ],
-  };
-
-  const barChartOptions = {
+  const barOptions = {
     responsive: true,
-    plugins: {
-      legend: {
-        position: "top",
+    maintainAspectRatio: false,
+    scales: {
+      y: {
+        beginAtZero: true,
+        ticks: {
+          stepSize: 2,
+          color: "#999",
+        },
+        grid: {
+          color: "#eee",
+        },
       },
-      title: {
-        display: true,
-        text: "Complaints Overview by Building",
+      x: {
+        ticks: {
+          color: "#555",
+        },
+        grid: {
+          display: false,
+        },
+      },
+    },
+    plugins: {
+      tooltip: {
+        backgroundColor: "#a4161a",
+        titleColor: "#fff",
+        bodyColor: "#fff",
+        callbacks: {
+          label: (ctx) => ` ${ctx.parsed.y} visitors`,
+        },
+      },
+      legend: {
+        display: false,
       },
     },
   };
@@ -107,58 +112,29 @@ const VisitorDashboard = () => {
   return (
     <Layout style={{ minHeight: "100vh" }}>
       {/* Sidebar */}
-      <Sidebar username="Tenant1" />
+      <Sidebar username="Receptionist" selectedTab="dashboard" />
 
       {/* Main Content */}
       <Layout>
-        <TitleHeader title="Tenant Dashboard" />
-        <Content style={{ margin: "10px", padding: "10px", background: "#f0f2f5" }}>
-          <Row gutter={[16, 16]}>
-            {/* Card 1: Occupancy with Line Chart */}
-            <Col span={12}>
-              <Card
-                title="Building & Apartment Occupancy"
-                bordered={false}
-                style={{ backgroundColor: "#f6f0f7", color: "#4b244a" }}
-              >
-                <Line data={occupancyHistory} />
-              </Card>
-            </Col>
+        <TitleHeader title="Visitor Dashboard" />
+        <div style={{ padding: 24 }}>
 
-            {/* Card 2: Expected Rent Income with Line Chart */}
-            <Col span={12}>
-              <Card
-                title="Expected Rent Income"
-                bordered={false}
-                style={{ backgroundColor: "#f6f0f7", color: "#4b244a" }}
-              >
-                <Line data={rentHistory} />
-              </Card>
-            </Col>
-
-            {/* Card 3: Visitors with Line Chart */}
-            <Col span={12}>
-              <Card
-                title="Total Visitors This Month"
-                bordered={false}
-                style={{ backgroundColor: "#f6f0f7", color: "#4b244a" }}
-              >
-                <Line data={visitorsHistory} />
-              </Card>
-            </Col>
-
-            {/* Card 4: Complaints with Bar Chart */}
-            <Col span={12}>
-              <Card 
-                title="Complaints Overview"
-                bordered={false}
-                style={{ backgroundColor: "#f6f0f7" }}
-                >
-                <Bar data={complaintsData} options={barChartOptions} />
-              </Card>
-            </Col>
-          </Row>
-        </Content>
+      <Card style={{ borderRadius: 8 }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            marginBottom: 16,
+            alignItems: "center",
+          }}
+        >
+          <h3 style={{ margin: 0 }}>Total Visitors</h3>
+        </div>
+        <div style={{ height: 240 }}>
+          <Bar data={barData} options={barOptions} />
+        </div>
+      </Card>
+    </div>
       </Layout>
     </Layout>
   );

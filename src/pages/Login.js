@@ -74,7 +74,7 @@ const Login = () => {
             navigate("/admin-dashboard");
             break;
           case "maintenance":
-            navigate("/view-requests");
+            navigate("/maintenance-dashboard");
             break;
           case "tenant":
             navigate("/view-complaints-tenant");
@@ -83,7 +83,7 @@ const Login = () => {
             navigate("/sales-dashboard");
             break;
           case "visitor":
-            navigate("/view-visitors-visitor");
+            navigate("/visitor-dashboard");
             break;
           default:
             message.error("Role not recognized!");
