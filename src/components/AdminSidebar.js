@@ -112,7 +112,10 @@ const AdminSidebar = ({ username, selectedTab }) => {
           <Menu.Item className="main-item" key="viewTenantsList" icon={<UserOutlined />}>
             Tenants
           </Menu.Item>
-          <Menu.Item className="main-item" key="">
+          <Menu.Item className="main-item" key="viewComplaints" icon={<UserOutlined />}>
+            Complaints
+          </Menu.Item>
+          {/* <Menu.Item className="main-item" key="">
           </Menu.Item>
           <Menu.Item className="main-item" key="">
           </Menu.Item>
@@ -169,7 +172,7 @@ const AdminSidebar = ({ username, selectedTab }) => {
             <Menu.Item key="viewComplaints" icon={<FileTextOutlined />}>
               View Complaints
             </Menu.Item>
-          </SubMenu>
+          </SubMenu> */}
         </Menu>
       </div>
     </Sider>
