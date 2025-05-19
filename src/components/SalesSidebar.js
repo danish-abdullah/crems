@@ -21,17 +21,11 @@ const Sidebar = ({ username, selectedTab }) => {
         if (key === "dashboard") {
           navigate("/sales-dashboard");
         }  
-        else if (key === "addTenant") {
-          navigate("/add-tenant");
-        }
-        else if (key === "addVisitor") {
-          navigate("/add-visitor-sales");
-        }
-        else if (key === "viewTenants") {
-          navigate("/view-tenants");
-        }
         else if (key === "viewVisitors") {
           navigate("/view-visitors-sales");
+        }
+        else if (key === "Followups") {
+          navigate("/view-followups");
         }
       };
   return (
@@ -56,22 +50,12 @@ const Sidebar = ({ username, selectedTab }) => {
           <Menu.Item className="main-item" key="dashboard" icon={<UserOutlined />}>
             Dashboard
           </Menu.Item>
-          <SubMenu key="visitor" icon={<UserOutlined />} title="Visitor">
-          <Menu.Item key="addVisitor" icon={<PlusOutlined />}>
-              Add Visitor
-            </Menu.Item>
-            <Menu.Item key="viewVisitors" icon={<FileTextOutlined />}>
-              View Visitors
-            </Menu.Item>
-          </SubMenu>
-          <SubMenu key="tenant" icon={<TeamOutlined />} title="Tenant" style={{visibility: "hidden"}} >
-            <Menu.Item key="addTenant" icon={<PlusOutlined />}>
-              Add Tenant
-            </Menu.Item>
-            <Menu.Item key="viewTenants" icon={<FileTextOutlined />}>
-              View Tenants
-            </Menu.Item>
-          </SubMenu>
+          <Menu.Item className="main-item" key="viewVisitors" icon={<UserOutlined />}>
+            Visitors
+          </Menu.Item>
+          <Menu.Item className="main-item" key="followUps" icon={<UserOutlined />}>
+            Follow-Ups
+          </Menu.Item>
         </Menu>
       </div>
     </Sider>

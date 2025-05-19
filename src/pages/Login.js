@@ -79,7 +79,7 @@ const Login = () => {
           case "tenant":
             navigate("/view-complaints-tenant");
             break;
-          case "sale":
+          case "sales":
             navigate("/sales-dashboard");
             break;
           case "visitor":
