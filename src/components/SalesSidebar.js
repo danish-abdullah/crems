@@ -24,7 +24,7 @@ const Sidebar = ({ username, selectedTab }) => {
         else if (key === "viewVisitors") {
           navigate("/view-visitors-sales");
         }
-        else if (key === "Followups") {
+        else if (key === "followUps") {
           navigate("/view-followups");
         }
       };

@@ -46,6 +46,7 @@ import AccessControlSA from "./pages/views/AccessControlSA";
 import AdminDetailView from "./pages/views/AdminDetailView";
 import BuildingDetailAdmin from "./pages/views/BuildingDetailAdmin";
 import ViewTenantsList from "./pages/views/ViewTenantsAdmin";
+import ViewFollowUps from "./pages/views/sales/viewFollowUps";
 
 function App() {
   return (
@@ -96,6 +97,7 @@ function App() {
         <Route path="/view-access-control-sa" element={<AccessControlSA />} />
         <Route path="/view-access-control-sa/:adminId" element={<AdminDetailView />} />
         <Route path="/view-tenants-admin" element={<ViewTenantsList />} />
+        <Route path="/view-followups" element={<ViewFollowUps />} />
       </Routes>
   );
 }
