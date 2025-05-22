@@ -5,6 +5,10 @@ import "../../../App.css";
 import Sidebar from "../../../components/VisitorSidebar";
 import TitleHeader from "../../../components/TitleHeader";
 import SearchBar from "../../../components/SearchBar";
+import {
+  SearchOutlined, FilterOutlined, PlusOutlined, EditOutlined,
+  UploadOutlined, DeleteOutlined
+} from "@ant-design/icons";
 
 const { Content } = Layout;
 const { Option } = Select;
@@ -15,16 +19,77 @@ const ViewVisitors = () => {
   const [filteredData, setFilteredData] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [editingVisitor, setEditingVisitor] = useState(null);
+  const [buildings, setBuildings] = useState([]);
+const [apartments, setApartments] = useState([]);
+const [filteredApartments, setFilteredApartments] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const fetchVisitors = async () => {
     try {
-      const response = await axios.get("https://website-64a18929.yeo.vug.mybluehost.me/api/admin/visitors");
-      setVisitors(response.data);
-      setFilteredData(response.data);
+      const response = await fetch(
+        "https://website-64a18929.yeo.vug.mybluehost.me/api/admin/visitors",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${localStorage.getItem("access_token")}`,
+          },
+        }
+      );
+      const data = await response.json();
+      const formattedUsers = data?.data?.map((item, index) => ({
+        key: index + 1,
+        id: item.id,
+        full_name: item.full_name,
+        created_at: item.created_at,
+        building_id: item.building_id,
+        apartment_id: item.apartment_id,
+        apartment_type: item.apartment_type,
+        email: item.email,
+        phone_no: item.phone_no,
+        nationality: item.nationality,
+        comments: item.comments,
+        balcony: item.balcony,
+        maid_room: item.maid_room
+      })) || [];
+      setVisitors(formattedUsers);
+      setFilteredData(formattedUsers);
     } catch (error) {
       message.error("Failed to fetch visitors.");
     }
+  };
+
+  useEffect(() => {
+    fetchBuildings();
+    fetchApartments();
+  }, []);
+
+  const fetchBuildings = async () => {
+    const res = await fetch("https://website-64a18929.yeo.vug.mybluehost.me/api/admin/buildings",
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${localStorage.getItem("access_token")}`,
+        },
+      }
+    );
+    const data = await res.json();
+    setBuildings(data?.data || []);
+  };
+
+  const fetchApartments = async () => {
+    const res = await fetch("https://website-64a18929.yeo.vug.mybluehost.me/api/admin/apartments",
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${localStorage.getItem("access_token")}`,
+        },
+      }
+    );
+    const data = await res.json();
+    setApartments(data?.data || []);
   };
 
   useEffect(() => {
@@ -43,30 +108,50 @@ const ViewVisitors = () => {
     setModalVisible(true);
   };
 
+  useEffect(() => {
+    if (editingVisitor?.building_id) {
+      const relevant = apartments.filter(
+        (apt) => apt.building_id === editingVisitor.building_id
+      );
+      setFilteredApartments(relevant);
+    }
+  }, [editingVisitor, apartments]);
+  
+
   const handleModalSubmit = async () => {
     try {
       const values = await form.validateFields();
       setLoading(true);
-
-      if (editingVisitor) {
-        await axios.put(
-          `https://website-64a18929.yeo.vug.mybluehost.me/api/admin/visitors/${editingVisitor.id}`,
-          values
-        );
-        message.success("Visitor updated successfully!");
-      } else {
-        await axios.post("https://website-64a18929.yeo.vug.mybluehost.me/api/admin/visitors", values);
-        message.success("Visitor added successfully!");
-      }
-
+  
+      const payload = editingVisitor
+        ? { ...values, _method: "PATCH" }
+        : values;
+  
+      const url = editingVisitor
+        ? `https://website-64a18929.yeo.vug.mybluehost.me/api/admin/visitors/${editingVisitor.id}`
+        : `https://website-64a18929.yeo.vug.mybluehost.me/api/admin/visitors`;
+  
+      const res = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+        },
+        body: JSON.stringify(payload),
+      });
+  
+      if (!res.ok) throw new Error();
+      message.success(editingVisitor ? "Visitor updated!" : "Visitor added!");
       setModalVisible(false);
       fetchVisitors();
-    } catch (error) {
+    } catch {
       message.error("Something went wrong.");
     } finally {
       setLoading(false);
     }
   };
+  
+  
 
   const columns = [
     {
@@ -84,11 +169,13 @@ const ViewVisitors = () => {
       title: "Building",
       dataIndex: "building_id",
       key: "building_id",
+      render: (id) => buildings.find((b) => b.id === id)?.name || "N/A",
     },
     {
       title: "Flat No.",
       dataIndex: "apartment_id",
       key: "apartment_id",
+      render: (id) => apartments.find((a) => a.id === id)?.flat_number || "N/A",
     },
     {
       title: "Flat Type",
@@ -109,8 +196,7 @@ const ViewVisitors = () => {
     {
       title: "Actions",
       render: (_, record) => (
-        <Button type="link" onClick={() => handleEdit(record)}>
-          Edit
+        <Button type="link" icon={<EditOutlined/>} onClick={() => handleEdit(record)}>
         </Button>
       ),
     },
@@ -133,7 +219,7 @@ const ViewVisitors = () => {
             </Button>
           </div>
 
-          <Table dataSource={filteredData} columns={columns} rowKey="id" pagination={{ pageSize: 5 }} />
+          <Table dataSource={filteredData} columns={columns} rowKey="id" pagination={{ pageSize: 7 }} />
 
           <Modal
             title={editingVisitor ? "Edit Visitor" : "Add New Visitor"}
@@ -154,11 +240,27 @@ const ViewVisitors = () => {
                 <Input placeholder="+971-XX-XXXXXXX" />
               </Form.Item>
               <Form.Item name="building_id" label="Building Name" rules={[{ required: true }]}>
-                <Input placeholder="Enter your building name" />
-              </Form.Item>
-              <Form.Item name="apartment_id" label="Flat Number" rules={[{ required: true }]}>
-                <Input placeholder="Enter Flat Number" />
-              </Form.Item>
+              <Select
+                placeholder="Select building"
+                onChange={(value) => {
+                  form.setFieldsValue({ apartment_id: null }); // reset apartment
+                  setFilteredApartments(apartments.filter(a => a.building_id === value));
+                }}
+              >
+                {buildings.map((b) => (
+                  <Option key={b.id} value={b.id}>{b.building_name}</Option>
+                ))}
+              </Select>
+            </Form.Item>
+
+            <Form.Item name="apartment_id" label="Flat Number" rules={[{ required: true }]}>
+              <Select placeholder="Select flat" disabled={!form.getFieldValue("building_id")}>
+                {filteredApartments.map((a) => (
+                  <Option key={a.id} value={a.id}>{a.area}</Option>
+                ))}
+              </Select>
+            </Form.Item>
+
               </div>
               <div className="w-1/2">
               <Form.Item name="email" label="Email Address" rules={[{ required: true, type: "email" }]}>
@@ -169,11 +271,8 @@ const ViewVisitors = () => {
               </Form.Item>
               <Form.Item name="apartment_type" label="Flat Type" rules={[{ required: true }]}>
                 <Select placeholder="Select your flat type">
-                  <Option value="studio">Studio Apartment</Option>
-                  <Option value="1bhk">1 Bedroom</Option>
-                  <Option value="2bhk">2 Bedroom</Option>
-                  <Option value="3bhk">3 Bedroom</Option>
-                  <Option value="4bhk">4 Bedroom</Option>
+                  <Option value="residential">Residential</Option>
+                  <Option value="commercial">Commercial</Option>
                 </Select>
               </Form.Item>
               <Form.Item label="Extra Facility" style={{ marginBottom: 0 }}>

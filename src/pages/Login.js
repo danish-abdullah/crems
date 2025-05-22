@@ -82,7 +82,7 @@ const Login = () => {
           case "sales":
             navigate("/sales-dashboard");
             break;
-          case "visitor":
+          case "watchmen":
             navigate("/visitor-dashboard");
             break;
           default:

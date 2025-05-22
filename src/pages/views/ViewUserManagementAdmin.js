@@ -28,6 +28,8 @@ const UserManagement = () => {
   const [users, setUsers] = useState([]);
   const [realEstates, setRealEstates] = useState([]);
   const [buildings, setBuildings] = useState([]);
+      const [apartments, setApartments] = useState([]);
+      const [filteredApartments, setFilteredApartments] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [form] = Form.useForm();
@@ -39,6 +41,20 @@ const UserManagement = () => {
   const [editingUser, setEditingUser] = useState(null); // NEW
   const [fileList, setFileList] = useState([]);
   const [filteredData, setFilteredData] = useState(users);
+
+  const fetchApartments = async () => {
+    const res = await fetch("https://website-64a18929.yeo.vug.mybluehost.me/api/admin/apartments",
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${localStorage.getItem("access_token")}`,
+        },
+      }
+    );
+    const data = await res.json();
+    setApartments(data?.data || []);
+  };
 
   const fetchUsers = async () => {
     try {
@@ -144,6 +160,7 @@ const UserManagement = () => {
   useEffect(() => {
     const fetchInitialData = async () => {
       await fetchBuildings();
+      await fetchApartments();
       // const realEstatesList = await fetchRealEstates();
       await fetchUsers();
     };
@@ -406,7 +423,7 @@ const UserManagement = () => {
               <Option value="Tenant">Tenant</Option>
               <Option value="Maintenance">Maintenance</Option>
               {/* <Option value="Visitor">Visitor</Option> */}
-              <Option value="Visitor">Receptionist/Watchman</Option>
+              <Option value="Watchmen">Receptionist/Watchman</Option>
             </Select>
           </Form.Item>
           {/* </div>
@@ -465,11 +482,15 @@ const UserManagement = () => {
                     name="building"
                     rules={[{ required: true, message: "Please select a building" }]}
                   >
-                    <Select placeholder="Select Building">
-                      {buildings.map((building, index) => (
-                        <Option key={building.id} value={building.id}>
-                          {building.building_name}
-                        </Option>
+                    <Select
+                      placeholder="Select building"
+                      onChange={(value) => {
+                        form.setFieldsValue({ apartment_id: null }); // reset apartment
+                        setFilteredApartments(apartments.filter(a => a.building_id === value));
+                      }}
+                    >
+                      {buildings.map((b) => (
+                        <Option key={b.id} value={b.id}>{b.building_name}</Option>
                       ))}
                     </Select>
                   </Form.Item>
@@ -477,7 +498,13 @@ const UserManagement = () => {
                 </div>
                 <div className="w-1/2">
                   <Form.Item label="Nationality" name="nationality" rules={[{ required: true, message: "Please enter nationality" }]}><Input /></Form.Item>
-                  <Form.Item label="Flat No" name="flat_no" rules={[{ required: true, message: "Please enter flat no." }]}><Input /></Form.Item>
+                  <Form.Item label="Flat No" name="flat_no" rules={[{ required: true, message: "Please enter flat no." }]}>
+                        <Select placeholder="Select flat" disabled={!form.getFieldValue("building")}>
+                      {filteredApartments.map((a) => (
+                        <Option key={a.id} value={a.id}>{a.area}</Option>
+                      ))}
+                    </Select>
+                  </Form.Item>
                   
                   {/* <Form.Item label="Joining Date" name="joining_date"><DatePicker /></Form.Item> */}
                 </div>

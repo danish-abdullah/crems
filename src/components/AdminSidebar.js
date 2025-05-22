@@ -109,6 +109,9 @@ const AdminSidebar = ({ username, selectedTab }) => {
           <Menu.Item className="main-item" key="viewBuildings" icon={<UserOutlined />}>
             Buildings
           </Menu.Item>
+          <Menu.Item className="main-item" key="viewApartments" icon={<UserOutlined />}>
+            Apartments
+          </Menu.Item>
           <Menu.Item className="main-item" key="viewTenantsList" icon={<UserOutlined />}>
             Tenants
           </Menu.Item>

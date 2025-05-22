@@ -11,17 +11,17 @@ import {
   Upload,
   Select,
   message,
+  Modal
 } from "antd";
 import { PlusOutlined, MinusOutlined, UploadOutlined } from "@ant-design/icons";
 import "../../App.css";
-import Sidebar from "../../components/AdminSidebar.js";
-import TitleHeader from "../../components/TitleHeader.js";
 
 const { Content } = Layout;
 const { Title } = Typography;
 const { Option } = Select;
 
-const AddApartment = () => {
+const AddApartment = ({visible, onClose, editData, refreshData}) => {
+  const isEditing = !!editData;
   const [roomCounts, setRoomCounts] = useState({
     bed: 0,
     living: 0,
@@ -33,6 +33,29 @@ const AddApartment = () => {
 
   const [form] = Form.useForm();
   const [buildingList, setBuildingList] = useState([]); // State to store building names
+  const [realEstateID, setRealEstateID] = useState([]);
+
+  useEffect(() => {
+      if (editData) {
+        form.setFieldsValue({
+          apartment_type: editData.apartmentType,
+          area: editData.area,
+          furnished: editData.furnished,
+          balcony: editData.balcony,
+          rooms: editData.room,
+          bed: editData.bed,
+          living: editData.living,
+          pantry: editData.pantry,
+          laundry: editData.laundry,
+          bath: editData.bath,
+          dining: editData.dining,
+          rent: editData.rent,
+          comments: editData.comments, // Submit selected building ID
+        });
+      } else {
+        form.resetFields();      
+      }
+    }, [editData, form]);
 
   // Fetch building names from the API
   useEffect(() => {
@@ -40,7 +63,7 @@ const AddApartment = () => {
       try {
         const token = localStorage.getItem("access_token");
         const response = await fetch(
-          "https://website-64a18929.yeo.vug.mybluehost.me/api/admin/building",
+          "https://website-64a18929.yeo.vug.mybluehost.me/api/admin/buildings",
           {
             method: "GET",
             headers: {
@@ -61,11 +84,68 @@ const AddApartment = () => {
     };
 
     fetchBuildings();
+    fetchUserDetails();
   }, []);
 
   const onClear = () => {
     form.resetFields();
   };
+
+  useEffect(() => {
+    if (editData) {
+      form.setFieldsValue({
+        apartmentType: editData.apartment_type,
+        name: editData.name,
+        furnished: editData.furnished,
+        balcony: editData.balcony ? "Yes" : "No",
+        rent: editData.rent,
+        building: editData.building_id,
+      });
+  
+      // Set room counts from editData
+      setRoomCounts({
+        bed: editData.bed || 0,
+        living: editData.living || 0,
+        pantry: editData.pantry || 0,
+        laundry: editData.laundry || 0,
+        bath: editData.bath || 0,
+        dining: editData.dining || 0,
+      });
+    } else {
+      form.resetFields();
+      setRoomCounts({
+        bed: 0,
+        living: 0,
+        pantry: 0,
+        laundry: 0,
+        bath: 0,
+        dining: 0,
+      });
+    }
+  }, [editData, form]);
+  
+
+  const fetchUserDetails = async () => {
+      try {
+        const token = localStorage.getItem("access_token");
+        const response = await fetch("https://website-64a18929.yeo.vug.mybluehost.me/api/auth/user", {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+  
+        const data = await response.json();
+        if (data.success) {
+          setRealEstateID(data.data.real_estate_id);
+        } else {
+          message.error(data.message || "Failed to fetch user details");
+        }
+      } catch (error) {
+        message.error("Failed to fetch user details");
+        console.error("Fetch User Details Error:", error);
+      }
+    };
 
   const handleRoomCountChange = (room, increment) => {
     setRoomCounts((prevCounts) => ({
@@ -88,13 +168,21 @@ const AddApartment = () => {
       bath: roomCounts.bath,
       dining: roomCounts.dining,
       rent: parseFloat(values.rent),
-      comments: values.building, // Submit selected building ID
+      building_id: values.building,
+      real_estate_id: realEstateID,
     };
-
+  
+    // Add _method: PATCH if editing
+    if (isEditing && editData?.key) {
+      apartmentDetails._method = "PATCH";
+    }
+  
     try {
       const token = localStorage.getItem("access_token");
       const response = await fetch(
-        "https://website-64a18929.yeo.vug.mybluehost.me/api/admin/apartment",
+        isEditing
+          ? `https://website-64a18929.yeo.vug.mybluehost.me/api/admin/apartments/${editData.key}`
+          : "https://website-64a18929.yeo.vug.mybluehost.me/api/admin/apartments",
         {
           method: "POST",
           headers: {
@@ -104,19 +192,31 @@ const AddApartment = () => {
           body: JSON.stringify(apartmentDetails),
         }
       );
-
+  
       const data = await response.json();
+  
       if (data.success) {
-        message.success("Apartment details saved successfully");
+        message.success(
+          isEditing
+            ? "Apartment updated successfully"
+            : "Apartment details saved successfully"
+        );
         form.resetFields();
+        refreshData();
+        onClose();
       } else {
-        message.error("Failed to save apartment details");
+        message.error(
+          `Failed to ${isEditing ? "update" : "add"} apartment: ${
+            data.message || "Unknown error"
+          }`
+        );
       }
     } catch (error) {
-      message.error("Error saving apartment details");
+      message.error(`Error: ${error.message}`);
       console.error("Error:", error);
     }
   };
+  
 
   const onFinishFailed = (errorInfo) => {
     console.error("Form failed:", errorInfo);
@@ -124,17 +224,13 @@ const AddApartment = () => {
   };
 
   return (
-    <Layout style={{ minHeight: "100vh" }}>
-      {/* Sidebar */}
-      <Sidebar username="Admin" />
-
-      {/* Main Content */}
-      <Layout>
-        <TitleHeader title="Add Apartment" />
-        <Content style={{ margin: "20px", padding: "20px", background: "white" }}>
-          <Title level={5} style={{ color: "#4b244a" }}>
-            Add Apartment Details
-          </Title>
+    <Modal
+      title={isEditing ? "Edit Apartment" : "Add New Apartment"}
+      visible={visible}
+      onCancel={onClose}
+      footer={null}
+      width={700}
+    >
           <Form
             layout="vertical"
             onFinish={onFinish}
@@ -170,23 +266,21 @@ const AddApartment = () => {
                 >
                   <Select placeholder="Select Building">
                     {buildingList.map((building) => (
-                      <Option key={building.building_name} value={building.building_name}>
-                        {building.name}
+                      <Option key={building.id} value={building.id}>
+                        {building.building_name}
                       </Option>
                     ))}
                   </Select>
                 </Form.Item>
                 <Form.Item
-                  label="File Upload"
-                  name="fileUpload"
-                  valuePropName="fileList"
-                  getValueFromEvent={(e) =>
-                    Array.isArray(e) ? e : e && e.fileList
-                  }
+                  label="Balcony"
+                  name="balcony"
+                  rules={[{ required: true, message: "Please select if a balcony is present" }]}
                 >
-                  <Upload name="file" action="/upload.do" listType="text">
-                    <Button icon={<UploadOutlined />}>Upload</Button>
-                  </Upload>
+                  <Radio.Group>
+                    <Radio.Button value="Yes">Yes</Radio.Button>
+                    <Radio.Button value="No">No</Radio.Button>
+                  </Radio.Group>
                 </Form.Item>
               </Col>
               <Col span={12}>
@@ -215,7 +309,7 @@ const AddApartment = () => {
                   <div
                     style={{
                       display: "grid",
-                      gridTemplateColumns: "repeat(3, 1fr)",
+                      gridTemplateColumns: "repeat(2, 1fr)",
                       gap: "10px",
                     }}
                   >
@@ -230,7 +324,7 @@ const AddApartment = () => {
                       >
                         <span
                           style={{
-                            width: "50px", // Equal width for room names
+                            width: "55px", // Equal width for room names
                             textAlign: "left",
                           }}
                         >
@@ -254,16 +348,6 @@ const AddApartment = () => {
                     ))}
                   </div>
                 </Form.Item>
-                <Form.Item
-                  label="Balcony"
-                  name="balcony"
-                  rules={[{ required: true, message: "Please select if a balcony is present" }]}
-                >
-                  <Radio.Group>
-                    <Radio.Button value="Yes">Yes</Radio.Button>
-                    <Radio.Button value="No">No</Radio.Button>
-                  </Radio.Group>
-                </Form.Item>
               </Col>
             </Row>
             <div style={{ display: "flex", justifyContent: "flex-end" }}>
@@ -283,9 +367,7 @@ const AddApartment = () => {
               </Button>
             </div>
           </Form>
-        </Content>
-      </Layout>
-    </Layout>
+        </Modal>
   );
 };
 
