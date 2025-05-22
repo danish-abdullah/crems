@@ -1,18 +1,18 @@
 {
   "files": {
     "main.css": "/crems/static/css/main.ff02dc01.css",
-    "main.js": "/crems/static/js/main.568596dd.js",
+    "main.js": "/crems/static/js/main.501a2b3b.js",
     "static/js/453.c601aeb0.chunk.js": "/crems/static/js/453.c601aeb0.chunk.js",
     "static/media/background.png": "/crems/static/media/background.f8c260ed2a47da20f264.png",
     "static/media/login.png": "/crems/static/media/login.42d2aacdc4d50713a7e9.png",
     "static/media/logo.png": "/crems/static/media/logo.7d4d29769df7a102f94a.png",
     "index.html": "/crems/index.html",
     "main.ff02dc01.css.map": "/crems/static/css/main.ff02dc01.css.map",
-    "main.568596dd.js.map": "/crems/static/js/main.568596dd.js.map",
+    "main.501a2b3b.js.map": "/crems/static/js/main.501a2b3b.js.map",
     "453.c601aeb0.chunk.js.map": "/crems/static/js/453.c601aeb0.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.ff02dc01.css",
-    "static/js/main.568596dd.js"
+    "static/js/main.501a2b3b.js"
   ]
 }
