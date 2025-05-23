@@ -1,98 +1,139 @@
-import React, { useState } from "react";
-import {
-  Layout,
-  Typography,
-  Input,
-  Table,
-  Tooltip,
-  Tag,
-  message,
-  Modal,
-  Button,
-} from "antd";
-import {
-  CheckCircleOutlined,
-} from "@ant-design/icons";
+import React, { useEffect, useState } from "react";
+import { Layout, Typography, Input, Table, Tooltip, Tag, message, Button } from "antd";
+import { Dropdown, Menu, Modal} from "antd";
+import { CheckCircleOutlined, ToolOutlined, FileOutlined } from "@ant-design/icons";
 import "../../../App.css";
 import Sidebar from "../../../components/MaintenanceSidebar.js";
 import TitleHeader from "../../../components/TitleHeader.js";
+import SearchBar from "../../../components/SearchBar.js";
 
 const { Content } = Layout;
-const { Title, Text } = Typography;
+const { Title } = Typography;
 const { Search } = Input;
 
-const ViewMaintenanceRequests = () => {
-  const [data, setData] = useState([
-    {
-      key: "1",
-      Id: "C001",
-      buildingName: "Sunset Apartments",
-      flatNo: "A-101",
-      name: "John Doe",
-      category: "Plumbing",
-      description: "Water leakage in the bathroom.",
-      status: "Pending",
-      attachment: "https://example.com/files/water-leakage-photo.jpg",
-    },
-    {
-      key: "2",
-      Id: "C002",
-      buildingName: "Emerald Heights",
-      flatNo: "B-202",
-      name: "Jane Smith",
-      category: "Electrical",
-      description: "Elevator not working.",
-      status: "Resolved",
-      attachment: null,
-    },
-  ]);
+const ViewComplaints = () => {
+  const [filteredData, setFilteredData] = useState([]);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [selectedComplaint, setSelectedComplaint] = useState(null);
+  const [loading, setLoading] = useState(false);
+    const [complaints, setComplaints] = useState([]);
+    const [buildings, setBuildings] = useState([]);
+    const [apartments, setApartments] = useState([]);
+  
+  const fetchComplaints = async () => {
+      setLoading(true);
+      try {
+        const res = await fetch("https://website-64a18929.yeo.vug.mybluehost.me/api/admin/complains", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+          },
+        });
+        const json = await res.json();
+        const data = json?.data?.map((item, index) => ({
+          key: item.complain_no,
+          id: item.id,
+          complain_no: item.complain_no,
+          name: item.name,
+          description: item.description,
+          status: item.status == "in-progress" ? "Pending" : item.status == "resolved" ? "Resolved" : item.status,
+          category: item.category,
+          user_id: item.user_id,
+          apartment_id: item.apartment_id,
+          images: item.complain_images
+        })) || [];
+        console.log("Complaint data:", data);
+        setComplaints(data);
+        setFilteredData(data);
+      } catch (err) {
+        message.error("Failed to fetch complaints");
+      } finally {
+        setLoading(false);
+      }
+    };
+  
+    useEffect(() => {
+      fetchComplaints();
+    }, []);
 
-  const [searchText, setSearchText] = useState("");
-  const [selectedRow, setSelectedRow] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const filteredData = data.filter((item) =>
-    Object.values(item).some((val) =>
-      String(val).toLowerCase().includes(searchText.toLowerCase())
-    )
-  );
-
-  const handleMarkResolved = (key) => {
-    const updatedData = data.map((item) =>
-      item.key === key ? { ...item, status: "Resolved" } : item
-    );
-    setData(updatedData);
-    if (selectedRow && selectedRow.key === key) {
-      setSelectedRow({ ...selectedRow, status: "Resolved" });
-    }
-    message.success("Request marked as resolved.");
-  };
-
-  const handleRowClick = (record) => {
-    setSelectedRow(record);
-    setIsModalOpen(true);
+     useEffect(() => {
+        fetchBuildings();
+        fetchApartments();
+      }, []);
+    
+      const fetchBuildings = async () => {
+        const res = await fetch("https://website-64a18929.yeo.vug.mybluehost.me/api/admin/buildings",
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${localStorage.getItem("access_token")}`,
+            },
+          }
+        );
+        const data = await res.json();
+        setBuildings(data?.data || []);
+      };
+    
+      const fetchApartments = async () => {
+        const res = await fetch("https://website-64a18929.yeo.vug.mybluehost.me/api/admin/apartments",
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${localStorage.getItem("access_token")}`,
+            },
+          }
+        );
+        const data = await res.json();
+        setApartments(data?.data || []);
+      };
+ 
+  const handleMarkResolved = async (key) => {
+    try {
+          const formData = new FormData();
+          formData.append("status", "resolved");
+          formData.append("_method", "PATCH");
+          const res = await fetch(
+            `https://website-64a18929.yeo.vug.mybluehost.me/api/admin/complains${`/${key}`}`,
+            {
+              method: "POST",
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+              },
+              body: formData,
+            }
+          );
+      
+          const result = await res.json();
+          if (result.success) {
+            message.success("Complaint resolved successfully");
+            fetchComplaints();
+          } else {
+            message.error(result.message || "Failed to resolve complaint");
+          }
+        } catch (err) {
+          console.error(err);
+          message.error("Error resolving complaint");
+        }
   };
 
   const columns = [
     {
       title: "Complain #",
-      dataIndex: "Id",
-      key: "Id",
+      dataIndex: "complain_no",
+      key: "complain_no",
     },
     {
       title: "Building Name",
-      dataIndex: "buildingName",
+      dataIndex: "apartment_id",
       key: "buildingName",
+      render: (id) => buildings.find((b) => apartments.find((a) => a.id === id)?.building_id === b.id)?.building_name || "N/A",
     },
     {
       title: "Flat No",
-      dataIndex: "flatNo",
+      dataIndex: "apartment_id",
       key: "flatNo",
-    },
-    {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
+      render: (id) => apartments.find((a) => a.id === id)?.area || "N/A",
     },
     {
       title: "Category",
@@ -104,7 +145,8 @@ const ViewMaintenanceRequests = () => {
       dataIndex: "status",
       key: "status",
       render: (status) => {
-        let color = status === "Resolved" ? "green" : "volcano";
+        let color = "volcano";
+        if (status === "Resolved") color = "green";
         return <Tag color={color}>{status}</Tag>;
       },
     },
@@ -116,93 +158,131 @@ const ViewMaintenanceRequests = () => {
     {
       title: "Actions",
       key: "actions",
-      render: (_, record) => (
-        <Tooltip title="Mark as Resolved">
-          <CheckCircleOutlined
-            onClick={(e) => {
-              e.stopPropagation(); // prevent row click
-              if (record.status === "Pending") handleMarkResolved(record.key);
-            }}
-            style={{
-              fontSize: "20px",
-              color: record.status === "Pending" ? "green" : "gray",
-              cursor: record.status === "Pending" ? "pointer" : "not-allowed",
-            }}
-          />
-        </Tooltip>
-      ),
-    },
+      render: (_, record) => {
+        const isPending = record.status === "Pending";
+        return (
+          <div style={{ display: "flex", gap: "10px" }}>
+            {/* Mark as Resolved */}
+            <Tooltip title="Mark as Resolved">
+              <CheckCircleOutlined
+                style={{
+                  fontSize: "20px",
+                  color: isPending  ? "green" : "gray",
+                  cursor: isPending  ? "pointer" : "not-allowed",
+                }}
+                onClick={() =>
+                  (isPending) && handleMarkResolved(record.id)
+                }
+              />
+            </Tooltip>
+          </div>
+        );
+      },
+    }
   ];
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
-      <Sidebar username="4Walls Works" selectedTab="viewComplaints" />
+      <Sidebar username="Admin" selectedTab="viewComplaints" />
+
       <Layout>
-        <TitleHeader title="Complaints" />
+        <TitleHeader title="View Complaints" />
         <Content style={{ margin: "20px", padding: "20px", background: "white" }}>
-          <Search
-            placeholder="Search by ID, building, flat, or status"
-            allowClear
-            onChange={(e) => setSearchText(e.target.value)}
-            style={{ margin: "10px 0", width: "100%" }}
-          />
+        <SearchBar
+              data={complaints}
+              fieldsToSearch={["id", "description", "status", "category"]}
+              onFilteredData={setFilteredData}
+            />
           <Table
             columns={columns}
             dataSource={filteredData}
             pagination={{ pageSize: 5 }}
             style={{ marginTop: "20px" }}
             onRow={(record) => ({
-              onClick: () => handleRowClick(record),
+              onClick: (event) => {
+                // Prevent modal open if clicking an action button
+                const tagName = event.target.tagName.toLowerCase();
+                const className = event.target.className;
+                const isAction = tagName === "svg" || tagName === "path" || className.includes("anticon");
+
+                if (!isAction) {
+                  setSelectedComplaint(record);
+                  setIsModalVisible(true);
+                }
+              },
             })}
           />
+          
+          {selectedComplaint && (
+            <Modal
+            title={`Complaint #${selectedComplaint?.complain_no}`}
+            open={isModalVisible}
+            onCancel={() => {
+              setIsModalVisible(false);
+            }}
+            footer={[
+              selectedComplaint?.status !== "Resolved" && (
+                <Button
+                  key="resolve"
+                  type="primary"
+                  onClick={() => {
+                    handleMarkResolved(selectedComplaint.id);
+                    setIsModalVisible(false);
+                  }}
+                >
+                  Mark as Resolved
+                </Button>
+              ),
+              <Button key="close" onClick={() => setIsModalVisible(false)}>
+                Close
+              </Button>,
+            ]}
+            width={800} // Wider modal
+          >
+            <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+            <p>
+              <strong>Building Name:</strong>{" "}
+              {
+                buildings.find(
+                  (b) =>
+                    b.id === apartments.find((a) => a.id === selectedComplaint.apartment_id)?.building_id
+                )?.building_name || "N/A"
+              }
+            </p>
+
+            <p>
+              <strong>Flat No:</strong>{" "}
+              {
+                apartments.find((a) => a.id === selectedComplaint.apartment_id)?.area || "N/A"
+              }
+            </p>
+              <p><strong>Category:</strong> {selectedComplaint?.category || "N/A"}</p>
+              <p><strong>Status:</strong> {selectedComplaint?.status}</p>
+              <p><strong>Description:</strong> {selectedComplaint?.description}</p>
+              <p><strong>Attachment:</strong></p>
+              {selectedComplaint?.images.length > 0 ? (
+                <img
+                  src={selectedComplaint.images}
+                  alt="Attachment"
+                  style={{
+                    width: "100%",
+                    maxHeight: "300px",
+                    objectFit: "contain",
+                    border: "1px solid #ccc",
+                    padding: 10,
+                  }}
+                />
+              ) : (
+                <p>No attachment available.</p>
+              )}
+            </div>
+          </Modal>          
+          )}
+          
         </Content>
       </Layout>
-
-      {/* Modal */}
-      <Modal
-        title={`Complaint Details - ${selectedRow?.Id}`}
-        visible={isModalOpen}
-        onCancel={() => setIsModalOpen(false)}
-        footer={[
-          <Button key="close" onClick={() => setIsModalOpen(false)}>
-            Close
-          </Button>,
-          selectedRow?.status !== "Resolved" && (
-            <Button
-              key="resolve"
-              type="primary"
-              onClick={() => handleMarkResolved(selectedRow.key)}
-            >
-              Mark as Resolved
-            </Button>
-          ),
-        ]}
-      >
-        {selectedRow && (
-          <div>
-            <p><b>Building:</b> {selectedRow.buildingName}</p>
-            <p><b>Flat No:</b> {selectedRow.flatNo}</p>
-            <p><b>Name:</b> {selectedRow.name}</p>
-            <p><b>Category:</b> {selectedRow.category}</p>
-            <p><b>Status:</b> <Tag color={selectedRow.status === "Resolved" ? "green" : "volcano"}>{selectedRow.status}</Tag></p>
-            <p><b>Description:</b> {selectedRow.description}</p>
-            {selectedRow.attachment ? (
-              <div>
-                <p><b>Attachment:</b></p>
-                <img
-                  src={selectedRow.attachment}
-                  alt="Attachment"
-                  style={{ width: "100%", maxHeight: 300, objectFit: "contain", border: "1px solid #ddd", padding: 5 }}
-                />
-              </div>
-            ) : (
-              <Text type="secondary">No attachment available.</Text>
-            )}
-          </div>
-        )}
-      </Modal>
     </Layout>
   );
 };
 
-export default ViewMaintenanceRequests;
+export default ViewComplaints;
