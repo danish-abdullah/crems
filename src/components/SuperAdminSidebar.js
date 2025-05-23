@@ -72,7 +72,7 @@ const SuperAdminSidebar = ({selectedTab}) => {
             {/* <Menu.Item key="viewAccessRealEstates" icon={<FileTextOutlined />}>
               Access Real Estates
             </Menu.Item> */}
-            <Menu.Item key="viewAvailableFlats" icon={<FileTextOutlined />}>
+            {/* <Menu.Item key="viewAvailableFlats" icon={<FileTextOutlined />}>
               Available Flats
             </Menu.Item>
             <Menu.Item key="viewNotificationManagement" icon={<FileTextOutlined />}>
@@ -80,7 +80,7 @@ const SuperAdminSidebar = ({selectedTab}) => {
             </Menu.Item>
             <Menu.Item key="viewAccessControl" icon={<FileTextOutlined />}>
               Access Control
-            </Menu.Item>
+            </Menu.Item> */}
             {/* <Menu.Item className="main-item" key="superAdminDashboard" icon={<UserOutlined />}>
               Dashboard
             </Menu.Item> */}
