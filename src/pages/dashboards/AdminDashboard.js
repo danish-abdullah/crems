@@ -1,159 +1,120 @@
-import React from "react";
-import { Layout, Card, Row, Col } from "antd";
-import { Line } from "react-chartjs-2";
-import { Bar } from "react-chartjs-2";
+import React, { useEffect, useState } from "react";
+import { Layout, Card } from "antd";
 import Sidebar from "../../components/AdminSidebar";
 import TitleHeader from "../../components/TitleHeader";
 import "../../App.css";
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  BarElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-  ArcElement,
-} from "chart.js";
-
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  BarElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-  ArcElement
-);
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowTrendUp, faArrowTrendDown } from "@fortawesome/free-solid-svg-icons";
+import { FaBuilding, FaUsers, FaExclamationCircle } from "react-icons/fa";
+import { FaHouse } from "react-icons/fa6";
 
 const { Content } = Layout;
 
 const AdminDashboard = () => {
-  // Mock data for graphs
-  const occupancyHistory = {
-    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
-    datasets: [
-      {
-        label: "Occupied Apartments",
-        data: [75, 80, 85, 90, 88, 85],
-        borderColor: "#4b244a",
-        backgroundColor: "rgba(75, 36, 74, 0.2)",
-      },
-    ],
-  };
+  const [stats, setStats] = useState([
+    { title: "Total Buildings", icon: <FaBuilding size={24} />, value: 0, change: 0, lastMonth: 0, positive: true },
+    { title: "Total Apartments", icon: <FaHouse size={24} />, value: 0, change: 0, lastMonth: 0, positive: true },
+    { title: "Total Tenants", icon: <FaUsers size={24} />, value: 0, change: 0, lastMonth: 0, positive: true },
+    { title: "Total Complaints", icon: <FaExclamationCircle size={24} />, value: 0, change: 0, lastMonth: 0, positive: true },
+  ]);
 
-  const rentHistory = {
-    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
-    datasets: [
-      {
-        label: "Rent Income (PKR)",
-        data: [400000, 420000, 440000, 460000, 450000, 470000],
-        borderColor: "#4b244a",
-        backgroundColor: "rgba(75, 36, 74, 0.2)",
-      },
-    ],
-  };
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        const response = await fetch(
+          "https://website-64a18929.yeo.vug.mybluehost.me/api/admin/dashboard",
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${localStorage.getItem("access_token")}`,
+            },
+          }
+        );
 
-  const visitorsHistory = {
-    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
-    datasets: [
-      {
-        label: "Visitors",
-        data: [120, 150, 140, 170, 160, 135],
-        borderColor: "#4b244a",
-        backgroundColor: "rgba(75, 36, 74, 0.2)",
-      },
-    ],
-  };
+        const result = await response.json();
 
-  const complaintsData = {
-    labels: ["Complaints", "Requests"],
-    datasets: [
-      {
-        label: "Pending",
-        data: [12, 8],
-        backgroundColor: "rgba(255, 99, 132, 0.8)", // Red
-      },
-      {
-        label: "Resolved",
-        data: [20, 18],
-        backgroundColor: "rgba(75, 192, 192, 0.8)", // Green
-      },
-      {
-        label: "Sent to Maintenance",
-        data: [0, 5],
-        backgroundColor: "rgba(54, 162, 235, 0.8)", // Blue
-      },
-    ],
-  };
+        if (result.success) {
+          const d = result.data;
 
-  const barChartOptions = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: "top",
-      },
-    },
-  };
+          setStats([
+            {
+              title: "Total Buildings",
+              icon: <FaBuilding size={24} />,
+              value: d.total_buildings.count,
+              change: d.total_buildings.change,
+              lastMonth: d.total_buildings.last_month_total,
+              positive: d.total_buildings.change >= 0,
+            },
+            {
+              title: "Total Apartments",
+              icon: <FaHouse size={24} />,
+              value: d.total_apartments.count,
+              change: d.total_apartments.change,
+              lastMonth: d.total_apartments.last_month_total,
+              positive: d.total_apartments.change >= 0,
+            },
+            {
+              title: "Total Tenants",
+              icon: <FaUsers size={24} />,
+              value: d.total_tenants.count,
+              change: d.total_tenants.change,
+              lastMonth: d.total_tenants.last_month_total,
+              positive: d.total_tenants.change >= 0,
+            },
+            {
+              title: "Total Complaints",
+              icon: <FaExclamationCircle size={24} />,
+              value: d.total_complaints.count,
+              change: d.total_complaints.change,
+              lastMonth: d.total_complaints.last_month_total,
+              positive: d.total_complaints.change >= 0,
+            },
+          ]);
+        } else {
+          console.error("Failed to fetch admin dashboard data.");
+        }
+      } catch (error) {
+        console.error("Error fetching admin dashboard data:", error);
+      }
+    };
+
+    fetchDashboardData();
+  }, []);
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
-      {/* Sidebar */}
       <Sidebar username="Admin" selectedTab="adminDashboard" />
 
-      {/* Main Content */}
       <Layout>
         <TitleHeader title="Admin Dashboard" />
-        <Content style={{ margin: "10px", padding: "10px", background: "#f0f2f5" }}>
-          <Row gutter={[16, 16]}>
-            {/* Card 1: Occupancy with Line Chart */}
-            <Col span={12}>
-              <Card
-                title="Building & Apartment Occupancy"
-                bordered={false}
-                style={{ backgroundColor: "#f6f0f7", color: "#4b244a" }}
-              >
-                <Line data={occupancyHistory} />
+        <Content style={{ padding: "20px", background: "#f8f9fa" }}>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
+            {stats.map((stat, index) => (
+              <Card key={index} className="p-4 rounded-xl shadow-lg bg-white flex flex-col">
+                <div className="flex items-center gap-2 text-gray-700 text-lg font-semibold">
+                  {stat.icon} {stat.title}
+                </div>
+                <div className="flex justify-between items-center mt-2">
+                  <span className="text-3xl font-bold">{stat.value}</span>
+                  <span className="flex items-center gap-2 text-sm mt-1">
+                    {stat.positive ? (
+                      <span className="text-green-500 flex items-center" style={{ backgroundColor: "#d8ffe7", padding: "3px", borderRadius: "10px" }}>
+                        <FontAwesomeIcon icon={faArrowTrendUp} style={{ color: "#22c55e", marginRight: "5px" }} />
+                        {stat.change}%
+                      </span>
+                    ) : (
+                      <span className="text-red-500 flex items-center" style={{ backgroundColor: "#fae4e4", padding: "3px", borderRadius: "10px" }}>
+                        <FontAwesomeIcon icon={faArrowTrendDown} style={{ color: "#ef4444", marginRight: "5px" }} />
+                        {Math.abs(stat.change)}%
+                      </span>
+                    )}
+                    <span className="text-gray-500">Last month total {stat.lastMonth}</span>
+                  </span>
+                </div>
               </Card>
-            </Col>
-
-            {/* Card 2: Expected Rent Income with Line Chart */}
-            <Col span={12}>
-              <Card
-                title="Expected Rent Income"
-                bordered={false}
-                style={{ backgroundColor: "#f6f0f7", color: "#4b244a" }}
-              >
-                <Line data={rentHistory} />
-              </Card>
-            </Col>
-
-            {/* Card 3: Visitors with Line Chart */}
-            <Col span={12}>
-              <Card
-                title="Total Visitors"
-                bordered={false}
-                style={{ backgroundColor: "#f6f0f7", color: "#4b244a" }}
-              >
-                <Line data={visitorsHistory} />
-              </Card>
-            </Col>
-
-            {/* Card 4: Complaints and Maintenance Requests with Bar Chart */}
-            <Col span={12}>
-              <Card 
-                title="Complaints and Maintenance Requests Overview"
-                bordered={false}
-                style={{ backgroundColor: "#f6f0f7" }}
-                >
-                <Bar data={complaintsData} options={barChartOptions} />
-              </Card>
-            </Col>
-          </Row>
+            ))}
+          </div>
         </Content>
       </Layout>
     </Layout>

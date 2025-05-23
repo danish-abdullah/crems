@@ -11,12 +11,12 @@ const { Title } = Typography;
 
 const TitleHeader = ({ title }) => {
   const navigate = useNavigate();
-  const [notifications, setNotifications] = useState([
-    { id: 1, message: "New tenant added", read: false },
-    { id: 2, message: "Building maintenance scheduled", read: false },
-    { id: 3, message: "Upcoming system update", read: true },
-  ]);
-  const [drawerVisible, setDrawerVisible] = useState(false);
+  // const [notifications, setNotifications] = useState([
+  //   { id: 1, message: "New tenant added", read: false },
+  //   { id: 2, message: "Building maintenance scheduled", read: false },
+  //   { id: 3, message: "Upcoming system update", read: true },
+  // ]);
+  // const [drawerVisible, setDrawerVisible] = useState(false);
 
   // Logout function
   const handleLogoutClick = async () => {
@@ -41,24 +41,24 @@ const TitleHeader = ({ title }) => {
     }
   };
 
-  const handleNotificationClick = () => {
-    setDrawerVisible(true);
-    // Mark notifications as read
-    setNotifications((prevNotifications) =>
-      prevNotifications.map((notif) => ({ ...notif, read: true }))
-    );
-  };
+  // const handleNotificationClick = () => {
+  //   setDrawerVisible(true);
+  //   // Mark notifications as read
+  //   setNotifications((prevNotifications) =>
+  //     prevNotifications.map((notif) => ({ ...notif, read: true }))
+  //   );
+  // };
 
-  const handleClearNotifications = () => {
-    setNotifications([]);
-  };
+  // const handleClearNotifications = () => {
+  //   setNotifications([]);
+  // };
 
-  const closeDrawer = () => {
-    setDrawerVisible(false);
-  };
+  // const closeDrawer = () => {
+  //   setDrawerVisible(false);
+  // };
 
-  // Calculate unread notifications
-  const unreadCount = notifications.filter((notif) => !notif.read).length;
+  // // Calculate unread notifications
+  // const unreadCount = notifications.filter((notif) => !notif.read).length;
 
   return (
     <Header
@@ -74,7 +74,7 @@ const TitleHeader = ({ title }) => {
         {title}
       </Title>
       <div style={{ display: "flex", alignItems: "center" }}>
-        <Badge
+        {/* <Badge
           count={unreadCount}
           size="small"
           offset={[-5, 5]}
@@ -88,7 +88,7 @@ const TitleHeader = ({ title }) => {
             style={{ color: "#4b244a" }}
             onClick={handleNotificationClick}
           />
-        </Badge>
+        </Badge> */}
         <Button
           type="link"
           icon={<LogoutOutlined />}
@@ -98,7 +98,7 @@ const TitleHeader = ({ title }) => {
           Logout
         </Button>
       </div>
-      <Drawer
+      {/* <Drawer
         title="Notifications"
         placement="right"
         onClose={closeDrawer}
@@ -128,7 +128,7 @@ const TitleHeader = ({ title }) => {
             Clear
           </Button>
         </div>
-      </Drawer>
+      </Drawer> */}
     </Header>
   );
 };

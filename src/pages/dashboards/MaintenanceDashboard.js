@@ -1,5 +1,5 @@
-import React from "react";
-import { Layout, Card, Row, Col, Select } from "antd";
+import React, { useEffect, useState } from "react";
+import { Layout, Card, Row, Col, message } from "antd";
 import { Bar } from "react-chartjs-2";
 import Sidebar from "../../components/MaintenanceSidebar";
 import TitleHeader from "../../components/TitleHeader";
@@ -29,31 +29,54 @@ ChartJS.register(
   ArcElement
 );
 
-const { Option } = Select;
-
 const MaintenanceDashboard = () => {
-  const totalComplaints = 3615;
-  const pending = 15;
-  const resolved = 268;
-  const currentMonth = "Sep";
+  const [dashboardData, setDashboardData] = useState({
+    new_complaints: 0,
+    progress_complaints: 0,
+    resolved_complaints: 0,
+    monthly_complaints: [],
+  });
 
-  const monthlyData = {
-    Jan: 10,
-    Feb: 11,
-    Mar: 8,
-    Apr: 9,
-    May: 5,
-    Jun: 3,
-    Jul: 4,
-    Aug: 6,
-    Sep: 12,
-    Oct: 6,
-    Nov: 9,
-    Dec: 4,
-  };
+  const currentMonth = new Date().toLocaleString("default", { month: "short" });
 
-  const months = Object.keys(monthlyData);
-  const values = Object.values(monthlyData);
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        const res = await fetch(
+          "https://website-64a18929.yeo.vug.mybluehost.me/api/admin/dashboard",
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${localStorage.getItem("access_token")}`,
+            },
+          }
+        );
+        const data = await res.json();
+        if (data.success) {
+          setDashboardData(data.data);
+        } else {
+          message.error("Failed to fetch dashboard data.");
+        }
+      } catch (error) {
+        console.error("Dashboard API error:", error);
+        message.error("Something went wrong while loading the dashboard.");
+      }
+    };
+
+    fetchDashboardData();
+  }, []);
+
+  const months = [
+    "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+  ];
+
+  const monthlyCountsMap = Object.fromEntries(
+    dashboardData.monthly_complaints?.map((m) => [m.month, m.count]) || []
+  );
+
+  const values = months.map((month) => monthlyCountsMap[month] || 0);
 
   const backgroundColors = months.map((month) =>
     month === currentMonth ? "rgba(164, 22, 26, 0.4)" : "rgba(164, 22, 26, 0.2)"
@@ -82,7 +105,7 @@ const MaintenanceDashboard = () => {
       y: {
         beginAtZero: true,
         ticks: {
-          stepSize: 2,
+          stepSize: 1,
           color: "#999",
         },
         grid: {
@@ -115,50 +138,45 @@ const MaintenanceDashboard = () => {
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
-      {/* Sidebar */}
       <Sidebar username="Plumber" selectedTab="dashboard" />
-
-      {/* Main Content */}
       <Layout>
         <TitleHeader title="Maintenance Dashboard" />
         <div style={{ padding: 24 }}>
-      <Row gutter={16} style={{ marginBottom: 24 }}>
-        <Col span={8}>
-          <Card style={{ borderRadius: 8 }}>
-            <div style={{ fontSize: 28, fontWeight: 600 }}>{totalComplaints}</div>
-            <div style={{ color: "#a4161a", fontWeight: 500 }}>New Complaints</div>
-          </Card>
-        </Col>
-        <Col span={8}>
-          <Card style={{ borderRadius: 8 }}>
-            <div style={{ fontSize: 28, fontWeight: 600 }}>{pending}</div>
-            <div style={{ color: "#a4161a", fontWeight: 500 }}>Pending</div>
-          </Card>
-        </Col>
-        <Col span={8}>
-          <Card style={{ borderRadius: 8 }}>
-            <div style={{ fontSize: 28, fontWeight: 600 }}>{resolved}</div>
-            <div style={{ color: "#a4161a", fontWeight: 500 }}>Resolved</div>
-          </Card>
-        </Col>
-      </Row>
+          <Row gutter={16} style={{ marginBottom: 24 }}>
+            <Col span={8}>
+              <Card style={{ borderRadius: 8 }}>
+                <div style={{ fontSize: 28, fontWeight: 600 }}>
+                  {dashboardData.new_complaints + dashboardData.progress_complaints}
+                </div>
+                <div style={{ color: "#a4161a", fontWeight: 500 }}>Pending</div>
+              </Card>
+            </Col>
+            <Col span={8}>
+              <Card style={{ borderRadius: 8 }}>
+                <div style={{ fontSize: 28, fontWeight: 600 }}>
+                  {dashboardData.resolved_complaints}
+                </div>
+                <div style={{ color: "#a4161a", fontWeight: 500 }}>Resolved</div>
+              </Card>
+            </Col>
+          </Row>
 
-      <Card style={{ borderRadius: 8 }}>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            marginBottom: 16,
-            alignItems: "center",
-          }}
-        >
-          <h3 style={{ margin: 0 }}>Total Complaints</h3>
+          <Card style={{ borderRadius: 8 }}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                marginBottom: 16,
+                alignItems: "center",
+              }}
+            >
+              <h3 style={{ margin: 0 }}>Total Complaints</h3>
+            </div>
+            <div style={{ height: 240 }}>
+              <Bar data={barData} options={barOptions} />
+            </div>
+          </Card>
         </div>
-        <div style={{ height: 240 }}>
-          <Bar data={barData} options={barOptions} />
-        </div>
-      </Card>
-    </div>
       </Layout>
     </Layout>
   );
