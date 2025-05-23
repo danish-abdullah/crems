@@ -47,7 +47,7 @@ const SuperAdminSidebar = ({selectedTab}) => {
           <img src={Logo} alt="Logo" className="logo" />
         </div>
         <div className="avatar-container">
-          <Avatar size={64} className="avatar-photo"/>
+        <Avatar icon={<UserOutlined />} size={64}/>          
           <div className="avatar-text">
             <span>VLookin</span>
             <br />
