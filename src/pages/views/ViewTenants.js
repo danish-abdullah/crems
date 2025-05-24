@@ -152,6 +152,7 @@ useEffect(() => {
     setIsEditMode(false);
     form.resetFields();
     form.setFieldsValue({ building_name: buildingName });
+    setFilteredApartments(apartments.filter(a => a.building_id === buildingID));
     setEditingUser(null);
     setImageUrl(null);
     setIsModalVisible(true);
@@ -417,7 +418,13 @@ useEffect(() => {
             </div>
             <div className="w-1/2">
               <Form.Item label="Nationality" name="nationality" rules={[{ required: true, message: "Please enter nationality" }]}><Input /></Form.Item>
-              <Form.Item label="Flat No" name="flat_no" rules={[{ required: true, message: "Please enter flat no." }]}><Input /></Form.Item>
+              <Form.Item label="Flat No" name="flat_no" rules={[{ required: true, message: "Please enter flat no." }]}>
+                  <Select placeholder="Select flat">
+                {filteredApartments.map((a) => (
+                  <Option key={a.id} value={a.id}>{a.area}</Option>
+                ))}
+              </Select>
+            </Form.Item>
             </div>
           </div>
           <Form.Item label="Status" name="status" valuePropName="checked">

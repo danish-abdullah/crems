@@ -543,8 +543,7 @@ const UserManagement = () => {
                   </Form.Item> */}
                   {isOutsourced && (
                     <>
-                     <Form.Item></Form.Item>
-                      <Form.Item label="Company Phone" name="company_phone"><Input /></Form.Item>
+                      <Form.Item style={{marginTop: "108px"}} label="Company Phone" name="company_phone"><Input /></Form.Item>
                     </>
                   )}
                 </div>

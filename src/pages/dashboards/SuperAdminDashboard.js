@@ -83,7 +83,7 @@ const SuperAdminDashboard = () => {
               value: d.total_complaints.count,
               change: calculateChange(d.total_complaints.count, d.total_complaints.last_month_total),
               lastMonth: d.total_complaints.last_month_total,
-              positive: d.total_complaints.count <= d.total_complaints.last_month_total,
+              positive: d.total_complaints.count >= d.total_complaints.last_month_total,
             },
             {
               title: "Total Sales Follow-ups",

@@ -170,7 +170,7 @@ const AddRealEstateModal = ({ visible, onClose, editData, onSuccess }) => {
         </div>
 
         <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-          <Form.Item label="Pick Colour" name="colour">
+          {/* <Form.Item label="Pick Colour" name="colour">
             <Input
               type="color"
               value={color}
@@ -182,7 +182,7 @@ const AddRealEstateModal = ({ visible, onClose, editData, onSuccess }) => {
                 cursor: "pointer",
               }}
             />
-          </Form.Item>
+          </Form.Item> */}
           <Form.Item label="Status" name="status" valuePropName="checked">
             <Switch />
           </Form.Item>
@@ -192,8 +192,8 @@ const AddRealEstateModal = ({ visible, onClose, editData, onSuccess }) => {
           <Radio.Group onChange={(e) => {setPricingPlan(e.target.value); form.setFieldsValue({ plan: e.target.value });}}  value={pricingPlan}>
             {[
               { label: "Silver", value: "1", id: "1", price: "1200 AED", color: "#C0C0C0" },
-              { label: "Gold", value: "2", id: "2", price: "1200 AED", color: "#FFD700" },
-              { label: "Platinum", value: "3", id: "3", price: "1200 AED", color: "#CD7F32" },
+              { label: "Gold", value: "2", id: "2", price: "1600 AED", color: "#FFD700" },
+              { label: "Platinum", value: "3", id: "3", price: "2000 AED", color: "#CD7F32" },
             ].map((option) => (
               <Radio.Button
                 className="pricing-plan"
