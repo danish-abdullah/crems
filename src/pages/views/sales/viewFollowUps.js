@@ -30,203 +30,58 @@ const ViewFollowUps = () => {
   const [relatedFollowUps, setRelatedFollowUps] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   
-  
-  // Function to get today's date in "YYYY-MM-DD" format
-  const getCurrentDate = () => {
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, "0");
-    const day = String(today.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
-};
-
   const [dataSource, setDataSource] = useState([]);
   
-  const [tempdataSource, setTempDataSource] = useState([
-    {
-      key: 1,
-      full_name: "John Doe",
-      phone_no: "+971-1111111111",
-      date: "2024-05-01",
-      time: "10:00 AM",
-      status: "Negotiating",
-      result: "In Progress",
-      comments: "Discussed pricing options.",
-    },
-    {
-      key: 2,
-      full_name: "Jane Smith",
-      phone_no: "+971-2222222222",
-      date: "2024-05-02",
-      time: "11:30 AM",
-      status: "Interested",
-      result: "In Progress",
-      comments: "Interested but wants to consult family.",
-    },
-    {
-      key: 3,
-      full_name: "Ali Khan",
-      phone_no: "+971-3333333333",
-      date: "2024-05-03",
-      time: "2:00 PM",
-      status: "Not Interested",
-      result: "Failed",
-      comments: "Found another place.",
-    },
-    {
-      key: 4,
-      full_name: "Sara Lee",
-      phone_no: "+971-4444444444",
-      date: "2024-05-04",
-      time: "3:30 PM",
-      status: "Negotiating",
-      result: "In Progress",
-      comments: "Negotiating on final rent.",
-    },
-    {
-      key: 5,
-      full_name: "John Doe",
-      phone_no: "+971-1111111111",
-      date: "2024-05-05",
-      time: "1:00 PM",
-      status: "Interested",
-      result: "Successful",
-      comments: "Deal closed successfully.",
-    },
-    {
-      key: 6,
-      full_name: "Jane Smith",
-      phone_no: "+971-2222222222",
-      date: "2024-05-06",
-      time: "4:00 PM",
-      status: "Interested",
-      result: "In Progress",
-      comments: "Asking about payment plans.",
-    },
-    {
-      key: 7,
-      full_name: "Carlos Mendez",
-      phone_no: "+971-5555555555",
-      date: "2024-05-07",
-      time: "9:30 AM",
-      status: "Not Interested",
-      result: "Failed",
-      comments: "Left the country.",
-    },
-    {
-      key: 8,
-      full_name: "Ali Khan",
-      phone_no: "+971-3333333333",
-      date: "2024-05-08",
-      time: "11:00 AM",
-      status: "Negotiating",
-      result: "In Progress",
-      comments: "Wants a discount.",
-    },
-    {
-      key: 9,
-      full_name: "Nora Allen",
-      phone_no: "+971-6666666666",
-      date: "2024-05-09",
-      time: "2:45 PM",
-      status: "Interested",
-      result: "In Progress",
-      comments: "Asked for site visit again.",
-    },
-    {
-      key: 10,
-      full_name: "Sara Lee",
-      phone_no: "+971-4444444444",
-      date: "2024-05-10",
-      time: "3:15 PM",
-      status: "Negotiating",
-      result: "In Progress",
-      comments: "Still reviewing offer.",
-    },
-    {
-      key: 11,
-      full_name: "John Doe",
-      phone_no: "+971-1111111111",
-      date: "2024-05-11",
-      time: "12:00 PM",
-      status: "Interested",
-      result: "Successful",
-      comments: "Confirmed apartment choice.",
-    },
-    {
-      key: 12,
-      full_name: "Carlos Mendez",
-      phone_no: "+971-5555555555",
-      date: "2024-05-12",
-      time: "10:45 AM",
-      status: "Negotiating",
-      result: "In Progress",
-      comments: "Negotiation in final stage.",
-    },
-    {
-      key: 13,
-      full_name: "Jane Smith",
-      phone_no: "+971-2222222222",
-      date: "2024-05-13",
-      time: "1:15 PM",
-      status: "Not Interested",
-      result: "Failed",
-      comments: "Too expensive.",
-    },
-    {
-      key: 14,
-      full_name: "Nora Allen",
-      phone_no: "+971-6666666666",
-      date: "2024-05-14",
-      time: "4:30 PM",
-      status: "Interested",
-      result: "In Progress",
-      comments: "Wants to move in next month.",
-    },
-    {
-      key: 15,
-      full_name: "Sara Lee",
-      phone_no: "+971-4444444444",
-      date: "2024-05-15",
-      time: "9:00 AM",
-      status: "Negotiating",
-      result: "In Progress",
-      comments: "Asking for multiple unit discount.",
-    },
-  ]);
-
   const handleRowClick = (record) => {
     const phone = record.phone_no;
-    const matches = tempdataSource.filter(fu => fu.phone_no === phone);
+    const matches = dataSource.filter(fu => fu.phone_no === phone && fu.key != record.key);
     setSelectedFollowUp(record);
     setRelatedFollowUps(matches);
     setIsModalOpen(true);
   };
+  
+  const fetchFollowUps = async () => {
+    try {
+      const response = await fetch("https://website-64a18929.yeo.vug.mybluehost.me/api/admin/follow-ups",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${localStorage.getItem("access_token")}`,
+          },
+        });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      const formattedData = data.data.map((item) => ({
+        key: item.id,
+        full_name: item.visitor?.full_name || "N/A",
+        phone_no: item.visitor?.phone_no || "N/A",
+        email: item.visitor?.email || "N/A",
+        nationality: item.visitor?.nationality || "N/A",
+        phone_no: item.visitor?.phone_no || "N/A",
+        building_id: item.visitor?.building_id,
+        apartment_id: item.visitor?.apartment_id,
+        visitor_id: item.visitor?.id,
+        date: item.follow_up_date,
+        time: item.follow_up_time,
+        status: item.conversation_status,
+        result: item.deal_result,
+        comments: item.comments,
+      }));
+      setDataSource(formattedData);
+      setFilteredData(formattedData);
+    } catch (error) {
+      console.error("Failed to fetch follow-ups:", error);
+      message.error("Failed to load follow-ups");
+    }
+  };
 
   useEffect(() => {
-    const fetchFollowUps = async () => {
-      try {
-        const response = await axios.get("https://website-64a18929.yeo.vug.mybluehost.me/api/admin/follow-ups");
-        const formattedData = response.data.data.map((item) => ({
-          key: item.id,
-          full_name: item.visitor?.name || "N/A",
-          phone_no: item.visitor?.phone_number || "N/A",
-          date: item.follow_up_date,
-          time: item.follow_up_time,
-          status: item.conversation_status,
-          result: item.deal_result,
-          comments: item.comments,
-        }));
-        setDataSource(formattedData);
-        setFilteredData(formattedData);
-      } catch (error) {
-        console.error("Failed to fetch follow-ups:", error);
-        message.error("Failed to load follow-ups");
-      }
-    };
-  
     fetchFollowUps();
   }, []);
+  
 
   const columns = [
     {
@@ -279,12 +134,12 @@ const ViewFollowUps = () => {
           style={{ margin: "20px", padding: "20px", background: "white" }}
         >
          <SearchBar
-            data={tempdataSource}
+            data={dataSource}
             fieldsToSearch={["full_name", "status", "result"]}
             onFilteredData={setFilteredData}
             />
           <Table
-            dataSource={tempdataSource}
+            dataSource={filteredData}
             columns={columns}
             pagination={{ pageSize: 10 }}
             onRow={(record) => ({
@@ -297,6 +152,7 @@ const ViewFollowUps = () => {
             onClose={() => setIsModalOpen(false)}
             data={selectedFollowUp}
             pastFollowUps={relatedFollowUps}
+            refresh={() => fetchFollowUps()}
             />
         </Content>
       </Layout>

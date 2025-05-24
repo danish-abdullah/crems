@@ -40,6 +40,8 @@ const ViewTenants = ({ realEstateID, buildingName, buildingID, isViewAll }) => {
   const [fileList, setFileList] = useState([]);
   const [imageUrl, setImageUrl] = useState(null);
   const [buildings, setBuildings] = useState([]);
+const [apartments, setApartments] = useState([]);
+const [filteredApartments, setFilteredApartments] = useState([]);
 
   const fetchBuildings = async () => {
     try {
@@ -64,6 +66,19 @@ const ViewTenants = ({ realEstateID, buildingName, buildingID, isViewAll }) => {
     }
   };
   
+  const fetchApartments = async () => {
+    const res = await fetch("https://website-64a18929.yeo.vug.mybluehost.me/api/admin/apartments",
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${localStorage.getItem("access_token")}`,
+        },
+      }
+    );
+    const data = await res.json();
+    setApartments(data?.data || []);
+  };
 
   const fetchTenants = async () => {
     try {
@@ -120,6 +135,7 @@ const ViewTenants = ({ realEstateID, buildingName, buildingID, isViewAll }) => {
 useEffect(() => {
   const fetchData = async () => {
     await fetchBuildings();
+    await fetchApartments();
   };
   fetchData();
 }, []);
@@ -269,6 +285,7 @@ useEffect(() => {
       title: "Flat No.",
       dataIndex: "apartment_id",
       key: "apartment_id",
+      render: (id) => apartments.find((a) => a.id === id)?.area || "N/A",
     },
     {
       title: "Phone Number",

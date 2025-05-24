@@ -169,13 +169,13 @@ const [filteredApartments, setFilteredApartments] = useState([]);
       title: "Building",
       dataIndex: "building_id",
       key: "building_id",
-      render: (id) => buildings.find((b) => b.id === id)?.name || "N/A",
+      render: (id) => buildings.find((b) => b.id === id)?.building_name || "N/A",
     },
     {
       title: "Flat No.",
       dataIndex: "apartment_id",
       key: "apartment_id",
-      render: (id) => apartments.find((a) => a.id === id)?.flat_number || "N/A",
+      render: (id) => apartments.find((a) => a.id === id)?.area || "N/A",
     },
     {
       title: "Flat Type",
